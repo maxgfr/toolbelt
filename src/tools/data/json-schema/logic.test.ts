@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { DRAFT, inferSchema, jsonEqual, validate } from "./logic";
+import { DRAFT, inferSchema, jsonEqual, schemaErrorMessage, validate } from "./logic";
 
 const opts = { formats: true, strict: false };
 
@@ -215,5 +215,14 @@ describe("json-schema: validation", () => {
     expect(jsonEqual({ a: 1, b: 2 }, { b: 2, a: 1 })).toBe(true);
     expect(jsonEqual([1], { 0: 1 })).toBe(false);
     expect(jsonEqual({ a: undefined }, { b: undefined })).toBe(false);
+  });
+});
+
+describe("schemaErrorMessage", () => {
+  it("fills in what was expected and found", () => {
+    const [e] = validate("x", { type: "integer" });
+    expect(e && schemaErrorMessage(e)).toBe("Expected integer, got string.");
+    const [r] = validate({}, { required: ["id"] });
+    expect(r && schemaErrorMessage(r)).toBe("Missing required key “id”.");
   });
 });

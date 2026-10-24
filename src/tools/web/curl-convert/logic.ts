@@ -3,8 +3,9 @@
  * (ext-curl), wget and HTTPie. Generators are pure string builders; what a target cannot
  * express is returned as notes rather than written as comments.
  */
+import { type L10n, l } from "../../../i18n";
 import { shellQuote } from "../_shared";
-import type { Body, CurlRequest, FormPart } from "./parse";
+import type { Body, CurlRequest, FormPart, Warning, WarningCode } from "./parse";
 
 export { type CurlRequest, parseCurl, tokenize, type WarningCode } from "./parse";
 
@@ -572,3 +573,104 @@ export const GENERATORS: Record<Target, (req: CurlRequest) => Generated> = {
   wget: toWget,
   httpie: toHttpie,
 };
+
+/* --- Messages ------------------------------------------------------------------ */
+
+/** Why a command could not be read (the "empty" case shows nothing). */
+export const PARSE_ERRORS: Record<"quote" | "not-curl" | "no-url", L10n> = {
+  quote: l(
+    "A quote is not closed.",
+    "Un guillemet n'est pas fermé.",
+    "Ein Anführungszeichen ist nicht geschlossen.",
+  ),
+  "not-curl": l(
+    "The command must start with curl.",
+    "La commande doit commencer par curl.",
+    "Der Befehl muss mit curl beginnen.",
+  ),
+  "no-url": l(
+    "No URL found in the command.",
+    "Aucune URL trouvée dans la commande.",
+    "Keine URL im Befehl gefunden.",
+  ),
+};
+
+/** What a parse warning means; `{d}` stands for its detail. */
+export const WARNING_MESSAGES: Record<WarningCode, L10n> = {
+  "unknown-option": l(
+    "Unknown option ignored: {d}",
+    "Option inconnue ignorée : {d}",
+    "Unbekannte Option ignoriert: {d}",
+  ),
+  "unsupported-option": l(
+    "Option not converted: {d}",
+    "Option non convertie : {d}",
+    "Option nicht umgewandelt: {d}",
+  ),
+  "missing-arg": l(
+    "Option without its value: {d}",
+    "Option sans sa valeur : {d}",
+    "Option ohne Wert: {d}",
+  ),
+  "file-data": l(
+    "Reads the local file {d}: the code refers to it by path.",
+    "Lit le fichier local {d} : le code y fait référence par son chemin.",
+    "Liest die lokale Datei {d}: Der Code verweist über ihren Pfad darauf.",
+  ),
+  "multiple-urls": l(
+    "Only the first URL is used; ignored: {d}",
+    "Seule la première URL est utilisée ; ignorées : {d}",
+    "Nur die erste URL wird verwendet; ignoriert: {d}",
+  ),
+  "no-scheme": l(
+    "No scheme in the URL: http:// assumed, like curl.",
+    "Pas de schéma dans l'URL : http:// supposé, comme curl.",
+    "Kein Schema in der URL: http:// angenommen, wie bei curl.",
+  ),
+  "cookie-file": l(
+    "-b {d} reads a cookie file: not converted.",
+    "-b {d} lit un fichier de cookies : non converti.",
+    "-b {d} liest eine Cookie-Datei: nicht umgewandelt.",
+  ),
+  "no-password": l(
+    "-u without a password: curl would prompt for it; an empty one is used.",
+    "-u sans mot de passe : curl le demanderait ; un mot de passe vide est utilisé.",
+    "-u ohne Passwort: curl würde danach fragen; es wird ein leeres verwendet.",
+  ),
+};
+
+/** What a target could not express. */
+export const NOTE_MESSAGES: Record<NoteCode, L10n> = {
+  "insecure-unsupported": l(
+    "fetch cannot skip certificate checks (-k); in Node, use NODE_TLS_REJECT_UNAUTHORIZED=0 only for testing.",
+    "fetch ne peut pas ignorer la vérification des certificats (-k) ; en Node, NODE_TLS_REJECT_UNAUTHORIZED=0 seulement pour tester.",
+    "fetch kann die Zertifikatsprüfung nicht abschalten (-k); in Node NODE_TLS_REJECT_UNAUTHORIZED=0 nur zum Testen verwenden.",
+  ),
+  "proxy-unsupported": l(
+    "The proxy (-x) is not set: fetch has no proxy option.",
+    "Le proxy (-x) n'est pas réglé : fetch n'a pas d'option de proxy.",
+    "Der Proxy (-x) ist nicht gesetzt: fetch hat keine Proxy-Option.",
+  ),
+  "multipart-unsupported": l(
+    "wget cannot send multipart forms (-F): the body is left out.",
+    "wget ne sait pas envoyer de formulaires multipart (-F) : le corps est omis.",
+    "wget kann keine Multipart-Formulare senden (-F): Der Body wird weggelassen.",
+  ),
+  "connect-timeout-unsupported": l(
+    "--connect-timeout has no direct equivalent here and is left out.",
+    "--connect-timeout n'a pas d'équivalent direct ici et est omis.",
+    "--connect-timeout hat hier keine direkte Entsprechung und wird weggelassen.",
+  ),
+  "node-files": l(
+    "Reading local files needs Node.js (node:fs).",
+    "La lecture de fichiers locaux nécessite Node.js (node:fs).",
+    "Lokale Dateien zu lesen erfordert Node.js (node:fs).",
+  ),
+};
+
+/** A parse warning's message in every language, with its detail filled in. */
+export function warningMessage(w: Warning): L10n {
+  const m = WARNING_MESSAGES[w.code];
+  const d = w.detail ?? "";
+  return { en: m.en.replace("{d}", d), fr: m.fr.replace("{d}", d), de: m.de.replace("{d}", d) };
+}

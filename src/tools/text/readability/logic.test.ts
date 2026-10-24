@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import {
   analyze,
   detectLang,
+  SCORE_NAMES,
   sentences,
   syllablesDe,
   syllablesEn,
@@ -194,5 +195,13 @@ describe("detectLang", () => {
     expect(detectLang("Der Hund schläft und die Katze ist müde.")).toBe("de");
     expect(detectLang("The cat is asleep and it is happy.")).toBe("en");
     expect(detectLang("")).toBe("en");
+  });
+});
+
+describe("SCORE_NAMES", () => {
+  it("names every score analyze() returns", () => {
+    const a = analyze("The cat sat on the mat. It was happy there.", "en");
+    for (const s of a.scores) expect(SCORE_NAMES[s.id]).toBeTruthy();
+    expect(SCORE_NAMES.flesch).toBe("Flesch Reading Ease");
   });
 });

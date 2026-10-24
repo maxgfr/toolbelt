@@ -3,12 +3,18 @@ import { useToolState } from "../../../app/state";
 import { Button, downloadBlob, Output, Panel, Segmented, TextBox, Toggle } from "../../../app/ui";
 import { fmt, type L10n, l, tr } from "../../../i18n";
 import { attempt, isUtf8, utf8 } from "../_shared";
-import { decode, ENCODINGS, type EncodeOptions, type Encoding, encode, PER_BYTE } from "./logic";
+import {
+  decode,
+  ENCODINGS,
+  type EncodeOptions,
+  type Encoding,
+  encode,
+  PER_BYTE,
+  SEPARATORS,
+  type Separator,
+} from "./logic";
 
 type Dir = "encode" | "decode";
-type Sep = "space" | "none" | "comma" | "newline";
-
-const SEPARATORS: Record<Sep, string> = { space: " ", none: "", comma: ", ", newline: "\n" };
 
 const NAMES: Record<Encoding, L10n> = {
   hex: l("Hex", "Hexa", "Hex"),
@@ -60,7 +66,7 @@ export default function BaseEncodings() {
   const enc = useToolState<Encoding>("encoding", "hex");
   const dir = useToolState<Dir>("dir", "encode");
   const input = useToolState("input", "");
-  const sep = useToolState<Sep>("separator", "space");
+  const sep = useToolState<Separator>("separator", "space");
   const upper = useToolState("upper", false);
   const padding = useToolState("padding", true);
   const delimiters = useToolState("delimiters", false);
@@ -120,7 +126,7 @@ export default function BaseEncodings() {
       {dir.value === "encode" && (
         <div class="row">
           {PER_BYTE.includes(e) && (
-            <Segmented<Sep>
+            <Segmented<Separator>
               label={tr(T.separator)}
               value={sep.value}
               onChange={(v) => {

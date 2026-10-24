@@ -40,6 +40,23 @@ tracking, nothing you type leaves the tab, and once loaded it works offline. Eng
   device; nothing is recorded or uploaded.
 - **Favorites and recent tools** on the home page, light and dark themes, installable as an app.
 
+## Use it from an AI agent
+
+The same tools ship as an [agent skill](skills/toolbelt/SKILL.md) for Claude Code, Codex, Cursor,
+Gemini CLI and other coding agents: a single offline Node script (no dependency, nothing sent
+anywhere) plus instructions telling the agent when to use it.
+
+```bash
+npx skills add maxgfr/toolbelt
+```
+
+Then ask, for example:
+- "Decode this JWT and tell me when it expires: eyJhbGciOi…"
+- "Diff config.old.yaml and config.yaml, then give me a toolbelt link to see it side by side."
+
+For visual tools (images, timers, tuner, camera), the agent gives you a link to the site with your
+input already filled in. The CLI also runs on its own: `node skills/toolbelt/scripts/toolbelt.mjs help`.
+
 ## Privacy
 
 The page is served with a Content-Security-Policy that allows no request outside the site
@@ -57,6 +74,7 @@ bun run test       # unit tests (the logic of every tool)
 bun run test:e2e   # Playwright: every tool in EN and FR, plus real round trips
 bun run lint && bun run typecheck
 bun run build      # dist/, deployed to GitHub Pages by .github/workflows/pages.yml
+bun run skill      # rebuild skills/toolbelt/ (the agent skill's CLI bundle and its command reference)
 ```
 
 Adding a tool is three files and a registry entry; see [AGENTS.md](AGENTS.md).

@@ -20,6 +20,18 @@ no network request at all (CSP `connect-src 'self'`), works offline (service wor
    FR, keywords in both languages, `load: () => import("./<id>/View")`).
 5. Styles, if the shared classes are not enough, in `src/tools/<category>/styles.css`, prefixed
    with the tool id.
+6. A CLI command in `cli/commands/<category>.ts` (name = tool id) that imports the tool's
+   `logic.ts` lazily, with tests in `cli/commands/<category>.test.ts`; tools that need a DOM,
+   canvas, camera, microphone or audio are declared `browserOnly` (the command prints the link).
+   Then `bun run skill` regenerates `skills/toolbelt/` (CI fails if it is stale).
+
+## CLI and agent skill
+
+`cli/` is an offline CLI over the tools' logic (`bun cli/main.ts <command>`), bundled by
+`scripts/build-skill.ts` into `skills/toolbelt/scripts/toolbelt.mjs` (one dependency-free Node
+script, committed) with `skills/toolbelt/references/commands.md` generated from the command
+registry. `toolbelt link <tool> --set key=value` builds share links; the keys come from the views'
+`useToolState` calls (`cli/gen/state-keys.ts`, generated).
 
 Categories: `text`, `encode` (encoding & crypto), `data` (data & formats), `convert` (time &
 numbers), `web` (web & dev), `design` (CSS & design), `image` (images), `calc` (everyday

@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit -p .",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "test": "bun test src scripts",
+    "test": "bun test src scripts cli",
+    "skill": "bun scripts/build-skill.ts",
     "test:e2e": "bun run build && playwright test"
   },
   "dependencies": {

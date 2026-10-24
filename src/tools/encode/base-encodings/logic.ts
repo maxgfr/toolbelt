@@ -19,6 +19,15 @@ export const ENCODINGS: Encoding[] = [
 /** Encodings written as one number per byte, which take a separator. */
 export const PER_BYTE: Encoding[] = ["hex", "binary", "octal", "decimal"];
 
+/** The separators the tool offers between bytes, by name. */
+export type Separator = "space" | "none" | "comma" | "newline";
+export const SEPARATORS: Record<Separator, string> = {
+  space: " ",
+  none: "",
+  comma: ", ",
+  newline: "\n",
+};
+
 export interface EncodeOptions {
   /** Between bytes, for hex / binary / octal / decimal. */
   separator: string;

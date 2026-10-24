@@ -1,5 +1,13 @@
 import { describe, expect, it } from "bun:test";
-import { eta, parseLocal, requiredPace, splitDuration, timeAtPace, toLocalInput } from "./logic";
+import {
+  eta,
+  PER_HOUR,
+  parseLocal,
+  requiredPace,
+  splitDuration,
+  timeAtPace,
+  toLocalInput,
+} from "./logic";
 
 const H = 3600000;
 const start = new Date(2026, 9, 24, 9, 0).getTime();
@@ -59,5 +67,14 @@ describe("helpers", () => {
   it("splits durations", () => {
     expect(splitDuration(1.5 * H)).toEqual({ d: 0, h: 1, m: 30 });
     expect(splitDuration(26 * H + 59.6 * 60000)).toEqual({ d: 1, h: 3, m: 0 });
+  });
+});
+
+describe("pace units", () => {
+  it("converts a pace per minute, hour or day to per hour", () => {
+    expect(20 * PER_HOUR.minute).toBe(1200);
+    expect(20 * PER_HOUR.hour).toBe(20);
+    expect(48 * PER_HOUR.day).toBe(2);
+    expect(timeAtPace(60, 1 * PER_HOUR.minute)).toBe(H);
   });
 });

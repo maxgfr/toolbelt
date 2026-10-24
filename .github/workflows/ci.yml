@@ -27,6 +27,13 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
       - run: bun run lint
+      - name: Agent skill is up to date
+        run: |
+          bun run skill
+          if ! git diff --exit-code skills/ cli/gen/ || [ -n "$(git status --porcelain skills/ cli/gen/)" ]; then
+            echo "::error::skills/ is stale: run 'bun run skill' and commit the result"
+            exit 1
+          fi
       - run: bun run test
       - run: bun run build
 

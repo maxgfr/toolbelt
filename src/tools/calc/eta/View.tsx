@@ -4,7 +4,16 @@ import { useToolState } from "../../../app/state";
 import { Button, ErrorNote, Field, Segmented, Stats } from "../../../app/ui";
 import { l, pick, tr } from "../../../i18n";
 import { Formula, locale, num, pct, Result } from "../_ui";
-import { eta, parseLocal, requiredPace, splitDuration, timeAtPace, toLocalInput } from "./logic";
+import {
+  eta,
+  type PaceUnit,
+  PER_HOUR,
+  parseLocal,
+  requiredPace,
+  splitDuration,
+  timeAtPace,
+  toLocalInput,
+} from "./logic";
 
 const T = {
   mode: l("I know", "Je connais", "Ich kenne"),
@@ -98,8 +107,6 @@ function when(ms: number, nowMs: number): string {
 }
 
 type Mode = "progress" | "pace";
-type PaceUnit = "minute" | "hour" | "day";
-const PER_HOUR: Record<PaceUnit, number> = { minute: 60, hour: 1, day: 1 / 24 };
 
 export default function Eta() {
   const mode = useToolState<Mode>("mode", "progress");

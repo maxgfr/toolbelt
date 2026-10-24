@@ -4,7 +4,7 @@ import { useToolState } from "../../../app/state";
 import { Panel, Segmented, Stats, TextBox } from "../../../app/ui";
 import { fmt, type L10n, l, pick, tr } from "../../../i18n";
 import { Highlight, type Range } from "../_ui";
-import { analyze, detectLang, type Lang, type Score, type ScoreId } from "./logic";
+import { analyze, detectLang, type Lang, SCORE_NAMES, type Score, type ScoreId } from "./logic";
 
 const T = {
   text: l("Text", "Texte", "Text"),
@@ -71,7 +71,7 @@ const LEVELS: { label: L10n; kind: BadgeKind }[] = [
 
 const SCORES: Record<ScoreId, { name: string; explain: L10n }> = {
   flesch: {
-    name: "Flesch Reading Ease",
+    name: SCORE_NAMES.flesch,
     explain: l(
       "0–100, higher is easier. 60–70 is plain English; under 30 reads like an academic paper. Based on words per sentence and syllables per word.",
       "De 0 à 100, plus c'est haut plus c'est facile. 60–70 correspond à un anglais simple ; sous 30, à un article universitaire. Calculé sur les mots par phrase et les syllabes par mot.",
@@ -79,7 +79,7 @@ const SCORES: Record<ScoreId, { name: string; explain: L10n }> = {
     ),
   },
   fk: {
-    name: "Flesch–Kincaid Grade",
+    name: SCORE_NAMES.fk,
     explain: l(
       "The US school grade needed to understand the text (8 ≈ 13–14 years old). Same inputs as Flesch, scaled to grades.",
       "Le niveau scolaire américain nécessaire pour comprendre le texte (8 ≈ 13–14 ans). Mêmes entrées que Flesch, ramenées à un niveau scolaire.",
@@ -87,7 +87,7 @@ const SCORES: Record<ScoreId, { name: string; explain: L10n }> = {
     ),
   },
   fog: {
-    name: "Gunning Fog",
+    name: SCORE_NAMES.fog,
     explain: l(
       "Years of formal education needed on a first reading. Weighs sentence length and the share of words of 3 syllables or more. Aim for under 12.",
       "Années d'études nécessaires pour comprendre à la première lecture. Pèse la longueur des phrases et la part de mots de 3 syllabes ou plus. Viser moins de 12.",
@@ -95,7 +95,7 @@ const SCORES: Record<ScoreId, { name: string; explain: L10n }> = {
     ),
   },
   smog: {
-    name: "SMOG",
+    name: SCORE_NAMES.smog,
     explain: l(
       "Grade level from the number of words of 3+ syllables, designed for 30-sentence samples; often used for health information.",
       "Niveau scolaire calculé sur le nombre de mots de 3 syllabes ou plus, prévu pour des extraits de 30 phrases ; souvent utilisé en information médicale.",
@@ -103,7 +103,7 @@ const SCORES: Record<ScoreId, { name: string; explain: L10n }> = {
     ),
   },
   cli: {
-    name: "Coleman–Liau",
+    name: SCORE_NAMES.cli,
     explain: l(
       "Grade level from letters per word and sentences per 100 words: no syllable counting, so it is steadier on unusual words.",
       "Niveau scolaire calculé sur les lettres par mot et les phrases pour 100 mots : sans compter les syllabes, il est plus stable sur les mots inhabituels.",
@@ -111,7 +111,7 @@ const SCORES: Record<ScoreId, { name: string; explain: L10n }> = {
     ),
   },
   ari: {
-    name: "Automated Readability Index",
+    name: SCORE_NAMES.ari,
     explain: l(
       "Grade level from characters per word and words per sentence, made to be computed by machines.",
       "Niveau scolaire calculé sur les caractères par mot et les mots par phrase, conçu pour être calculé par une machine.",
@@ -119,7 +119,7 @@ const SCORES: Record<ScoreId, { name: string; explain: L10n }> = {
     ),
   },
   kandel: {
-    name: "Kandel & Moles",
+    name: SCORE_NAMES.kandel,
     explain: l(
       "Flesch's reading ease adapted to French in 1958 (207 − 1.015 × words/sentence − 73.6 × syllables/word). 0–100, higher is easier; 60–70 is standard prose.",
       "L'indice de Flesch adapté au français en 1958 (207 − 1,015 × mots/phrase − 73,6 × syllabes/mot). De 0 à 100, plus c'est haut plus c'est facile ; 60–70 correspond à une prose courante.",
@@ -127,7 +127,7 @@ const SCORES: Record<ScoreId, { name: string; explain: L10n }> = {
     ),
   },
   amstad: {
-    name: "Flesch–Amstad",
+    name: SCORE_NAMES.amstad,
     explain: l(
       "Flesch's reading ease adapted to German by Toni Amstad in 1978 (180 − words/sentence − 58.5 × syllables/word). 0–100, higher is easier; 60–70 is standard prose, under 30 an academic text.",
       "L'indice de Flesch adapté à l'allemand par Toni Amstad en 1978 (180 − mots/phrase − 58,5 × syllabes/mot). De 0 à 100, plus c'est haut plus c'est facile ; 60–70 correspond à une prose courante, sous 30 à un texte universitaire.",
@@ -135,7 +135,7 @@ const SCORES: Record<ScoreId, { name: string; explain: L10n }> = {
     ),
   },
   wstf: {
-    name: "Wiener Sachtextformel",
+    name: SCORE_NAMES.wstf,
     explain: l(
       "Bamberger and Vanecek's formula for German non-fiction (1984): roughly the school year needed, from 4 (very easy) to 15 (very hard). Weighs words of 3+ syllables, sentence length, words longer than 6 letters and one-syllable words.",
       "La formule de Bamberger et Vanecek pour les textes documentaires allemands (1984) : à peu près l'année scolaire nécessaire, de 4 (très facile) à 15 (très difficile). Pèse les mots de 3 syllabes et +, la longueur des phrases, les mots de plus de 6 lettres et les mots d'une syllabe.",
@@ -143,7 +143,7 @@ const SCORES: Record<ScoreId, { name: string; explain: L10n }> = {
     ),
   },
   lix: {
-    name: "LIX",
+    name: SCORE_NAMES.lix,
     explain: l(
       "Words per sentence plus the percentage of words longer than 6 letters; works for any language. Under 30 very easy, 40 average, over 60 very hard.",
       "Mots par phrase plus le pourcentage de mots de plus de 6 lettres ; vaut pour toutes les langues. Moins de 30 très facile, 40 moyen, plus de 60 très difficile.",

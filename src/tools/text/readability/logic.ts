@@ -165,6 +165,20 @@ export type ScoreId =
   | "wstf"
   | "lix";
 
+/** The usual name of each score. */
+export const SCORE_NAMES: Record<ScoreId, string> = {
+  flesch: "Flesch Reading Ease",
+  fk: "Flesch–Kincaid Grade",
+  fog: "Gunning Fog",
+  smog: "SMOG",
+  cli: "Coleman–Liau",
+  ari: "Automated Readability Index",
+  kandel: "Kandel & Moles",
+  amstad: "Flesch–Amstad",
+  wstf: "Wiener Sachtextformel",
+  lix: "LIX",
+};
+
 export interface Score {
   id: ScoreId;
   value: number;

@@ -13,7 +13,7 @@ import {
   Toggle,
 } from "../../../app/ui";
 import { fmt, l, locale, tr } from "../../../i18n";
-import { isoDate, localZone, parseIsoDate, parseNumber, parseTime, wallClock } from "../_shared";
+import { isoDate, localZone, parseNumber, wallClock } from "../_shared";
 import { attempt } from "../_ui";
 import {
   addBusinessDays,
@@ -23,6 +23,7 @@ import {
   type Duration,
   difference,
   formatDateTime,
+  readDateTime,
 } from "./logic";
 
 const T = {
@@ -91,15 +92,6 @@ function today(): string {
   return isoDate(wallClock(new Date(), localZone()));
 }
 
-function read(date: string, time: string): DateTime | "date" | "time" {
-  const d = parseIsoDate(date);
-  if (!d) return "date";
-  if (!time.trim()) return { ...d, hour: 0, minute: 0 };
-  const t = parseTime(time);
-  if (!t) return "time";
-  return { ...d, hour: t.hour, minute: t.minute };
-}
-
 /** "4 years", "4 ans": Intl knows the plural rules of both languages. */
 function unit(n: number, u: "year" | "month" | "week" | "day" | "hour" | "minute"): string {
   return fmt(n, { style: "unit", unit: u, unitDisplay: "long" });
@@ -118,15 +110,15 @@ export default function DateCalc() {
   const workdays = useToolState("workdays", "");
 
   const diff = useComputed(() => {
-    const x = read(a.value, aTime.value);
-    const y = read(b.value, bTime.value);
+    const x = readDateTime(a.value, aTime.value);
+    const y = readDateTime(b.value, bTime.value);
     if (typeof x === "string") return x;
     if (typeof y === "string") return y;
     return difference(x, y, includeEnd.value);
   });
 
   const added = useComputed(() => {
-    const x = read(a.value, aTime.value);
+    const x = readDateTime(a.value, aTime.value);
     if (typeof x === "string") return x;
     const parts: Duration = { years: 0, months: 0, weeks: 0, days: 0, hours: 0, minutes: 0 };
     for (const u of UNITS) {
