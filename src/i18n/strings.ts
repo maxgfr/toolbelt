@@ -12,6 +12,7 @@ export const S = {
   favorites: l("Favorites", "Favoris"),
   recent: l("Recent", "Récents"),
   all: l("All tools", "Tous les outils"),
+  categories: l("Categories", "Catégories"),
   home: l("All tools", "Tous les outils"),
   addFavorite: l("Add to favorites", "Ajouter aux favoris"),
   removeFavorite: l("Remove from favorites", "Retirer des favoris"),

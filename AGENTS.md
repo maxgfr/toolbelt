@@ -22,13 +22,16 @@ no network request at all (CSP `connect-src 'self'`), works offline (service wor
    with the tool id.
 
 Categories: `text`, `encode` (encoding & crypto), `data` (data & formats), `convert` (time &
-numbers), `web` (web & dev).
+numbers), `web` (web & dev), `design` (CSS & design), `image` (images), `calc` (everyday
+calculators), `life` (timers, chance & devices).
 
 ## Conventions
 
 - **Strings**: every visible string is EN + FR. Declare them at the top of the view:
   `const T = { label: l("English", "Français") }` and render with `tr(T.label)`. Format numbers
   with `fmt()` from `src/i18n`. Never hardcode English in JSX.
+- **Language**: the UI follows the browser (French if it prefers French, English otherwise);
+  only the header switch stores a choice.
 - **State**: `useToolState(key, initial, { persist?, share? })` from `src/app/state.ts` instead
   of `useState` for anything the user typed or chose: it survives reloads and goes into share
   links. Use `{ persist: false, share: false }` for secrets (passwords, keys, HMAC secrets).
@@ -36,6 +39,8 @@ numbers), `web` (web & dev).
 - **Shared UI** (`src/app/ui.tsx`): `TextBox` (label, open/drop file, copy, download, clear),
   `Output` (one value + copy), `Stats`, `Segmented`, `Toggle`, `Field`, `Panel`, `FileDrop`,
   `Button`, `CopyButton`, `ErrorNote`, `toast`, `downloadText`, `downloadBlob`.
+  `src/app/kit.tsx`: `Select`, `NumberField` (clamped, optional unit suffix), `Badge`
+  (ok/bad/warn/info), `useAsync` (latest-answer-wins async results).
   Layout classes: `stack`, `row`, `spacer`, `grid-2`, `grid-3`, `input` (inputs, selects),
   `table` in `table-wrap`, `panel`, `mono`, `muted`, `small`.
   Colors only through the CSS variables in `src/styles/app.css` (they handle dark mode).

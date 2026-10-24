@@ -1,7 +1,16 @@
 import type { ComponentType } from "preact";
 import type { L10n } from "../i18n";
 
-export type CategoryId = "text" | "encode" | "data" | "convert" | "web";
+export type CategoryId =
+  | "text"
+  | "encode"
+  | "data"
+  | "convert"
+  | "web"
+  | "design"
+  | "image"
+  | "calc"
+  | "life";
 
 export interface ToolMeta {
   /** URL id: #/<id>. Lowercase, dashes. */

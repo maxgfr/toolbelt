@@ -1,8 +1,8 @@
 /**
  * Two languages, English and French. Every user-facing string is an `L10n`
  * pair written next to the code that shows it; `tr()` picks the current one.
- * The language comes from the browser, can be switched in the header, and is
- * remembered.
+ * The language comes from the browser (English unless it prefers French), and
+ * a choice made with the header switch is remembered.
  */
 import { effect, signal } from "@preact/signals";
 
@@ -19,9 +19,9 @@ function initial(): Lang {
     const saved = localStorage.getItem(KEY);
     if (saved === "en" || saved === "fr") return saved;
   } catch {}
-  return typeof navigator !== "undefined" && navigator.language?.toLowerCase().startsWith("fr")
-    ? "fr"
-    : "en";
+  if (typeof navigator === "undefined") return "en";
+  const first = navigator.languages?.[0] ?? navigator.language ?? "en";
+  return first.toLowerCase().startsWith("fr") ? "fr" : "en";
 }
 
 export const lang = signal<Lang>(typeof window === "undefined" ? "en" : initial());
@@ -29,10 +29,18 @@ export const lang = signal<Lang>(typeof window === "undefined" ? "en" : initial(
 if (typeof document !== "undefined") {
   effect(() => {
     document.documentElement.lang = lang.value;
-    try {
-      localStorage.setItem(KEY, lang.value);
-    } catch {}
   });
+}
+
+/**
+ * Switches language and remembers the choice. Until the user picks one, the language follows
+ * the browser on every visit: French if the browser prefers French, English otherwise.
+ */
+export function setLang(next: Lang): void {
+  lang.value = next;
+  try {
+    localStorage.setItem(KEY, next);
+  } catch {}
 }
 
 /** The current language's version of a string. */
