@@ -83,12 +83,19 @@ export const tools: ToolMeta[] = [
     id: "cron",
     category: "convert",
     icon: "M12 13m-8 0a8 8 0 1 0 16 0a8 8 0 1 0-16 0M12 9v4l2 2M5 3L2 6M22 6l-3-3",
-    title: l("Cron expression explainer", "Explication d'expressions cron"),
+    title: l(
+      "Cron expression builder & explainer",
+      "Constructeur et explication d'expressions cron",
+    ),
     desc: l(
-      "A cron schedule in plain words, with validation and the next 10 run times in any time zone.",
-      "Une planification cron en clair, avec validation et les 10 prochaines exécutions dans tout fuseau.",
+      "Build a cron schedule from pickers or read one in plain words, with the next 10 runs in any time zone.",
+      "Construis une planification cron avec des sélecteurs ou lis-la en clair, avec les 10 prochaines exécutions dans tout fuseau.",
     ),
     keywords: [
+      "builder",
+      "generator",
+      "générateur",
+      "constructeur",
       "crontab",
       "schedule",
       "planification",

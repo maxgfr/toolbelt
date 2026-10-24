@@ -82,6 +82,22 @@ export function Home() {
             {fmt(TOOLS.length)} {tr(S.tools)}
           </span>
         </div>
+        {!query && (
+          <nav class="cat-chips" aria-label={tr(S.categories)}>
+            {CATEGORIES.filter((c) => c.tools.length).map((c) => (
+              <button
+                type="button"
+                key={c.id}
+                class="cat-chip"
+                onClick={() =>
+                  document.getElementById(`cat-${c.id}`)?.scrollIntoView({ behavior: "smooth" })
+                }
+              >
+                {tr(c.title)} <span class="count">{c.tools.length}</span>
+              </button>
+            ))}
+          </nav>
+        )}
       </section>
 
       {query ? (

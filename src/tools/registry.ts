@@ -1,8 +1,12 @@
 /** Every tool, by category. Each category lists its own tools in src/tools/<category>/index.ts. */
 import { type L10n, l } from "../i18n";
+import { tools as calc } from "./calc";
 import { tools as convert } from "./convert";
 import { tools as data } from "./data";
+import { tools as design } from "./design";
 import { tools as encode } from "./encode";
+import { tools as image } from "./image";
+import { tools as life } from "./life";
 import { tools as text } from "./text";
 import type { CategoryId, ToolMeta } from "./types";
 import { tools as web } from "./web";
@@ -19,6 +23,14 @@ export const CATEGORIES: Category[] = [
   { id: "data", title: l("Data & formats", "Données & formats"), tools: data },
   { id: "convert", title: l("Time & numbers", "Temps & nombres"), tools: convert },
   { id: "web", title: l("Web & dev", "Web & dev"), tools: web },
+  { id: "design", title: l("CSS & design", "CSS & design"), tools: design },
+  { id: "image", title: l("Images", "Images"), tools: image },
+  { id: "calc", title: l("Everyday calculators", "Calculs du quotidien"), tools: calc },
+  {
+    id: "life",
+    title: l("Timers, chance & devices", "Minuteurs, hasard & appareils"),
+    tools: life,
+  },
 ];
 
 export const TOOLS: ToolMeta[] = CATEGORIES.flatMap((c) => c.tools);

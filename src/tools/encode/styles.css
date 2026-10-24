@@ -510,3 +510,151 @@
   background: #fff;
   color: #000;
 }
+
+/* encrypt */
+.encrypt-key {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px 14px;
+}
+.encrypt-key > .row {
+  padding-top: 24px;
+}
+@media (max-width: 760px) {
+  .encrypt-key {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .encrypt-key > .row {
+    padding-top: 0;
+  }
+}
+.encrypt-params {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  color: var(--ink-2);
+}
+
+/* certificate */
+.certificate-card .panel-actions {
+  flex-wrap: wrap;
+}
+.certificate-table th {
+  width: 190px;
+  white-space: nowrap;
+  vertical-align: top;
+}
+.certificate-table td {
+  overflow-wrap: anywhere;
+}
+.certificate-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.certificate-list li + li {
+  margin-top: 2px;
+}
+.certificate-prints {
+  gap: 6px;
+  margin-top: 10px;
+}
+.certificate-prints .output {
+  grid-template-columns: 80px minmax(0, 1fr) auto;
+}
+@media (max-width: 640px) {
+  .certificate-table th {
+    width: auto;
+    white-space: normal;
+  }
+}
+
+/* basic-auth */
+.basic-auth-warn {
+  color: var(--warn);
+}
+.basic-auth-out {
+  gap: 6px;
+}
+.basic-auth-out .output {
+  grid-template-columns: 120px minmax(0, 1fr) auto;
+}
+
+/* bip39 */
+.bip39-warn {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--warn);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--warn);
+  font-weight: 560;
+}
+.bip39-controls {
+  align-items: flex-end;
+}
+.bip39-hex {
+  flex: 1 1 320px;
+}
+.bip39-result {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.bip39-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 6px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+}
+.bip39-grid li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.bip39-grid .muted {
+  min-width: 2ch;
+  text-align: right;
+  font-size: 12px;
+}
+.bip39-unknown {
+  color: var(--warn);
+}
+.bip39-unknown ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+/* safelink */
+.safelink-list {
+  gap: 8px;
+}
+.safelink-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.safelink-url {
+  flex: 1 1 260px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.safelink-tags {
+  gap: 6px;
+}
+.safelink-original {
+  overflow-wrap: anywhere;
+  text-decoration: line-through;
+}

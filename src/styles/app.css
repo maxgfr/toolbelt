@@ -3,6 +3,10 @@
 @import "../tools/data/styles.css";
 @import "../tools/convert/styles.css";
 @import "../tools/web/styles.css";
+@import "../tools/design/styles.css";
+@import "../tools/image/styles.css";
+@import "../tools/calc/styles.css";
+@import "../tools/life/styles.css";
 
 :root {
   --accent: #0f766e;
@@ -237,6 +241,11 @@ kbd,
   background: var(--surface);
   color: var(--ink);
   font: inherit;
+}
+/* .input resets the font; monospace boxes need it back. */
+.input.mono {
+  font-family: var(--mono);
+  font-size: 13.5px;
 }
 .input:focus {
   outline: none;
@@ -913,4 +922,63 @@ kbd {
 fieldset.segmented {
   margin: 0;
   min-inline-size: 0;
+}
+
+.input-suffix {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+.badge-ok {
+  background: var(--add);
+  color: var(--success);
+}
+.badge-bad {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.badge-warn {
+  background: color-mix(in srgb, var(--warn) 16%, transparent);
+  color: var(--warn);
+}
+.badge-info {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.cat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cat-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 540;
+  cursor: pointer;
+}
+.cat-chip:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+.home-section {
+  scroll-margin-top: 72px;
 }

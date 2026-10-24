@@ -1,0 +1,128 @@
+import { useComputed } from "@preact/signals";
+import { Badge, Select } from "../../../app/kit";
+import { useToolState } from "../../../app/state";
+import { CopyButton, Toggle } from "../../../app/ui";
+import { fmt, type L10n, l, lang, tr } from "../../../i18n";
+import { Empty, SearchBox } from "../_ui";
+import type { GroupId } from "./data";
+import { groupTips, searchTips } from "./logic";
+
+const T = {
+  search: l(
+    "I want to… (undo the last commit, rename a branch, find a bug…)",
+    "Je veux… (annuler le dernier commit, renommer une branche, trouver un bug…)",
+  ),
+  group: l("Topic", "Thème"),
+  all: l("All topics", "Tous les thèmes"),
+  danger: l("Destructive only", "Seulement les destructives"),
+  dangerBadge: l("destructive", "destructive"),
+  dangerTitle: l(
+    "Can lose work or rewrite shared history",
+    "Peut perdre du travail ou réécrire un historique partagé",
+  ),
+  none: l(
+    "Nothing found. Try other words: undo, branch, stash, remote…",
+    "Rien trouvé. Essaie d'autres mots : annuler, branche, remise, distant…",
+  ),
+  count: l("{n} tips", "{n} astuces"),
+  placeholders: l(
+    "Replace the <placeholders> with your own values.",
+    "Remplace les <espaces réservés> par tes valeurs.",
+  ),
+};
+
+const GROUP_L: Record<GroupId, L10n> = {
+  setup: l("Setup", "Configuration"),
+  commit: l("Staging & committing", "Indexer et commiter"),
+  inspect: l("History & search", "Historique et recherche"),
+  branches: l("Branches & merging", "Branches et fusion"),
+  undo: l("Undo & recover", "Annuler et récupérer"),
+  stash: l("Stash", "Remise (stash)"),
+  rebase: l("Rebase", "Rebase"),
+  remote: l("Remotes", "Dépôts distants"),
+  tags: l("Tags", "Tags"),
+  worktrees: l("Worktrees", "Worktrees"),
+  bisect: l("Bisect", "Bisect"),
+  cleanup: l("Cleanup & maintenance", "Nettoyage et maintenance"),
+};
+
+export default function GitCheatsheet() {
+  const query = useToolState("q", "");
+  const group = useToolState<GroupId | "all">("group", "all");
+  const danger = useToolState("danger", false);
+  const results = useComputed(() => searchTips(query.value, group.value, danger.value));
+  // While searching, show the best matches first; otherwise, by topic.
+  const searching = query.value.trim() !== "";
+  const groups = useComputed(() => groupTips(results.value));
+  const fr = lang.value === "fr";
+
+  const tip = (t: (typeof results.value)[number], showGroup: boolean) => (
+    <li key={`${t.group}-${t.en}`} class="git-cheatsheet-item">
+      <div class="git-cheatsheet-head">
+        <strong>{fr ? t.fr : t.en}</strong>
+        {t.danger && (
+          <span title={tr(T.dangerTitle)}>
+            <Badge kind="bad">{tr(T.dangerBadge)}</Badge>
+          </span>
+        )}
+        {showGroup && <span class="muted small">{tr(GROUP_L[t.group])}</span>}
+      </div>
+      <div class="git-cheatsheet-cmd">
+        <pre class="mono">{t.cmd}</pre>
+        <CopyButton text={t.cmd} />
+      </div>
+      <p class="muted small">{fr ? t.noteFr : t.noteEn}</p>
+    </li>
+  );
+
+  return (
+    <>
+      <SearchBox
+        value={query.value}
+        onInput={(v) => {
+          query.value = v;
+        }}
+        placeholder={tr(T.search)}
+      />
+      <div class="row">
+        <div class="git-cheatsheet-select">
+          <Select<GroupId | "all">
+            label={tr(T.group)}
+            value={group.value}
+            options={[
+              { value: "all", label: tr(T.all) },
+              ...(Object.keys(GROUP_L) as GroupId[]).map((g) => ({
+                value: g,
+                label: tr(GROUP_L[g]),
+              })),
+            ]}
+            onChange={(v) => {
+              group.value = v;
+            }}
+          />
+        </div>
+        <Toggle
+          checked={danger.value}
+          onChange={(v) => {
+            danger.value = v;
+          }}
+          label={tr(T.danger)}
+        />
+        <span class="spacer" />
+        <span class="muted small">{tr(T.count).replace("{n}", fmt(results.value.length))}</span>
+      </div>
+      <p class="muted small">{tr(T.placeholders)}</p>
+      {results.value.length === 0 && <Empty>{tr(T.none)}</Empty>}
+      {searching ? (
+        <ul class="git-cheatsheet-list">{results.value.map((t) => tip(t, true))}</ul>
+      ) : (
+        groups.value.map((g) => (
+          <section key={g.group} class="stack">
+            <h2 class="panel-title">{tr(GROUP_L[g.group])}</h2>
+            <ul class="git-cheatsheet-list">{g.items.map((t) => tip(t, false))}</ul>
+          </section>
+        ))
+      )}
+    </>
+  );
+}

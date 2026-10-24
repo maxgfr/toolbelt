@@ -5,7 +5,7 @@ import { route } from "./app/router";
 import { ToolPage } from "./app/ToolPage";
 import { theme, toggleTheme } from "./app/theme";
 import { Icon, IconButton, Toasts } from "./app/ui";
-import { lang, tr } from "./i18n";
+import { lang, setLang, tr } from "./i18n";
 import { S } from "./i18n/strings";
 
 function Brand() {
@@ -44,9 +44,7 @@ function App() {
             type="button"
             class="lang-btn"
             title={tr(S.language)}
-            onClick={() => {
-              lang.value = lang.value === "fr" ? "en" : "fr";
-            }}
+            onClick={() => setLang(lang.value === "fr" ? "en" : "fr")}
           >
             {lang.value === "fr" ? "EN" : "FR"}
           </button>

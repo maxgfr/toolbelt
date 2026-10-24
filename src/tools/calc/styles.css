@@ -1,0 +1,577 @@
+/* Styles of the calc tools. */
+
+/* shared: big result, "how it's computed" */
+.calc-result {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.calc-result-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+.calc-result-line strong {
+  font-size: 22px;
+  font-weight: 640;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.calc-formula {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+.calc-formula strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.calc-formula p {
+  margin: 0;
+}
+fieldset.vat-rates,
+fieldset.tip-presets {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+/* calculator */
+.calculator-sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(130px, 36%);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+.calculator-sheet:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.calculator-input.textarea {
+  min-height: 280px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 0;
+  line-height: 24px;
+  font-size: 14px;
+  resize: vertical;
+}
+.calculator-input.textarea:focus {
+  box-shadow: none;
+}
+.calculator-results {
+  padding: 10px 12px;
+  border-left: 1px solid var(--line);
+  background: var(--surface-2);
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 24px;
+}
+.calculator-line {
+  height: 24px;
+  overflow: hidden;
+  text-align: right;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--accent);
+}
+.calculator-line.error {
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--danger);
+}
+.calculator-history {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 260px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+.calculator-history li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.calculator-history-item {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: none;
+  color: var(--ink);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.calculator-history-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.calculator-history-item:hover {
+  border-color: var(--line);
+  background: var(--surface-2);
+}
+@media (max-width: 560px) {
+  .calculator-sheet {
+    grid-template-columns: minmax(0, 1fr) minmax(100px, 40%);
+  }
+}
+
+/* vat */
+.vat-rates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.vat-rate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 7px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.vat-rate:hover {
+  border-color: var(--accent);
+}
+.vat-rate.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.vat-table .input {
+  min-width: 80px;
+}
+.vat-table td:first-child .input {
+  min-width: 140px;
+}
+.vat-table td {
+  vertical-align: middle;
+}
+.vat-table .vat-qty {
+  width: 70px;
+  min-width: 60px;
+}
+.vat-total td {
+  font-weight: 640;
+}
+
+/* salary */
+.salary-warning {
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--warn) 10%, transparent);
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.salary-warning strong {
+  color: var(--warn);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 12px;
+  margin-right: 4px;
+}
+.salary-table th[scope="row"] {
+  background: none;
+  font-weight: 500;
+  color: var(--ink);
+  font-size: 13.5px;
+  position: static;
+}
+.salary-table tr:last-child th {
+  border-bottom: 0;
+}
+.salary-strong td,
+.salary-strong th[scope="row"] {
+  font-weight: 680;
+}
+.salary-periods {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+/* loan */
+.loan-duration,
+.fuel-pair,
+.bmi-feet,
+.eta-pace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: end;
+}
+.loan-bar {
+  display: flex;
+  height: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+.loan-bar span {
+  display: block;
+  height: 100%;
+}
+.loan-bar-principal {
+  background: var(--accent);
+}
+.loan-bar-interest {
+  background: var(--warn);
+}
+.loan-bar-other {
+  background: var(--muted);
+}
+.loan-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  color: var(--ink-2);
+}
+.loan-legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 2px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+.loan-table-wrap {
+  max-height: 480px;
+}
+.loan-toggle {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.loan-open td {
+  background: var(--accent-soft);
+}
+.loan-month td {
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+/* savings */
+.savings-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.savings-chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.savings-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.savings-axis {
+  fill: var(--muted);
+  font-size: 13px;
+  font-family: var(--font);
+}
+polygon.savings-contrib {
+  fill: color-mix(in srgb, var(--muted) 35%, transparent);
+}
+polygon.savings-interest {
+  fill: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.savings-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.savings-real {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+.savings-key {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+i.savings-contrib {
+  background: color-mix(in srgb, var(--muted) 35%, transparent);
+}
+i.savings-interest {
+  background: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.savings-key-real {
+  height: 0;
+  border-top: 2px dashed var(--warn);
+  border-radius: 0;
+  vertical-align: 3px;
+}
+.savings-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+/* tip */
+.tip-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tip-preset {
+  min-width: 56px;
+  padding: 6px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.tip-preset:hover {
+  border-color: var(--accent);
+}
+.tip-preset.on {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.tip-table td {
+  vertical-align: middle;
+}
+.tip-table .input {
+  min-width: 90px;
+}
+
+/* discount */
+.discount-step {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+.discount-step .field {
+  flex: 1;
+}
+.discount-step > .muted {
+  padding-bottom: 8px;
+}
+.discount-table td {
+  vertical-align: middle;
+}
+.discount-table td:first-child .input {
+  min-width: 120px;
+}
+.discount-num {
+  min-width: 70px;
+}
+.discount-best td {
+  background: var(--add);
+}
+
+/* bmi */
+.bmi-gauge {
+  position: relative;
+  display: flex;
+  height: 12px;
+  margin-top: 4px;
+  border-radius: 999px;
+}
+.bmi-seg:first-child {
+  border-radius: 999px 0 0 999px;
+}
+.bmi-seg:nth-last-child(2) {
+  border-radius: 0 999px 999px 0;
+}
+.bmi-under {
+  background: color-mix(in srgb, var(--accent) 35%, var(--surface-2));
+}
+.bmi-normal {
+  background: var(--success);
+}
+.bmi-over {
+  background: color-mix(in srgb, var(--warn) 60%, var(--surface-2));
+}
+.bmi-obese1 {
+  background: var(--warn);
+}
+.bmi-obese2 {
+  background: color-mix(in srgb, var(--warn) 50%, var(--danger));
+}
+.bmi-obese3 {
+  background: var(--danger);
+}
+.bmi-marker {
+  position: absolute;
+  top: -5px;
+  width: 4px;
+  height: 22px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.bmi-scale {
+  position: relative;
+  height: 16px;
+}
+.bmi-scale span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-variant-numeric: tabular-nums;
+}
+.bmi-scale span:first-child {
+  transform: none;
+}
+.bmi-scale span:last-child {
+  transform: translateX(-100%);
+}
+.bmi-note {
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+/* age */
+.age-dates {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+.age-big {
+  font-size: 17px;
+  line-height: 1.5;
+}
+.age-big strong {
+  font-weight: 640;
+}
+.age-miles {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.7;
+}
+@media (max-width: 560px) {
+  .age-dates {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* fuel */
+.fuel-units {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.fuel-units span {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 13.5px;
+}
+.fuel-units span.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.fuel-units strong {
+  font-variant-numeric: tabular-nums;
+}
+
+/* cooking */
+.cooking-table td {
+  vertical-align: middle;
+}
+.cooking-on td {
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+.cooking-factor {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 6px;
+  font-size: 20px;
+  color: var(--accent);
+}
+
+/* grades */
+.grades-scale {
+  width: 140px;
+}
+.grades-table td {
+  vertical-align: middle;
+}
+.grades-table td:first-child .input {
+  min-width: 140px;
+}
+.grades-num {
+  min-width: 70px;
+}
+
+/* eta */
+.eta-start {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+.eta-start .field {
+  flex: 1;
+}
+.eta-bar {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+.eta-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
