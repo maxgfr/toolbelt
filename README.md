@@ -3,8 +3,8 @@
 100+ small everyday utilities in one page: count characters, diff two files, format JSON, decode a
 JWT, hash a file, explain a cron expression, but also VAT, gross to net salary, a loan, a timer, a
 dice roll, a tuner or a favicon… Everything runs in your browser. There is no server and no
-tracking, nothing you type leaves the tab, and once loaded it works offline. English and French
-(French when your browser prefers it, English otherwise).
+tracking, nothing you type leaves the tab, and once loaded it works offline. English, French
+and German: the language of your browser, or English; a choice in the header list is kept.
 
 **→ [maxgfr.github.io/toolbelt](https://maxgfr.github.io/toolbelt/)**
 
@@ -30,7 +30,7 @@ tracking, nothing you type leaves the tab, and once loaded it works offline. Eng
 
 ## How it feels
 
-- **⌘K / Ctrl+K** jumps to any tool by name, in English or French (`diff`, `compter`, `sha`…).
+- **⌘K / Ctrl+K** jumps to any tool by name, in English, French or German (`diff`, `compter`, `Zeitzone`…).
 - **Files**: drop a file on any text box, or open one; results can be copied or downloaded.
 - **Your input stays**: each tool remembers what you typed (in your browser's storage), except
   secrets: passwords, keys, tokens and `.env` files are never stored.
