@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { detectLang, fmt, l, lang, locale, pick, tr } from "./index";
+import { detectLang, fmt, type L10n, l, lang, locale, pick, tr } from "./index";
 
 describe("i18n", () => {
   it("follows the first browser language it speaks, English otherwise", () => {
@@ -13,7 +13,8 @@ describe("i18n", () => {
   it("translates, with English when a language is missing", () => {
     lang.value = "de";
     expect(tr(l("Copy", "Copier", "Kopieren"))).toBe("Kopieren");
-    expect(tr({ en: "Copy", fr: "Copier" })).toBe("Copy");
+    // Data from outside the type system (e.g. an old saved value) still falls back to English.
+    expect(tr({ en: "Copy", fr: "Copier" } as unknown as L10n)).toBe("Copy");
     expect(pick({ en: 1, fr: 2, de: 3 })).toBe(3);
     expect(locale()).toBe("de-DE");
     expect(fmt(1234.5)).toBe("1.234,5");

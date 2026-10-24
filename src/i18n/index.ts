@@ -18,7 +18,7 @@ export const LANGS: { id: Lang; name: string; locale: string }[] = [
 export interface L10n {
   en: string;
   fr: string;
-  de?: string;
+  de: string;
 }
 
 const KEY = "toolbelt:lang";
@@ -67,8 +67,8 @@ export function tr(s: L10n): string {
 }
 
 /** Shorthand to write a string inline: `l("Copy", "Copier", "Kopieren")`. */
-export function l(en: string, fr: string, de?: string): L10n {
-  return de === undefined ? { en, fr } : { en, fr, de };
+export function l(en: string, fr: string, de: string): L10n {
+  return { en, fr, de };
 }
 
 /** The BCP 47 locale of the current language, for Intl formatting ("en-US", "fr-FR", "de-DE"). */
