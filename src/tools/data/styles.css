@@ -1,1 +1,173 @@
 /* Styles of the data tools. */
+
+/* shared (_ui.tsx) */
+.data-warn {
+  color: var(--warn);
+}
+.data-table-wrap {
+  max-height: 60vh;
+}
+.data-table .table td {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 420px;
+}
+.data-table-idx {
+  width: 1%;
+  white-space: nowrap;
+}
+.data-table-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.data-table-sort:hover {
+  color: var(--accent);
+}
+.data-table-arrow {
+  color: var(--muted);
+  font-size: 10px;
+}
+th[aria-sort="ascending"] .data-table-arrow,
+th[aria-sort="descending"] .data-table-arrow {
+  color: var(--accent);
+}
+
+/* csv, sql: compact selects in an option row */
+.input.csv-delim,
+.input.sql-dialect {
+  width: auto;
+}
+
+/* markdown-table */
+.markdown-table-aligns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+.markdown-table-col-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--mono);
+}
+.markdown-table-preview {
+  max-height: 50vh;
+}
+.markdown-table-preview .table td {
+  white-space: pre-wrap;
+}
+.markdown-table-preview .markdown-table-align-left {
+  text-align: left;
+}
+.markdown-table-preview .markdown-table-align-center {
+  text-align: center;
+}
+.markdown-table-preview .markdown-table-align-right {
+  text-align: right;
+}
+
+/* json-to-ts */
+.input.json-to-ts-root {
+  width: 160px;
+}
+
+/* json-diff */
+.json-diff-same {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 560;
+}
+.json-diff-wrap {
+  max-height: 65vh;
+}
+.json-diff-path {
+  white-space: nowrap;
+}
+.json-diff-val {
+  overflow-wrap: anywhere;
+}
+.json-diff-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.json-diff-badge-added {
+  background: var(--add);
+  color: var(--success);
+}
+.json-diff-badge-removed {
+  background: var(--del);
+  color: var(--danger);
+}
+.json-diff-badge-changed {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.json-diff-old {
+  background: var(--del);
+  border-radius: 3px;
+  padding: 0 3px;
+}
+.json-diff-new {
+  background: var(--add);
+  border-radius: 3px;
+  padding: 0 3px;
+}
+
+/* jsonpath */
+.jsonpath-chip {
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: 12px;
+  cursor: pointer;
+}
+.jsonpath-chip:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+.jsonpath-chip.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.jsonpath-results {
+  max-height: 60vh;
+}
+.jsonpath-path {
+  white-space: nowrap;
+}
+.jsonpath-val {
+  overflow-wrap: anywhere;
+}
+
+/* env */
+.env-warnings {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13.5px;
+}
+
+/* query-string */
+.query-string-pairs {
+  max-height: 50vh;
+}
+.query-string-value {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
