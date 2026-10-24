@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { auditHtml, CSP, serviceWorker } from "./build";
+import { TOOLS } from "../src/tools/registry";
+import { auditHtml, CSP, llmsTxt, serviceWorker } from "./build";
 
 describe("build audit", () => {
   it("refuses inline scripts, handlers, styles and external URLs", () => {
@@ -25,5 +26,10 @@ describe("build audit", () => {
     expect(sw).toContain('"toolbelt-abc"');
     expect(sw).toContain('"./assets/a.js"');
     expect(sw).toContain('"./"');
+  });
+
+  it("lists every tool in llms.txt", () => {
+    const txt = llmsTxt();
+    for (const t of TOOLS) expect(txt).toContain(`#/${t.id})`);
   });
 });

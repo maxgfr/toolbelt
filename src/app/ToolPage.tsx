@@ -86,7 +86,7 @@ function ToolHeader({ tool, onReset }: { tool: ToolMeta; onReset: () => void }) 
           {cat && (
             <>
               <span aria-hidden="true"> / </span>
-              <a href={`#/`}>{tr(cat.title)}</a>
+              <span class="crumb-cat">{tr(cat.title)}</span>
             </>
           )}
         </nav>

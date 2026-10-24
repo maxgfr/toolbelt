@@ -12,6 +12,7 @@
 import { createHash } from "node:crypto";
 import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
+import { CATEGORIES } from "../src/tools/registry";
 
 const ROOT = resolve(import.meta.dir, "..");
 
@@ -43,6 +44,24 @@ function headInject(): string {
     `<link rel="icon" href="./icon.svg" type="image/svg+xml" />`,
     `<link rel="manifest" href="./manifest.webmanifest" />`,
   ].join("\n    ");
+}
+
+const SITE = "https://maxgfr.github.io/toolbelt/";
+
+/** A plain-text index of the tools, for agents and search engines. */
+export function llmsTxt(): string {
+  const lines = [
+    "# toolbelt",
+    "",
+    `> ${DESCRIPTION}`,
+    "",
+    "Every tool runs in the browser; open one with its URL. English and French.",
+  ];
+  for (const c of CATEGORIES) {
+    lines.push("", `## ${c.title.en}`, "");
+    for (const t of c.tools) lines.push(`- [${t.title.en}](${SITE}#/${t.id}): ${t.desc.en}`);
+  }
+  return `${lines.join("\n")}\n`;
 }
 
 export interface BuildOptions {
@@ -131,8 +150,9 @@ export async function build(opts: BuildOptions = {}): Promise<{ outdir: string; 
     fail("app build failed");
   }
 
-  // 2. Static files.
+  // 2. Static files, and the tool index.
   await cp(join(ROOT, "public"), outdir, { recursive: true });
+  await writeFile(join(outdir, "llms.txt"), llmsTxt());
 
   // 3. Harden the page.
   const path = join(outdir, "index.html");

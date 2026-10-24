@@ -772,7 +772,7 @@ kbd {
 .crumbs a:hover {
   color: var(--ink);
 }
-.crumbs span {
+.crumbs span[aria-hidden] {
   color: var(--line-strong);
 }
 .tool-actions {
