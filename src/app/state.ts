@@ -18,6 +18,18 @@ interface Entry {
 let current = "";
 const live = new Map<string, Entry>();
 let pending: Record<string, Json> | null = null;
+/** Writes waiting for their debounce; flushed when the page is hidden or closed. */
+const unsaved = new Set<() => void>();
+
+if (typeof window !== "undefined") {
+  const flush = () => {
+    for (const write of [...unsaved]) write();
+  };
+  window.addEventListener("pagehide", flush);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flush();
+  });
+}
 
 /** Called by the shell when a tool page mounts. */
 export function beginTool(id: string, shared: Record<string, Json> | null): void {
@@ -69,15 +81,20 @@ export function useToolState<T extends Json>(
     const sig = signal<Json>(start);
     if (persist) {
       let timer: ReturnType<typeof setTimeout> | undefined;
-      sig.subscribe((v) => {
+      const write = () => {
+        timer = undefined;
+        unsaved.delete(write);
+        try {
+          const v = sig.peek();
+          if (JSON.stringify(v) === JSON.stringify(initial))
+            localStorage.removeItem(storageKey(tool, key));
+          else localStorage.setItem(storageKey(tool, key), JSON.stringify(v));
+        } catch {}
+      };
+      sig.subscribe(() => {
         clearTimeout(timer);
-        timer = setTimeout(() => {
-          try {
-            if (JSON.stringify(v) === JSON.stringify(initial))
-              localStorage.removeItem(storageKey(tool, key));
-            else localStorage.setItem(storageKey(tool, key), JSON.stringify(v));
-          } catch {}
-        }, 250);
+        timer = setTimeout(write, 250);
+        unsaved.add(write);
       });
     }
     live.set(key, { sig, initial, share });
