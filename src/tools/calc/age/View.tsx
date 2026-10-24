@@ -7,41 +7,66 @@ import { Formula, locale, Result } from "../_ui";
 import { type AgeUnit, age, dateAtAge, nextBirthday, nextMilestones } from "./logic";
 
 const T = {
-  birth: l("Date of birth", "Date de naissance"),
-  on: l("Age on", "Âge au"),
-  today: l("Today", "Aujourd'hui"),
-  bad: l("Pick a valid date of birth.", "Choisis une date de naissance valide."),
-  badOn: l("Pick a valid date.", "Choisis une date valide."),
-  before: l("This date is before the birth.", "Cette date est avant la naissance."),
-  age: l("Age", "Âge"),
-  bornOn: l("Born on a {d}", "Né(e) un {d}"),
-  next: l("Next birthday", "Prochain anniversaire"),
-  happy: l("It's today! Happy birthday 🎂", "C'est aujourd'hui ! Joyeux anniversaire 🎂"),
-  inDays: l("in {n}", "dans {n}"),
-  turning: l("turning {n}", "{n} ans"),
-  months: l("Months", "Mois"),
-  weeks: l("Weeks", "Semaines"),
-  days: l("Days", "Jours"),
-  hours: l("Hours", "Heures"),
-  when: l("When will I be…", "Quand aurai-je…"),
-  amount: l("Number", "Nombre"),
-  unit: l("Unit", "Unité"),
-  yearsU: l("years old", "ans"),
-  monthsU: l("months old", "mois"),
-  weeksU: l("weeks old", "semaines"),
-  daysU: l("days old", "jours"),
-  past: l("{n} ago", "il y a {n}"),
-  badN: l("Type a whole number.", "Tape un nombre entier."),
-  milestones: l("Next round numbers of days", "Prochains nombres ronds de jours"),
+  birth: l("Date of birth", "Date de naissance", "Geburtsdatum"),
+  on: l("Age on", "Âge au", "Alter am"),
+  today: l("Today", "Aujourd'hui", "Heute"),
+  bad: l(
+    "Pick a valid date of birth.",
+    "Choisis une date de naissance valide.",
+    "Wähl ein gültiges Geburtsdatum.",
+  ),
+  badOn: l("Pick a valid date.", "Choisis une date valide.", "Wähl ein gültiges Datum."),
+  before: l(
+    "This date is before the birth.",
+    "Cette date est avant la naissance.",
+    "Dieses Datum liegt vor der Geburt.",
+  ),
+  age: l("Age", "Âge", "Alter"),
+  bornOn: l("Born on a {d}", "Né(e) un {d}", "Geboren an einem {d}"),
+  next: l("Next birthday", "Prochain anniversaire", "Nächster Geburtstag"),
+  happy: l(
+    "It's today! Happy birthday 🎂",
+    "C'est aujourd'hui ! Joyeux anniversaire 🎂",
+    "Heute! Alles Gute zum Geburtstag 🎂",
+  ),
+  turning: l("turning {n}", "{n} ans", "du wirst {n}"),
+  months: l("Months", "Mois", "Monate"),
+  weeks: l("Weeks", "Semaines", "Wochen"),
+  days: l("Days", "Jours", "Tage"),
+  hours: l("Hours", "Heures", "Stunden"),
+  when: l("When will I be…", "Quand aurai-je…", "Wann bin ich …"),
+  amount: l("Number", "Nombre", "Zahl"),
+  unit: l("Unit", "Unité", "Einheit"),
+  yearsU: l("years old", "ans", "Jahre alt"),
+  monthsU: l("months old", "mois", "Monate alt"),
+  weeksU: l("weeks old", "semaines", "Wochen alt"),
+  daysU: l("days old", "jours", "Tage alt"),
+  badN: l("Type a whole number.", "Tape un nombre entier.", "Gib eine ganze Zahl ein."),
+  milestones: l(
+    "Next round numbers of days",
+    "Prochains nombres ronds de jours",
+    "Nächste runde Tageszahlen",
+  ),
   f1: l(
     "Months are counted from the birthday's day each month (a 31st counts on the last day of shorter months); 29 February birthdays fall on 28 February in common years.",
     "Les mois sont comptés du jour de naissance au même jour du mois suivant (un 31 compte le dernier jour des mois plus courts) ; un anniversaire le 29 février tombe le 28 février les années non bissextiles.",
+    "Monate zählen jeweils vom Geburtstag bis zum selben Tag im Folgemonat (ein 31. zählt am letzten Tag kürzerer Monate); ein Geburtstag am 29. Februar fällt in Nicht-Schaltjahren auf den 28. Februar.",
   ),
   f2: l(
     "Hours = days × 24 (time of birth not taken into account).",
     "Heures = jours × 24 (l'heure de naissance n'est pas prise en compte).",
+    "Stunden = Tage × 24 (die Geburtszeit wird nicht berücksichtigt).",
   ),
 };
+
+/** "in 25 days" / "dans 25 jours" / "in 25 Tagen", or "… ago" when negative. */
+function relDays(n: number): string {
+  try {
+    return new Intl.RelativeTimeFormat(locale(), { numeric: "always" }).format(n, "day");
+  } catch {
+    return `${fmt(n)} d`;
+  }
+}
 
 function today(): string {
   const d = new Date();
@@ -144,7 +169,7 @@ export default function Age() {
                 <p class="age-big">{tr(T.happy)}</p>
               ) : (
                 <p class="age-big">
-                  <strong>{tr(T.inDays).replace("{n}", unit(next.daysLeft, "day"))}</strong>
+                  <strong>{relDays(next.daysLeft)}</strong>
                   <span class="muted">
                     {" "}
                     · {longDate(next.date)} · {tr(T.turning).replace("{n}", fmt(next.turning))}
@@ -186,15 +211,7 @@ export default function Age() {
           {at ? (
             <p class="age-big">
               <strong>{longDate(at)}</strong>
-              {on && (
-                <span class="muted">
-                  {" "}
-                  ·{" "}
-                  {dayNumber(at) >= ref
-                    ? tr(T.inDays).replace("{n}", unit(dayNumber(at) - ref, "day"))
-                    : tr(T.past).replace("{n}", unit(ref - dayNumber(at), "day"))}
-                </span>
-              )}
+              {on && <span class="muted"> · {relDays(dayNumber(at) - ref)}</span>}
             </p>
           ) : (
             <ErrorNote error={tr(T.badN)} />

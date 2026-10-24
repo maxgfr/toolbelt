@@ -1,5 +1,21 @@
 import { describe, expect, it } from "bun:test";
-import { letterGrade, mention, neededGrade, rescale, totalWeight, weightedAverage } from "./logic";
+import {
+  germanBand,
+  gradeFromAveragePoints,
+  gradeFromPoints,
+  letterGrade,
+  markFromPoints,
+  mention,
+  neededGermanGrade,
+  neededGrade,
+  parseGermanGrade,
+  pointsFromGrade,
+  pointsFromPercent,
+  rescale,
+  totalWeight,
+  truncate1,
+  weightedAverage,
+} from "./logic";
 
 const g = (value: number, coef = 1, outOf = 20) => ({ value, outOf, coef });
 
@@ -59,5 +75,94 @@ describe("scales", () => {
     expect(mention(12)).toBe("ab");
     expect(mention(10)).toBe("pass");
     expect(mention(9.99)).toBe("fail");
+  });
+});
+
+describe("German grades", () => {
+  const de = (value: number, coef = 1) => ({ value, outOf: 6, coef });
+
+  it("parses grades with tendencies and decimal commas", () => {
+    expect(parseGermanGrade("2")).toBe(2);
+    expect(parseGermanGrade("2+")).toBe(1.7);
+    expect(parseGermanGrade("2-")).toBe(2.3);
+    expect(parseGermanGrade("3−")).toBe(3.3);
+    expect(parseGermanGrade("1+")).toBe(0.7);
+    expect(parseGermanGrade("2,5")).toBe(2.5);
+    expect(parseGermanGrade(" 4.3 ")).toBe(4.3);
+    expect(parseGermanGrade("6")).toBe(6);
+  });
+
+  it("rejects what is not a German grade", () => {
+    expect(parseGermanGrade("")).toBeNull();
+    expect(parseGermanGrade("7")).toBeNull();
+    expect(parseGermanGrade("6-")).toBeNull();
+    expect(parseGermanGrade("0")).toBeNull();
+    expect(parseGermanGrade("2,5+")).toBeNull();
+    expect(parseGermanGrade("gut")).toBeNull();
+  });
+
+  it("averages like any weighted mean, lower is better", () => {
+    // (1 × 2 + 2.3 × 1 + 3 × 1) ÷ 4 = 1.825
+    expect(weightedAverage([de(1, 2), de(2.3), de(3)], 6)).toBeCloseTo(1.825, 10);
+  });
+
+  it("cuts averages after the first decimal and names the band", () => {
+    expect(truncate1(2.36)).toBe(2.3);
+    expect(truncate1(2.3)).toBe(2.3);
+    expect(germanBand(1.0)).toBe(1);
+    expect(germanBand(1.5)).toBe(1);
+    expect(germanBand(1.55)).toBe(1);
+    expect(germanBand(1.6)).toBe(2);
+    expect(germanBand(3.5)).toBe(3);
+    expect(germanBand(4.56)).toBe(4);
+    expect(germanBand(4.6)).toBe(5);
+    expect(germanBand(5.6)).toBe(6);
+  });
+
+  it("finds the grade needed, where lower is better", () => {
+    // Average 3 over weight 2; target 2.5 with an exam of coef 1: (2.5 × 3 − 3 × 2) ÷ 1 = 1.5
+    const r = neededGermanGrade([de(3), de(3)], 2.5, 1);
+    expect(r?.grade).toBeCloseTo(1.5, 10);
+    expect(r?.status).toBe("ok");
+    expect(neededGermanGrade([de(1, 3)], 3, 1)?.status).toBe("reached");
+    expect(neededGermanGrade([de(5, 3)], 2, 1)?.status).toBe("impossible");
+    expect(neededGermanGrade([de(2)], 2, 0)).toBeNull();
+  });
+});
+
+describe("Oberstufe points", () => {
+  it("maps points to grades with tendencies", () => {
+    expect(markFromPoints(15)).toBe("1+");
+    expect(markFromPoints(14)).toBe("1");
+    expect(markFromPoints(13)).toBe("1−");
+    expect(markFromPoints(10)).toBe("2−");
+    expect(markFromPoints(5)).toBe("4");
+    expect(markFromPoints(1)).toBe("5−");
+    expect(markFromPoints(0)).toBe("6");
+    expect(gradeFromPoints(12)).toBe(2);
+    expect(gradeFromPoints(4)).toBe(4);
+    expect(gradeFromPoints(0)).toBe(6);
+  });
+
+  it("turns an average of points into a grade like the Abitur", () => {
+    expect(gradeFromAveragePoints(15)).toBe(1);
+    expect(gradeFromAveragePoints(14)).toBe(1);
+    expect(gradeFromAveragePoints(11)).toBe(2);
+    expect(gradeFromAveragePoints(5)).toBe(4);
+    expect(gradeFromAveragePoints(1)).toBeCloseTo(16 / 3, 10);
+    expect(gradeFromAveragePoints(0)).toBe(6);
+    expect(pointsFromGrade(2)).toBe(11);
+    expect(pointsFromGrade(1)).toBe(14);
+    expect(pointsFromGrade(6)).toBe(0);
+  });
+
+  it("converts percentages with the usual table", () => {
+    expect(pointsFromPercent(100)).toBe(15);
+    expect(pointsFromPercent(95)).toBe(15);
+    expect(pointsFromPercent(94.99)).toBe(14);
+    expect(pointsFromPercent(70)).toBe(10);
+    expect(pointsFromPercent(50)).toBe(6);
+    expect(pointsFromPercent(33)).toBe(3);
+    expect(pointsFromPercent(19)).toBe(0);
   });
 });

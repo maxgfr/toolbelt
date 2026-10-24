@@ -1,7 +1,7 @@
 import { NumberField, Select } from "../../../app/kit";
 import { useToolState } from "../../../app/state";
 import { Panel, Segmented, TextBox } from "../../../app/ui";
-import { type L10n, l, lang, tr } from "../../../i18n";
+import { type L10n, l, pick, tr } from "../../../i18n";
 import { Formula, num } from "../_ui";
 import {
   convertKitchen,
@@ -19,57 +19,64 @@ import {
 } from "./logic";
 
 const T = {
-  tab: l("Tool", "Outil"),
-  convert: l("Cups, spoons, grams", "Tasses, cuillères, grammes"),
-  oven: l("Oven temperature", "Température du four"),
-  scale: l("Scale a recipe", "Adapter une recette"),
-  amount: l("Amount", "Quantité"),
-  from: l("Unit", "Unité"),
-  ingredient: l("Ingredient", "Ingrédient"),
-  ingredientHint: l("Needed between volume and weight", "Nécessaire entre volume et poids"),
-  volume: l("Volume", "Volume"),
-  weight: l("Weight", "Poids"),
-  temp: l("Temperature", "Température"),
-  scaleUnit: l("Scale", "Échelle"),
-  celsius: l("°C", "°C"),
-  fahrenheit: l("°F", "°F"),
-  gas: l("Gas mark", "Gas mark (four à gaz UK)"),
-  th: l("French thermostat", "Thermostat"),
-  table: l("Common oven settings", "Réglages courants du four"),
-  servingsFrom: l("Recipe serves", "Recette pour"),
-  servingsTo: l("I want to serve", "Je veux servir"),
-  people: l("people", "personnes"),
-  factor: l("× {f}", "× {f}"),
-  recipe: l("Ingredients (one per line)", "Ingrédients (un par ligne)"),
-  scaled: l("Scaled", "Adaptée"),
+  tab: l("Tool", "Outil", "Werkzeug"),
+  convert: l("Cups, spoons, grams", "Tasses, cuillères, grammes", "Tassen, Löffel, Gramm"),
+  oven: l("Oven temperature", "Température du four", "Backofentemperatur"),
+  scale: l("Scale a recipe", "Adapter une recette", "Rezept umrechnen"),
+  amount: l("Amount", "Quantité", "Menge"),
+  from: l("Unit", "Unité", "Einheit"),
+  ingredient: l("Ingredient", "Ingrédient", "Zutat"),
+  ingredientHint: l(
+    "Needed between volume and weight",
+    "Nécessaire entre volume et poids",
+    "Nötig zwischen Volumen und Gewicht",
+  ),
+  volume: l("Volume", "Volume", "Volumen"),
+  weight: l("Weight", "Poids", "Gewicht"),
+  temp: l("Temperature", "Température", "Temperatur"),
+  scaleUnit: l("Scale", "Échelle", "Skala"),
+  celsius: l("°C", "°C", "°C"),
+  fahrenheit: l("°F", "°F", "°F"),
+  gas: l("Gas mark", "Gas mark (four à gaz UK)", "Gas Mark (britischer Gasherd)"),
+  th: l("French thermostat", "Thermostat", "Französischer Thermostat"),
+  table: l("Common oven settings", "Réglages courants du four", "Übliche Backofenstufen"),
+  servingsFrom: l("Recipe serves", "Recette pour", "Rezept für"),
+  servingsTo: l("I want to serve", "Je veux servir", "Ich brauche es für"),
+  people: l("people", "personnes", "Personen"),
+  factor: l("× {f}", "× {f}", "× {f}"),
+  recipe: l("Ingredients (one per line)", "Ingrédients (un par ligne)", "Zutaten (eine pro Zeile)"),
+  scaled: l("Scaled", "Adaptée", "Umgerechnet"),
   note: l(
     "Quantities at the start of each line are scaled: 250, 1.5, 1 ½, 3/4, 2-3. Lines without a number stay as they are.",
     "Les quantités en début de ligne sont adaptées : 250, 1,5, 1 ½, 3/4, 2-3. Les lignes sans nombre restent telles quelles.",
+    "Mengen am Zeilenanfang werden umgerechnet: 250, 1,5, 1 ½, 3/4, 2-3. Zeilen ohne Zahl bleiben, wie sie sind.",
   ),
   f1: l(
     "Volume ↔ weight uses a typical density (g per ml) for each ingredient: a cup of flour weighs about 125 g, a cup of sugar about 200 g. Spooned and levelled, not packed: results are kitchen-accurate, not lab-accurate.",
     "Volume ↔ poids utilise une densité typique (g par ml) pour chaque ingrédient : une tasse de farine pèse environ 125 g, une tasse de sucre environ 200 g. Versé à la cuillère et arasé, pas tassé : précision de cuisine, pas de laboratoire.",
+    "Volumen ↔ Gewicht nutzt eine typische Dichte (g pro ml) je Zutat: Eine Tasse Mehl wiegt etwa 125 g, eine Tasse Zucker etwa 200 g. Locker eingefüllt und glatt gestrichen, nicht festgedrückt: Küchengenauigkeit, keine Laborgenauigkeit.",
   ),
   f2: l(
     "Spoons: 1 tsp = 5 ml, 1 tbsp = 15 ml. Cups: US 236.6 ml, metric 250 ml. °F = °C × 9/5 + 32; gas mark 1 = 275 °F, +25 °F per mark; French thermostat = °C ÷ 30.",
     "Cuillères : 1 c. à café = 5 ml, 1 c. à soupe = 15 ml. Tasses : US 236,6 ml, métrique 250 ml. °F = °C × 9/5 + 32 ; gas mark 1 = 275 °F, +25 °F par cran ; thermostat = °C ÷ 30.",
+    "Löffel: 1 TL = 5 ml, 1 EL = 15 ml; eine Prise ist nicht genormt (etwa 1/16 TL). Tassen: US 236,6 ml, metrisch 250 ml. Das US-Pfund (lb) hat 454 g, nicht 500 g. °F = °C × 9/5 + 32; Gas Mark 1 = 275 °F, +25 °F pro Stufe; französischer Thermostat = °C ÷ 30. Bei Umluft etwa 20 °C weniger als bei Ober-/Unterhitze.",
   ),
 };
 
 const UNIT_NAME: Record<string, L10n> = {
-  ml: l("ml", "ml"),
-  cl: l("cl", "cl"),
-  dl: l("dl", "dl"),
-  l: l("L", "L"),
-  tsp: l("teaspoon (5 ml)", "cuillère à café (5 ml)"),
-  tbsp: l("tablespoon (15 ml)", "cuillère à soupe (15 ml)"),
-  cup: l("cup (US, 237 ml)", "tasse US (237 ml)"),
-  cupMetric: l("cup (metric, 250 ml)", "tasse métrique (250 ml)"),
-  floz: l("fl oz (US)", "fl oz (US)"),
-  g: l("g", "g"),
-  kg: l("kg", "kg"),
-  oz: l("oz", "once (oz)"),
-  lb: l("lb", "livre (lb)"),
+  ml: l("ml", "ml", "ml"),
+  cl: l("cl", "cl", "cl"),
+  dl: l("dl", "dl", "dl"),
+  l: l("L", "L", "L"),
+  tsp: l("teaspoon (5 ml)", "cuillère à café (5 ml)", "Teelöffel, TL (5 ml)"),
+  tbsp: l("tablespoon (15 ml)", "cuillère à soupe (15 ml)", "Esslöffel, EL (15 ml)"),
+  cup: l("cup (US, 237 ml)", "tasse US (237 ml)", "Tasse (US, 237 ml)"),
+  cupMetric: l("cup (metric, 250 ml)", "tasse métrique (250 ml)", "Tasse (metrisch, 250 ml)"),
+  floz: l("fl oz (US)", "fl oz (US)", "fl oz (US)"),
+  g: l("g", "g", "g"),
+  kg: l("kg", "kg", "kg"),
+  oz: l("oz", "once (oz)", "Unze (oz)"),
+  lb: l("lb", "livre (lb)", "US-Pfund (lb, 454 g)"),
 };
 
 const SPOONS = new Set(["tsp", "tbsp", "cup", "cupMetric"]);
@@ -80,6 +87,7 @@ type TempUnit = "c" | "f" | "gas" | "th";
 const RECIPE: L10n = l(
   "250 g flour\n1 ½ cups milk\n3 eggs\n2-3 tbsp sugar\n1/2 tsp vanilla extract\nA pinch of salt",
   "250 g de farine\n50 cl de lait\n3 œufs\n2-3 c. à soupe de sucre\n1/2 c. à café de vanille\nUne pincée de sel",
+  "250 g Mehl\n375 ml Milch\n3 Eier\n2-3 EL Zucker\n1/2 TL Vanilleextrakt\nEine Prise Salz",
 );
 
 export default function Cooking() {
@@ -124,7 +132,7 @@ function Convert() {
         <tbody>
           {KITCHEN_UNITS.filter((u) => u.dim === dim).map((u) => (
             <tr key={u.id} class={u.id === from.value ? "cooking-on" : ""}>
-              <td>{tr(UNIT_NAME[u.id] ?? l(u.id, u.id))}</td>
+              <td>{tr(UNIT_NAME[u.id] ?? l(u.id, u.id, u.id))}</td>
               <td class="num mono">{show(u.id)}</td>
             </tr>
           ))}
@@ -152,7 +160,7 @@ function Convert() {
           }}
           options={KITCHEN_UNITS.map((u) => ({
             value: u.id,
-            label: tr(UNIT_NAME[u.id] ?? l(u.id, u.id)),
+            label: tr(UNIT_NAME[u.id] ?? l(u.id, u.id, u.id)),
           }))}
         />
         <Select
@@ -231,7 +239,10 @@ function Oven() {
         </div>
         <div class="stat">
           <dt>{tr(T.th)}</dt>
-          <dd>{lang.value === "fr" ? `th. ${num(thermostat(c), 1)}` : num(thermostat(c), 1)}</dd>
+          <dd>
+            {pick({ en: "", fr: "th. ", de: "" })}
+            {num(thermostat(c), 1)}
+          </dd>
         </div>
       </dl>
       <Panel title={tr(T.table)}>
@@ -271,7 +282,7 @@ function Scale() {
   const fromN = useToolState("servingsFrom", 4);
   const toN = useToolState("servingsTo", 6);
   const factor = fromN.value > 0 ? toN.value / fromN.value : Number.NaN;
-  const out = scaleRecipe(text.value, factor, lang.value === "fr");
+  const out = scaleRecipe(text.value, factor, pick({ en: false, fr: true, de: true }));
   return (
     <>
       <div class="grid-3">
