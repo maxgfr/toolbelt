@@ -1,9 +1,11 @@
 /**
- * Numbers written out in English and French: cardinals, ordinals, decimals and
- * amounts of money. Integers use BigInt (up to 10^36 − 1). French follows the
- * classic agreement rules (vingt et un, quatre-vingts, deux cents, mille
- * invariable, millions as nouns), with the 1990 hyphenation as an option, and
- * the Belgian and Swiss tens (septante, huitante, nonante).
+ * Numbers written out in English, French and German: cardinals, ordinals,
+ * decimals and amounts of money. Integers use BigInt (up to 10^36 − 1). French
+ * follows the classic agreement rules (vingt et un, quatre-vingts, deux cents,
+ * mille invariable, millions as nouns), with the 1990 hyphenation as an
+ * option, and the Belgian and Swiss tens (septante, huitante, nonante). German
+ * writes everything below a million as one word (zweihundertvierunddreißig),
+ * and Million, Milliarde… as separate nouns ("eine Million", "zwei Millionen").
  */
 
 export type Variant = "fr" | "be" | "ch";
@@ -275,21 +277,150 @@ export function frOrdinal(n: bigint, opts: FrOptions = {}): string | null {
   return `${m[1]}${last}ième`;
 }
 
-/* --- Decimals, signs and money --------------------------------------------- */
+/* --- German --------------------------------------------------------------- */
 
-export type Lang = "en" | "fr";
+const DE_ONES = [
+  "null",
+  "eins",
+  "zwei",
+  "drei",
+  "vier",
+  "fünf",
+  "sechs",
+  "sieben",
+  "acht",
+  "neun",
+  "zehn",
+  "elf",
+  "zwölf",
+  "dreizehn",
+  "vierzehn",
+  "fünfzehn",
+  "sechzehn",
+  "siebzehn",
+  "achtzehn",
+  "neunzehn",
+];
+const DE_TENS = [
+  "",
+  "",
+  "zwanzig",
+  "dreißig",
+  "vierzig",
+  "fünfzig",
+  "sechzig",
+  "siebzig",
+  "achtzig",
+  "neunzig",
+];
+/** 10^6, 10^9…: feminine nouns, capitalized and separate words, [singular, plural]. */
+const DE_NOUNS: [string, string][] = [
+  ["", ""],
+  ["", ""],
+  ["Million", "Millionen"],
+  ["Milliarde", "Milliarden"],
+  ["Billion", "Billionen"],
+  ["Billiarde", "Billiarden"],
+  ["Trillion", "Trillionen"],
+  ["Trilliarde", "Trilliarden"],
+  ["Quadrillion", "Quadrillionen"],
+  ["Quadrilliarde", "Quadrilliarden"],
+  ["Quintillion", "Quintillionen"],
+  ["Quintilliarde", "Quintilliarden"],
+];
 
-function cardinal(n: bigint, lang: Lang, o: FrOptions): string {
-  return lang === "fr" ? frCardinal(n, o) : enCardinal(n);
+/**
+ * How a final 1 is written: "eins" when counting (hunderteins), "ein" before
+ * a masculine or neuter noun or "tausend" (hundertein Euro), "eine" before a
+ * feminine one (hunderteine Millionen).
+ */
+export type DeOne = "eins" | "ein" | "eine";
+
+/** 1–999 as one word ("zweihunderteinundvierzig", "hundert"). */
+function deBelow1000(n: number, one: DeOne): string {
+  const h = Math.floor(n / 100);
+  const r = n % 100;
+  let out = h ? `${h === 1 ? "" : DE_ONES[h]}hundert` : "";
+  if (r === 1) out += one;
+  else if (r && r < 20) out += DE_ONES[r];
+  else if (r) {
+    const u = r % 10;
+    const tens = DE_TENS[Math.floor(r / 10)];
+    out += u ? `${u === 1 ? "ein" : DE_ONES[u]}und${tens}` : tens;
+  }
+  return out;
 }
 
-/** The full number: sign, integer part, and decimals ("three point one four", "trois virgule quatorze"). */
+/** "einundzwanzig", "tausendeins", "eine Million zweihunderttausend". */
+export function deCardinal(n: bigint, one: DeOne = "eins"): string {
+  if (n === 0n) return "null";
+  const g = groups(n);
+  const words: string[] = [];
+  for (let i = g.length - 1; i >= 2; i--) {
+    const v = g[i] ?? 0;
+    if (!v) continue;
+    const [sing, plur] = DE_NOUNS[i] ?? ["", ""];
+    words.push(`${v === 1 ? "eine" : deBelow1000(v, "eine")} ${v === 1 ? sing : plur}`);
+  }
+  // Below a million: thousands and units glued into one word.
+  const th = g[1] ?? 0;
+  const units = g[0] ?? 0;
+  const small =
+    (th ? `${th === 1 ? "" : deBelow1000(th, "ein")}tausend` : "") +
+    (units ? deBelow1000(units, one) : "");
+  if (small) words.push(small);
+  return words.join(" ");
+}
+
+/** "erste", "dritte", "einundzwanzigste", "hundertste", "millionste"; null below 1. */
+export function deOrdinal(n: bigint): string | null {
+  if (n < 1n) return null;
+  const words = deCardinal(n).split(" ");
+  if (n % 1000000n === 0n) {
+    // "zwei Millionen" → "zweimillionste", "eine Milliarde" → "milliardste".
+    const noun = words.pop() ?? "";
+    const count = words.pop() ?? "";
+    const i = DE_NOUNS.findIndex(([sing, plur]) => noun === sing || noun === plur);
+    const stem = (DE_NOUNS[i]?.[0] ?? noun).toLowerCase().replace(/e$/, "");
+    return [...words, `${count === "eine" ? "" : count}${stem}ste`].join(" ");
+  }
+  const last = words.pop() ?? "";
+  const r = Number(n % 100n);
+  let ord: string;
+  if (r === 0 || r >= 20) ord = `${last}ste`;
+  else if (r === 1) ord = `${last.slice(0, -4)}erste`;
+  else if (r === 3) ord = `${last.slice(0, -4)}dritte`;
+  else if (r === 7) ord = `${last.slice(0, -6)}siebte`;
+  else if (r === 8) ord = `${last}e`;
+  else ord = `${last}te`;
+  return [...words, ord].join(" ");
+}
+
+/* --- Decimals, signs and money --------------------------------------------- */
+
+export type Lang = "en" | "fr" | "de";
+
+function cardinal(n: bigint, lang: Lang, o: FrOptions, deOne: DeOne = "eins"): string {
+  if (lang === "fr") return frCardinal(n, o);
+  if (lang === "de") return deCardinal(n, deOne);
+  return enCardinal(n);
+}
+
+const MINUS: Record<Lang, string> = { en: "minus", fr: "moins", de: "minus" };
+
+/**
+ * The full number: sign, integer part, and decimals ("three point one four",
+ * "trois virgule quatorze", "drei Komma eins vier").
+ */
 export function numberToWords(p: Parsed, lang: Lang, o: FrOptions = {}): string {
   const frac = p.frac.replace(/0+$/, "");
   let words = cardinal(p.int, lang, o);
   if (frac) {
     if (lang === "en") {
       words += ` point ${[...frac].map((d) => EN_ONES[Number(d)]).join(" ")}`;
+    } else if (lang === "de") {
+      // German reads the decimals digit by digit: 3,14 → drei Komma eins vier.
+      words += ` Komma ${[...frac].map((d) => DE_ONES[Number(d)]).join(" ")}`;
     } else {
       // French reads the decimals as a number, with its leading zeros: 3,05 → trois virgule zéro cinq.
       const zeros = (/^0*/.exec(frac)?.[0] ?? "").length;
@@ -297,7 +428,7 @@ export function numberToWords(p: Parsed, lang: Lang, o: FrOptions = {}): string 
       words += ` virgule ${[...Array(zeros).fill("zéro"), frCardinal(BigInt(rest), o)].join(" ")}`;
     }
   }
-  if (p.negative) words = `${lang === "fr" ? "moins" : "minus"} ${words}`;
+  if (p.negative) words = `${MINUS[lang]} ${words}`;
   return words;
 }
 
@@ -323,22 +454,31 @@ const MONEY = {
     eur: ["euro", "euros", "centime", "centimes"],
     usd: ["dollar", "dollars", "cent", "cents"],
   },
+  // German units of money do not take a plural: "zwei Euro fünfzig Cent".
+  de: {
+    eur: ["Euro", "Euro", "Cent", "Cent"],
+    usd: ["Dollar", "Dollar", "Cent", "Cent"],
+  },
 } as const;
 
-/** "one hundred dollars and five cents", "deux millions d'euros", "zéro euro". */
+const AND: Record<Lang, string> = { en: " and ", fr: " et ", de: " und " };
+
+/** "one hundred dollars and five cents", "deux millions d'euros", "zéro euro", "ein Euro". */
 export function moneyToWords(p: Parsed, currency: Currency, lang: Lang, o: FrOptions = {}): string {
   const { units, cents } = toCents(p);
   const [one, many, cOne, cMany] = MONEY[lang][currency];
   const parts: string[] = [];
   if (units > 0n || cents === 0) {
-    const n = cardinal(units, lang, o);
+    // German: "ein Euro", "hundertein Euro", not "eins".
+    const n = cardinal(units, lang, o, "ein");
     // French: "un million d'euros", like any noun of quantity.
     const of = lang === "fr" && units >= 1000000n && units % 1000000n === 0n;
     const unit = lang === "fr" ? (units >= 2n ? many : one) : units === 1n ? one : many;
     parts.push(of ? `${n} ${/^[aeiouy]/.test(unit) ? "d'" : "de "}${unit}` : `${n} ${unit}`);
   }
-  if (cents > 0) parts.push(`${cardinal(BigInt(cents), lang, o)} ${cents === 1 ? cOne : cMany}`);
-  const words = parts.join(lang === "fr" ? " et " : " and ");
+  if (cents > 0)
+    parts.push(`${cardinal(BigInt(cents), lang, o, "ein")} ${cents === 1 ? cOne : cMany}`);
+  const words = parts.join(AND[lang]);
   const negative = p.negative && (units > 0n || cents > 0);
-  return negative ? `${lang === "fr" ? "moins" : "minus"} ${words}` : words;
+  return negative ? `${MINUS[lang]} ${words}` : words;
 }

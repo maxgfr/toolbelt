@@ -52,11 +52,14 @@ describe("parseCron", () => {
 });
 
 describe("describeCron", () => {
-  it("explains in English and French", () => {
+  it("explains in English, French and German", () => {
     expect(describeCron("*/5 * * * *", "en")).toBe("Every 5 minutes");
     expect(describeCron("*/5 * * * *", "fr")).toBe("Toutes les 5 minutes");
     expect(describeCron("0 9 * * 1-5", "en")).toBe("At 09:00 AM, Monday through Friday");
     expect(describeCron("0 9 * * 1-5", "fr")).toBe("À 09:00, de lundi à vendredi");
+    expect(describeCron("*/5 * * * *", "de")).toBe("Alle 5 Minuten");
+    expect(describeCron("0 9 * * 1-5", "de")).toBe("Um 09:00, Montag bis Freitag");
+    expect(describeCron("0 9 * * 1#2", "de")).toBe("Um 09:00, am zweiten Montag des Monats");
   });
 
   it("returns null when it cannot", () => {

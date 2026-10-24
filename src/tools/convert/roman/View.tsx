@@ -5,31 +5,36 @@ import { fmt, l, tr } from "../../../i18n";
 import { convert, MAX, romanParts } from "./logic";
 
 const T = {
-  input: l("Number or Roman numeral", "Nombre ou chiffres romains"),
-  placeholder: l("2024 or MMXXIV", "2024 ou MMXXIV"),
+  input: l("Number or Roman numeral", "Nombre ou chiffres romains", "Zahl oder römische Zahl"),
+  placeholder: l("2024 or MMXXIV", "2024 ou MMXXIV", "2024 oder MMXXIV"),
   hint: l(
     "Digits are written in Roman numerals, letters are read back as a number.",
     "Les chiffres sont écrits en romain, les lettres relues en nombre.",
+    "Ziffern werden in römische Zahlen umgewandelt, Buchstaben als Zahl zurückgelesen.",
   ),
-  result: l("Result", "Résultat"),
+  result: l("Result", "Résultat", "Ergebnis"),
   range: l(
     "Roman numerals go from 1 to {max} (there is no zero, nor negatives).",
     "Les chiffres romains vont de 1 à {max} (ni zéro, ni négatifs).",
+    "Römische Zahlen reichen von 1 bis {max} (es gibt weder Null noch negative Zahlen).",
   ),
   badChar: l(
     "“{c}” is not a Roman numeral. Use I, V, X, L, C, D, M.",
     "« {c} » n'est pas un chiffre romain. Utilise I, V, X, L, C, D, M.",
+    "„{c}“ ist keine römische Ziffer. Verwende I, V, X, L, C, D, M.",
   ),
   form: l(
     "Not a standard numeral. Read as {v}, which is written {r}.",
     "Écriture non standard. Lu comme {v}, qui s'écrit {r}.",
+    "Keine Standardschreibweise. Gelesen als {v}, geschrieben {r}.",
   ),
   formBig: l(
     "Not a standard numeral, and {v} is beyond {max}.",
     "Écriture non standard, et {v} dépasse {max}.",
+    "Keine Standardschreibweise, und {v} ist größer als {max}.",
   ),
-  symbols: l("Symbols", "Symboles"),
-  examples: l("Examples", "Exemples"),
+  symbols: l("Symbols", "Symboles", "Symbole"),
+  examples: l("Examples", "Exemples", "Beispiele"),
 };
 
 const SYMBOLS: [string, number][] = [

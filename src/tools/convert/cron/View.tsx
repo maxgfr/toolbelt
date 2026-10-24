@@ -2,9 +2,9 @@ import { useComputed } from "@preact/signals";
 import { NumberField, Select } from "../../../app/kit";
 import { useToolState } from "../../../app/state";
 import { Button, CopyButton, ErrorNote, Field, Panel, Segmented } from "../../../app/ui";
-import { fmt, type L10n, l, lang, tr } from "../../../i18n";
+import { fmt, type L10n, l, lang, locale, tr } from "../../../i18n";
 import { isValidZone, localZone, relative } from "../_shared";
-import { attempt, locale, ZonePicker } from "../_ui";
+import { attempt, ZonePicker } from "../_ui";
 import {
   BUILDER_FIELDS,
   type BuilderField,
@@ -25,53 +25,66 @@ import {
 } from "./logic";
 
 const T = {
-  expr: l("Cron expression", "Expression cron"),
+  expr: l("Cron expression", "Expression cron", "Cron-Ausdruck"),
   hint: l(
     "5 fields (minute hour day month weekday), 6 with seconds first, or @daily, @hourly…",
     "5 champs (minute heure jour mois jour-de-semaine), 6 avec les secondes en tête, ou @daily, @hourly…",
+    "5 Felder (Minute Stunde Tag Monat Wochentag), 6 mit Sekunden vorne, oder @daily, @hourly…",
   ),
-  presets: l("Presets", "Modèles"),
-  zone: l("Time zone of the runs", "Fuseau des exécutions"),
-  fields: l("Fields", "Champs"),
-  field: l("Field", "Champ"),
-  value: l("Value", "Valeur"),
-  allowed: l("Allowed", "Valeurs permises"),
-  next: l("Next {n} runs", "{n} prochaines exécutions"),
-  when: l("When", "Quand"),
-  in: l("In", "Dans"),
-  empty: l("Type an expression or pick a preset.", "Tape une expression ou choisis un modèle."),
+  presets: l("Presets", "Modèles", "Vorlagen"),
+  zone: l("Time zone of the runs", "Fuseau des exécutions", "Zeitzone der Ausführungen"),
+  fields: l("Fields", "Champs", "Felder"),
+  field: l("Field", "Champ", "Feld"),
+  value: l("Value", "Valeur", "Wert"),
+  allowed: l("Allowed", "Valeurs permises", "Erlaubt"),
+  next: l("Next {n} runs", "{n} prochaines exécutions", "Nächste {n} Ausführungen"),
+  when: l("When", "Quand", "Wann"),
+  in: l("In", "Dans", "In"),
+  empty: l(
+    "Type an expression or pick a preset.",
+    "Tape une expression ou choisis un modèle.",
+    "Gib einen Ausdruck ein oder wähle eine Vorlage.",
+  ),
   count: l(
     "A cron expression has 5 fields (or 6 with seconds): found {n}.",
     "Une expression cron a 5 champs (ou 6 avec les secondes) : {n} trouvé(s).",
+    "Ein Cron-Ausdruck hat 5 Felder (oder 6 mit Sekunden): {n} gefunden.",
   ),
-  syntax: l("This expression is not valid:", "Cette expression n'est pas valide :"),
-  noRuns: l("No upcoming run.", "Aucune exécution à venir."),
-  syntaxHelp: l("Syntax", "Syntaxe"),
-  explain: l("Explain", "Expliquer"),
-  build: l("Build", "Construire"),
-  mode: l("Mode", "Mode"),
-  builder: l("Builder", "Constructeur"),
-  every: l("Every", "Chaque"),
-  everyN: l("Every N", "Tous les N"),
-  specific: l("Specific", "Valeurs précises"),
-  range: l("Range", "Plage"),
-  stepN: l("Every", "Tous les"),
-  startAt: l("Starting at", "À partir de"),
-  from: l("From", "De"),
-  to: l("To", "À"),
-  rangeStep: l("Step (1 = every value)", "Pas (1 = chaque valeur)"),
+  syntax: l(
+    "This expression is not valid:",
+    "Cette expression n'est pas valide :",
+    "Dieser Ausdruck ist ungültig:",
+  ),
+  noRuns: l("No upcoming run.", "Aucune exécution à venir.", "Keine anstehende Ausführung."),
+  syntaxHelp: l("Syntax", "Syntaxe", "Syntax"),
+  explain: l("Explain", "Expliquer", "Erklären"),
+  build: l("Build", "Construire", "Erstellen"),
+  mode: l("Mode", "Mode", "Modus"),
+  builder: l("Builder", "Constructeur", "Baukasten"),
+  every: l("Every", "Chaque", "Jede"),
+  everyN: l("Every N", "Tous les N", "Alle N"),
+  specific: l("Specific", "Valeurs précises", "Bestimmte Werte"),
+  range: l("Range", "Plage", "Bereich"),
+  stepN: l("Every", "Tous les", "Alle"),
+  startAt: l("Starting at", "À partir de", "Ab"),
+  from: l("From", "De", "Von"),
+  to: l("To", "À", "Bis"),
+  rangeStep: l("Step (1 = every value)", "Pas (1 = chaque valeur)", "Schritt (1 = jeder Wert)"),
   pickSome: l(
     "Pick one or more values (none = every value).",
     "Choisis une ou plusieurs valeurs (aucune = toutes).",
+    "Wähle einen oder mehrere Werte (keiner = alle).",
   ),
   unbuildable: l(
     "The builder cannot show this expression (seconds, L, W or #). Changing a field below starts again from it.",
     "Le constructeur ne peut pas afficher cette expression (secondes, L, W ou #). Modifier un champ ci-dessous repart de lui.",
+    "Der Baukasten kann diesen Ausdruck nicht darstellen (Sekunden, L, W oder #). Änderst du unten ein Feld, wird der Ausdruck aus dem Baukasten neu erstellt.",
   ),
-  reset: l("Reset the builder", "Réinitialiser le constructeur"),
+  reset: l("Reset the builder", "Réinitialiser le constructeur", "Baukasten zurücksetzen"),
   domDowNote: l(
     "When both day of month and day of week are restricted, cron runs on days matching either.",
     "Quand le jour du mois et le jour de la semaine sont tous deux restreints, cron s'exécute les jours qui correspondent à l'un ou l'autre.",
+    "Sind sowohl der Tag im Monat als auch der Wochentag eingeschränkt, läuft cron an Tagen, auf die eines von beiden zutrifft.",
   ),
 };
 
@@ -83,45 +96,69 @@ const MODE_L: Record<BuildMode, L10n> = {
 };
 
 const UNIT: Record<BuilderField, L10n> = {
-  minute: l("min", "min"),
-  hour: l("h", "h"),
-  dom: l("days", "jours"),
-  month: l("months", "mois"),
-  dow: l("days", "jours"),
+  minute: l("min", "min", "min"),
+  hour: l("h", "h", "h"),
+  dom: l("days", "jours", "Tage"),
+  month: l("months", "mois", "Monate"),
+  dow: l("days", "jours", "Tage"),
 };
 
 const PRESET_LABEL: Record<(typeof PRESETS)[number]["id"], ReturnType<typeof l>> = {
-  min: l("Every minute", "Chaque minute"),
-  "5min": l("Every 5 minutes", "Toutes les 5 min"),
-  "15min": l("Every 15 minutes", "Toutes les 15 min"),
-  hourly: l("Every hour", "Chaque heure"),
-  midnight: l("Daily at midnight", "Chaque jour à minuit"),
-  weekdays9: l("Weekdays at 9:00", "En semaine à 9 h"),
-  monday: l("Mondays at 9:00", "Le lundi à 9 h"),
-  monthly: l("1st of the month", "Le 1er du mois"),
-  yearly: l("Every January 1st", "Chaque 1er janvier"),
-  "30s": l("Every 30 seconds", "Toutes les 30 s"),
+  min: l("Every minute", "Chaque minute", "Jede Minute"),
+  "5min": l("Every 5 minutes", "Toutes les 5 min", "Alle 5 Minuten"),
+  "15min": l("Every 15 minutes", "Toutes les 15 min", "Alle 15 Minuten"),
+  hourly: l("Every hour", "Chaque heure", "Jede Stunde"),
+  midnight: l("Daily at midnight", "Chaque jour à minuit", "Täglich um Mitternacht"),
+  weekdays9: l("Weekdays at 9:00", "En semaine à 9 h", "Werktags um 9 Uhr"),
+  monday: l("Mondays at 9:00", "Le lundi à 9 h", "Montags um 9 Uhr"),
+  monthly: l("1st of the month", "Le 1er du mois", "Am 1. des Monats"),
+  yearly: l("Every January 1st", "Chaque 1er janvier", "Jeden 1. Januar"),
+  "30s": l("Every 30 seconds", "Toutes les 30 s", "Alle 30 Sekunden"),
 };
 
 const FIELD: Record<FieldName, { name: ReturnType<typeof l>; allowed: ReturnType<typeof l> }> = {
-  second: { name: l("Second", "Seconde"), allowed: l("0–59", "0–59") },
-  minute: { name: l("Minute", "Minute"), allowed: l("0–59", "0–59") },
-  hour: { name: l("Hour", "Heure"), allowed: l("0–23", "0–23") },
-  dom: { name: l("Day of month", "Jour du mois"), allowed: l("1–31, L, W", "1–31, L, W") },
-  month: { name: l("Month", "Mois"), allowed: l("1–12 or JAN–DEC", "1–12 ou JAN–DEC") },
+  second: { name: l("Second", "Seconde", "Sekunde"), allowed: l("0–59", "0–59", "0–59") },
+  minute: { name: l("Minute", "Minute", "Minute"), allowed: l("0–59", "0–59", "0–59") },
+  hour: { name: l("Hour", "Heure", "Stunde"), allowed: l("0–23", "0–23", "0–23") },
+  dom: {
+    name: l("Day of month", "Jour du mois", "Tag im Monat"),
+    allowed: l("1–31, L, W", "1–31, L, W", "1–31, L, W"),
+  },
+  month: {
+    name: l("Month", "Mois", "Monat"),
+    allowed: l("1–12 or JAN–DEC", "1–12 ou JAN–DEC", "1–12 oder JAN–DEC"),
+  },
   dow: {
-    name: l("Day of week", "Jour de la semaine"),
-    allowed: l("0–7 (0, 7 = Sunday) or SUN–SAT, L, #", "0–7 (0, 7 = dimanche) ou SUN–SAT, L, #"),
+    name: l("Day of week", "Jour de la semaine", "Wochentag"),
+    allowed: l(
+      "0–7 (0, 7 = Sunday) or SUN–SAT, L, #",
+      "0–7 (0, 7 = dimanche) ou SUN–SAT, L, #",
+      "0–7 (0, 7 = Sonntag) oder SUN–SAT, L, #",
+    ),
   },
 };
 
 const SYNTAX: [string, ReturnType<typeof l>][] = [
-  ["*", l("any value", "toute valeur")],
-  [",", l("list: 1,15", "liste : 1,15")],
-  ["-", l("range: 1-5", "plage : 1-5")],
-  ["/", l("step: */10, 0-30/5", "pas : */10, 0-30/5")],
-  ["L", l("last (day of month, or weekday: 5L)", "dernier (jour du mois, ou jour : 5L)")],
-  ["#", l("nth weekday: 1#2 = 2nd Monday", "n-ième jour : 1#2 = 2e lundi")],
+  ["*", l("any value", "toute valeur", "jeder Wert")],
+  [",", l("list: 1,15", "liste : 1,15", "Liste: 1,15")],
+  ["-", l("range: 1-5", "plage : 1-5", "Bereich: 1-5")],
+  ["/", l("step: */10, 0-30/5", "pas : */10, 0-30/5", "Schritt: */10, 0-30/5")],
+  [
+    "L",
+    l(
+      "last (day of month, or weekday: 5L)",
+      "dernier (jour du mois, ou jour : 5L)",
+      "letzter (Tag im Monat oder Wochentag: 5L)",
+    ),
+  ],
+  [
+    "#",
+    l(
+      "nth weekday: 1#2 = 2nd Monday",
+      "n-ième jour : 1#2 = 2e lundi",
+      "n-ter Wochentag: 1#2 = 2. Montag",
+    ),
+  ],
 ];
 
 const COUNT = 10;

@@ -1,6 +1,7 @@
 /** Cron expressions: plain-language description (cronstrue) and next run times (croner). */
 import { Cron } from "croner";
 import cronstrue from "cronstrue";
+import "cronstrue/locales/de";
 import "cronstrue/locales/fr";
 
 /** The usual shortcuts, as 5-field expressions. */
@@ -63,12 +64,12 @@ function cleanError(err: unknown): string {
   return msg.replace(/^CronPattern:\s*/i, "");
 }
 
-/** "At 09:00, Monday through Friday" / "À 09:00, de lundi à vendredi". */
-export function describeCron(expr: string, lang: "en" | "fr"): string | null {
+/** "At 09:00 AM, Monday through Friday" / "À 09:00, de lundi à vendredi" / "Um 09:00, Montag bis Freitag". */
+export function describeCron(expr: string, lang: "en" | "fr" | "de"): string | null {
   try {
     return cronstrue.toString(expr, {
       locale: lang,
-      use24HourTimeFormat: lang === "fr",
+      use24HourTimeFormat: lang !== "en",
       throwExceptionOnParseError: true,
       verbose: false,
     });

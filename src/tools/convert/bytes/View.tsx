@@ -1,33 +1,43 @@
 import { useComputed } from "@preact/signals";
 import { useToolState } from "../../../app/state";
 import { CopyButton, ErrorNote, Field, Panel } from "../../../app/ui";
-import { l, lang, tr } from "../../../i18n";
+import { l, pick, tr } from "../../../i18n";
 import { parseNumber } from "../_shared";
 import { formatDuration, formatNum, plainNum } from "../_ui";
 import { convertSize, humanSize, RATE_UNITS, SIZE_UNITS, transferSeconds } from "./logic";
 
 const T = {
-  size: l("Size", "Taille"),
-  value: l("Value", "Valeur"),
-  unit: l("Unit", "Unité"),
-  bits: l("Bits", "Bits"),
-  si: l("Decimal (SI, ×1000)", "Décimal (SI, ×1000)"),
-  iec: l("Binary (IEC, ×1024)", "Binaire (CEI, ×1024)"),
-  readable: l("Readable", "Lisible"),
-  invalid: l("Type a number, e.g. 1.5 or 700.", "Tape un nombre, par ex. 1,5 ou 700."),
-  transfer: l("Transfer time", "Temps de transfert"),
+  size: l("Size", "Taille", "Größe"),
+  value: l("Value", "Valeur", "Wert"),
+  unit: l("Unit", "Unité", "Einheit"),
+  bits: l("Bits", "Bits", "Bits"),
+  si: l("Decimal (SI, ×1000)", "Décimal (SI, ×1000)", "Dezimal (SI, ×1000)"),
+  iec: l("Binary (IEC, ×1024)", "Binaire (CEI, ×1024)", "Binär (IEC, ×1024)"),
+  readable: l("Readable", "Lisible", "Lesbar"),
+  invalid: l(
+    "Type a number, e.g. 1.5 or 700.",
+    "Tape un nombre, par ex. 1,5 ou 700.",
+    "Gib eine Zahl ein, z. B. 1,5 oder 700.",
+  ),
+  transfer: l("Transfer time", "Temps de transfert", "Übertragungsdauer"),
   transferOf: l(
     "Time to transfer the size above at…",
     "Temps pour transférer la taille ci-dessus à…",
+    "Dauer, um die Größe oben zu übertragen, bei…",
   ),
-  bandwidth: l("Bandwidth", "Débit"),
-  badRate: l("The bandwidth must be above zero.", "Le débit doit être supérieur à zéro."),
-  common: l("At common speeds", "Aux débits courants"),
-  speed: l("Speed", "Débit"),
-  time: l("Time", "Durée"),
+  bandwidth: l("Bandwidth", "Débit", "Bandbreite"),
+  badRate: l(
+    "The bandwidth must be above zero.",
+    "Le débit doit être supérieur à zéro.",
+    "Die Bandbreite muss größer als null sein.",
+  ),
+  common: l("At common speeds", "Aux débits courants", "Bei üblichen Geschwindigkeiten"),
+  speed: l("Speed", "Débit", "Geschwindigkeit"),
+  time: l("Time", "Durée", "Dauer"),
   noteSi: l(
     "Drives and networks count in 1000s (GB, Mbit/s); operating systems often show 1024s (GiB) with the GB label.",
     "Disques et réseaux comptent par 1000 (Go, Mbit/s) ; les systèmes affichent souvent des 1024 (Gio) sous l'étiquette Go.",
+    "Festplatten und Netzwerke rechnen in 1000ern (GB, Mbit/s); Betriebssysteme zeigen oft 1024er (GiB) mit der Bezeichnung GB an.",
   ),
 };
 
@@ -45,9 +55,9 @@ const GROUPS = [
   { system: "iec", label: T.iec },
 ] as const;
 
-/** French writes bytes as octets: GB → Go, MiB/s → Mio/s. */
+/** French writes bytes as octets (GB → Go, MiB/s → Mio/s); English and German keep B. */
 function label(id: string): string {
-  return lang.value === "fr" ? id.replace("iB", "io").replace("B", "o") : id;
+  return pick({ en: id, fr: id.replace("iB", "io").replace("B", "o"), de: id });
 }
 
 export default function Bytes() {

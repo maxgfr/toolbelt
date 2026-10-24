@@ -73,6 +73,11 @@ describe("time zones", () => {
     expect(searchZones("paris", zones)[0]).toBe("Europe/Paris");
     expect(searchZones("new york", zones)[0]).toBe("America/New_York");
     expect(searchZones("est", zones)[0]).toBe("America/New_York");
+    const europe = ["Europe/Berlin", "Europe/Vienna", "Europe/Zurich"];
+    expect(searchZones("wien", europe)[0]).toBe("Europe/Vienna");
+    expect(searchZones("München", europe)[0]).toBe("Europe/Berlin");
+    expect(searchZones("mez", europe)[0]).toBe("Europe/Berlin");
+    expect(searchZones("genf", europe)[0]).toBe("Europe/Zurich");
     expect(searchZones("+05:45", zones, new Date("2024-01-31T12:00:00Z"))).toEqual([
       "Asia/Kathmandu",
     ]);

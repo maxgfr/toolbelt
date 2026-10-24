@@ -1,6 +1,6 @@
 import { useToolState } from "../../../app/state";
 import { CopyButton, Panel, Segmented } from "../../../app/ui";
-import { l, lang, tr } from "../../../i18n";
+import { l, pick, tr } from "../../../i18n";
 import { parseNumber } from "../_shared";
 import { formatNum, plainNum } from "../_ui";
 import {
@@ -14,30 +14,39 @@ import {
 } from "./logic";
 
 const T = {
-  of: l("Percentage of a value", "Pourcentage d'une valeur"),
-  ofQ: l("What is|% of|?", "Combien font|% de|?"),
-  what: l("Share as a percentage", "Part en pourcentage"),
-  whatQ: l("|is what % of|?", "|représente quel % de|?"),
-  change: l("Percentage change", "Variation en pourcentage"),
-  changeQ: l("From|to|", "De|à|"),
-  add: l("Add or remove a percentage", "Ajouter ou retirer un pourcentage"),
-  addQ: l("|% applied to|", "|% appliqués à|"),
-  reverse: l("Value before a change", "Valeur avant une variation"),
-  reverseQ: l("|is the result after|%", "|est le résultat après|%"),
-  diff: l("Percentage difference", "Écart en pourcentage"),
-  diffQ: l("Between|and|", "Entre|et|"),
+  of: l("Percentage of a value", "Pourcentage d'une valeur", "Prozentsatz eines Werts"),
+  ofQ: l("What is|% of|?", "Combien font|% de|?", "Wie viel sind|% von|?"),
+  what: l("Share as a percentage", "Part en pourcentage", "Anteil in Prozent"),
+  whatQ: l("|is what % of|?", "|représente quel % de|?", "|sind wie viel % von|?"),
+  change: l("Percentage change", "Variation en pourcentage", "Prozentuale Veränderung"),
+  changeQ: l("From|to|", "De|à|", "Von|auf|"),
+  add: l(
+    "Add or remove a percentage",
+    "Ajouter ou retirer un pourcentage",
+    "Prozent aufschlagen oder abziehen",
+  ),
+  addQ: l("|% applied to|", "|% appliqués à|", "|% angewendet auf|"),
+  reverse: l("Value before a change", "Valeur avant une variation", "Wert vor einer Veränderung"),
+  reverseQ: l("|is the result after|%", "|est le résultat après|%", "|ist das Ergebnis nach|%"),
+  diff: l("Percentage difference", "Écart en pourcentage", "Prozentualer Unterschied"),
+  diffQ: l("Between|and|", "Entre|et|", "Zwischen|und|"),
   diffHint: l(
     "Relative to the mean of both values: the order does not matter.",
     "Par rapport à la moyenne des deux valeurs : l'ordre ne compte pas.",
+    "Bezogen auf den Mittelwert beider Werte: Die Reihenfolge spielt keine Rolle.",
   ),
-  increase: l("increase", "hausse"),
-  decrease: l("decrease", "baisse"),
-  noChange: l("no change", "aucune variation"),
-  plus: l("+ increase", "+ hausse"),
-  minus: l("− decrease", "− baisse"),
-  undefined: l("undefined (division by zero)", "indéfini (division par zéro)"),
-  original: l("Original value", "Valeur d'origine"),
-  diffAbs: l("Difference", "Différence"),
+  increase: l("increase", "hausse", "Anstieg"),
+  decrease: l("decrease", "baisse", "Rückgang"),
+  noChange: l("no change", "aucune variation", "keine Veränderung"),
+  plus: l("+ increase", "+ hausse", "+ Aufschlag"),
+  minus: l("− decrease", "− baisse", "− Abzug"),
+  undefined: l(
+    "undefined (division by zero)",
+    "indéfini (division par zéro)",
+    "nicht definiert (Division durch null)",
+  ),
+  original: l("Original value", "Valeur d'origine", "Ausgangswert"),
+  diffAbs: l("Difference", "Différence", "Differenz"),
 };
 
 type Sign = "+" | "-";
@@ -62,8 +71,8 @@ export default function Percentage() {
   const addSign = useToolState<Sign>("addSign", "+");
   const revSign = useToolState<Sign>("revSign", "+");
   const n = (k: string) => parseNumber(v.value[k] ?? "");
-  // French puts a (narrow) space before %.
-  const pct = lang.value === "fr" ? "\u202f%" : "%";
+  // French puts a narrow space before %, German a full one.
+  const pct = pick({ en: "%", fr: "\u202f%", de: "\u00a0%" });
 
   const input = (k: string, label: string) => (
     <input

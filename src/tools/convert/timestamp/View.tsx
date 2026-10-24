@@ -2,60 +2,65 @@ import { useComputed, useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 import { useToolState } from "../../../app/state";
 import { Button, CopyButton, ErrorNote, Field, Output, Panel, Segmented } from "../../../app/ui";
-import { fmt, l, tr } from "../../../i18n";
+import { fmt, l, locale, tr } from "../../../i18n";
 import { isValidZone, localZone, relative } from "../_shared";
-import { attempt, locale, ZonePicker } from "../_ui";
+import { attempt, ZonePicker } from "../_ui";
 import { breakdown, parseInput, type UnitChoice } from "./logic";
 
 const T = {
-  now: l("Now", "Maintenant"),
-  use: l("Use", "Utiliser"),
-  input: l("Timestamp or date", "Timestamp ou date"),
+  now: l("Now", "Maintenant", "Jetzt"),
+  use: l("Use", "Utiliser", "Übernehmen"),
+  input: l("Timestamp or date", "Timestamp ou date", "Zeitstempel oder Datum"),
   placeholder: l(
+    "1706702400, 1706702400000, 2024-01-31 12:00, Wed, 31 Jan 2024 12:00:00 +0000…",
     "1706702400, 1706702400000, 2024-01-31 12:00, Wed, 31 Jan 2024 12:00:00 +0000…",
     "1706702400, 1706702400000, 2024-01-31 12:00, Wed, 31 Jan 2024 12:00:00 +0000…",
   ),
   hint: l(
     "Dates without an offset are read in the time zone below.",
     "Les dates sans décalage sont lues dans le fuseau ci-dessous.",
+    "Daten ohne Verschiebung werden in der Zeitzone unten gelesen.",
   ),
-  unit: l("Unit", "Unité"),
-  auto: l("Auto", "Auto"),
-  zone: l("Time zone", "Fuseau horaire"),
-  seconds: l("seconds", "secondes"),
-  millis: l("milliseconds", "millisecondes"),
-  micros: l("microseconds", "microsecondes"),
-  nanos: l("nanoseconds", "nanosecondes"),
-  readAs: l("Read as {x}", "Lu en {x}"),
-  readDate: l("Read as a {x} date", "Lu comme une date {x}"),
+  unit: l("Unit", "Unité", "Einheit"),
+  auto: l("Auto", "Auto", "Auto"),
+  zone: l("Time zone", "Fuseau horaire", "Zeitzone"),
+  seconds: l("seconds", "secondes", "Sekunden"),
+  millis: l("milliseconds", "millisecondes", "Millisekunden"),
+  micros: l("microseconds", "microsecondes", "Mikrosekunden"),
+  nanos: l("nanoseconds", "nanosecondes", "Nanosekunden"),
+  readAs: l("Read as {x}", "Lu en {x}", "Gelesen als {x}"),
+  readDate: l("Read as a {x} date", "Lu comme une date {x}", "Gelesen als {x}-Datum"),
   empty: l(
     "Type a timestamp or a date, or use the current time.",
     "Tape un timestamp ou une date, ou prends l'heure actuelle.",
+    "Gib einen Zeitstempel oder ein Datum ein oder nimm die aktuelle Uhrzeit.",
   ),
   invalid: l(
     "Not a timestamp or a date I can read. Try 1706702400 or 2024-01-31T12:00:00Z.",
     "Ni un timestamp ni une date lisible. Essaie 1706702400 ou 2024-01-31T12:00:00Z.",
+    "Weder ein lesbarer Zeitstempel noch ein Datum. Versuch 1706702400 oder 2024-01-31T12:00:00Z.",
   ),
   range: l(
     "Out of range: dates stop around year 275,000.",
     "Hors limites : les dates s'arrêtent vers l'an 275 000.",
+    "Außerhalb des Bereichs: Daten enden etwa im Jahr 275.000.",
   ),
-  formats: l("Formats", "Formats"),
-  isoUtc: l("ISO 8601 (UTC)", "ISO 8601 (UTC)"),
-  isoZone: l("ISO 8601 (zone)", "ISO 8601 (fuseau)"),
-  inZone: l("In the zone", "Dans le fuseau"),
-  local: l("Local time", "Heure locale"),
-  rfc: l("RFC 2822", "RFC 2822"),
-  relative: l("Relative", "Relatif"),
-  unix: l("Unix time", "Temps Unix"),
-  sec: l("Seconds", "Secondes"),
-  ms: l("Milliseconds", "Millisecondes"),
-  us: l("Microseconds", "Microsecondes"),
-  ns: l("Nanoseconds", "Nanosecondes"),
-  calendar: l("Calendar", "Calendrier"),
-  dayOfYear: l("Day of year", "Jour de l'année"),
-  week: l("ISO week", "Semaine ISO"),
-  weekday: l("Day", "Jour"),
+  formats: l("Formats", "Formats", "Formate"),
+  isoUtc: l("ISO 8601 (UTC)", "ISO 8601 (UTC)", "ISO 8601 (UTC)"),
+  isoZone: l("ISO 8601 (zone)", "ISO 8601 (fuseau)", "ISO 8601 (Zeitzone)"),
+  inZone: l("In the zone", "Dans le fuseau", "In der Zeitzone"),
+  local: l("Local time", "Heure locale", "Ortszeit"),
+  rfc: l("RFC 2822", "RFC 2822", "RFC 2822"),
+  relative: l("Relative", "Relatif", "Relativ"),
+  unix: l("Unix time", "Temps Unix", "Unixzeit"),
+  sec: l("Seconds", "Secondes", "Sekunden"),
+  ms: l("Milliseconds", "Millisecondes", "Millisekunden"),
+  us: l("Microseconds", "Microsecondes", "Mikrosekunden"),
+  ns: l("Nanoseconds", "Nanosecondes", "Nanosekunden"),
+  calendar: l("Calendar", "Calendrier", "Kalender"),
+  dayOfYear: l("Day of year", "Jour de l'année", "Tag im Jahr"),
+  week: l("ISO week", "Semaine ISO", "ISO-Kalenderwoche"),
+  weekday: l("Day", "Jour", "Wochentag"),
 };
 
 const UNIT_NAME = { s: T.seconds, ms: T.millis, us: T.micros, ns: T.nanos };

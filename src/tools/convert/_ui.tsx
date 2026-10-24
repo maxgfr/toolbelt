@@ -4,7 +4,7 @@
  * time zone picker.
  */
 import { useMemo, useRef, useState } from "preact/hooks";
-import { fmt, l, lang, tr } from "../../i18n";
+import { fmt, l, pick, tr } from "../../i18n";
 import {
   formatOffset,
   isValidZone,
@@ -14,11 +14,6 @@ import {
   zoneCity,
   zoneOffset,
 } from "./_shared";
-
-/** The Intl locale of the UI language. */
-export function locale(): string {
-  return lang.value === "fr" ? "fr-FR" : "en-US";
-}
 
 /** A number for display: grouped digits, up to `digits` significant digits, scientific when extreme. */
 export function formatNum(n: number, digits = 10): string {
@@ -50,7 +45,7 @@ export function formatDuration(seconds: number): string {
   if (seconds < 60) return `${fmt(seconds, { maximumSignificantDigits: 3 })} s`;
   const { days: d, hours: h, minutes: m, seconds: s } = splitSeconds(Math.round(seconds));
   const parts: string[] = [];
-  if (d) parts.push(`${fmt(d)} ${lang.value === "fr" ? "j" : "d"}`);
+  if (d) parts.push(`${fmt(d)} ${pick({ en: "d", fr: "j", de: "d" })}`);
   if (h) parts.push(`${h} h`);
   if (m && d < 10) parts.push(`${m} min`);
   if (s && !d) parts.push(`${s} s`);
@@ -58,9 +53,13 @@ export function formatDuration(seconds: number): string {
 }
 
 const T = {
-  search: l("Search a city, zone or offset…", "Chercher une ville, un fuseau, un décalage…"),
-  none: l("No matching time zone", "Aucun fuseau ne correspond"),
-  invalid: l("Unknown time zone", "Fuseau inconnu"),
+  search: l(
+    "Search a city, zone or offset…",
+    "Chercher une ville, un fuseau, un décalage…",
+    "Stadt, Zeitzone oder Verschiebung suchen…",
+  ),
+  none: l("No matching time zone", "Aucun fuseau ne correspond", "Keine passende Zeitzone"),
+  invalid: l("Unknown time zone", "Fuseau inconnu", "Unbekannte Zeitzone"),
 };
 
 let uid = 0;
