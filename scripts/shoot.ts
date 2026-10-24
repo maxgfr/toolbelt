@@ -10,7 +10,7 @@ const browser = await chromium.launch();
 const errors: string[] = [];
 for (const scheme of ["light", "dark"] as const) {
   const page = await browser.newPage({
-    viewport: { width: 1280, height: 900 },
+    viewport: { width: Number(process.env.W ?? 1280), height: 900 },
     colorScheme: scheme,
   });
   const seed = process.env.SEED;

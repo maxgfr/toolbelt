@@ -418,6 +418,14 @@ input[type="range"] {
   overflow-wrap: anywhere;
   font-size: 13.5px;
 }
+@media (max-width: 560px) {
+  .output {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .output-label {
+    grid-column: 1 / -1;
+  }
+}
 
 .stats {
   display: grid;
