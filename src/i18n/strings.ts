@@ -15,6 +15,8 @@ export const S = {
   all: l("All tools", "Tous les outils", "Alle Werkzeuge"),
   categories: l("Categories", "Catégories", "Kategorien"),
   home: l("All tools", "Tous les outils", "Alle Werkzeuge"),
+  removeRecent: l("Remove from recent", "Retirer des récents", "Aus dem Verlauf entfernen"),
+  clearRecents: l("Clear", "Effacer", "Leeren"),
   addFavorite: l("Add to favorites", "Ajouter aux favoris", "Zu Favoriten hinzufügen"),
   removeFavorite: l("Remove from favorites", "Retirer des favoris", "Aus Favoriten entfernen"),
   share: l(

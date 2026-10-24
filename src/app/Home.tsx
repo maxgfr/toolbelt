@@ -4,13 +4,13 @@ import { fmt, tr } from "../i18n";
 import { S } from "../i18n/strings";
 import { CATEGORIES, findTool, searchTools, TOOLS } from "../tools/registry";
 import type { ToolMeta } from "../tools/types";
-import { favorites, recents, toggleFavorite } from "./state";
+import { clearRecents, favorites, recents, removeRecent, toggleFavorite } from "./state";
 import { Icon } from "./ui";
 
-export function ToolCard({ tool }: { tool: ToolMeta }) {
+export function ToolCard({ tool, onRemove }: { tool: ToolMeta; onRemove?: () => void }) {
   const fav = favorites.value.includes(tool.id);
   return (
-    <div class="card">
+    <div class={`card ${onRemove ? "removable" : ""}`}>
       <a class="card-link" href={`#/${tool.id}`}>
         <span class="card-icon">
           <Icon d={tool.icon} size={20} />
@@ -30,15 +30,26 @@ export function ToolCard({ tool }: { tool: ToolMeta }) {
       >
         <Icon name="star" size={16} class={fav ? "filled" : ""} />
       </button>
+      {onRemove && (
+        <button
+          type="button"
+          class="card-remove"
+          aria-label={`${tr(S.removeRecent)}: ${tr(tool.title)}`}
+          title={tr(S.removeRecent)}
+          onClick={onRemove}
+        >
+          <Icon name="close" size={15} />
+        </button>
+      )}
     </div>
   );
 }
 
-function Grid({ tools }: { tools: ToolMeta[] }) {
+function Grid({ tools, onRemove }: { tools: ToolMeta[]; onRemove?: (id: string) => void }) {
   return (
     <div class="cards">
       {tools.map((t) => (
-        <ToolCard key={t.id} tool={t} />
+        <ToolCard key={t.id} tool={t} {...(onRemove ? { onRemove: () => onRemove(t.id) } : {})} />
       ))}
     </div>
   );
@@ -118,8 +129,13 @@ export function Home() {
           )}
           {recent.length > 0 && (
             <section class="home-section">
-              <h2>{tr(S.recent)}</h2>
-              <Grid tools={recent.slice(0, 4)} />
+              <h2>
+                {tr(S.recent)}
+                <button type="button" class="section-clear" onClick={clearRecents}>
+                  {tr(S.clearRecents)}
+                </button>
+              </h2>
+              <Grid tools={recent.slice(0, 4)} onRemove={removeRecent} />
             </section>
           )}
           {CATEGORIES.filter((c) => c.tools.length).map((c) => (
