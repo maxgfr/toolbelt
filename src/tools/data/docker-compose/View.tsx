@@ -12,38 +12,52 @@ docker run -d --name web -p 8080:80 --env-file .env \\
   -v ./site:/usr/share/nginx/html:ro --link db nginx:alpine`;
 
 const T = {
-  input: l("docker run commands", "Commandes docker run"),
+  input: l("docker run commands", "Commandes docker run", "docker-run-Befehle"),
   placeholder: l(
     "Paste one or more docker run commands (one per line, \\ continuations allowed)…",
     "Colle une ou plusieurs commandes docker run (une par ligne, continuations \\ acceptées)…",
+    "Füge einen oder mehrere docker-run-Befehle ein (einer pro Zeile, Fortsetzungen mit \\ erlaubt)…",
   ),
-  output: l("docker-compose.yml", "docker-compose.yml"),
-  sample: l("Load sample", "Charger l'exemple"),
-  quote: l("Unclosed quote on line {line}.", "Guillemet non fermé à la ligne {line}."),
-  services: l("{n} services", "{n} services"),
-  oneService: l("1 service", "1 service"),
+  output: l("docker-compose.yml", "docker-compose.yml", "docker-compose.yml"),
+  sample: l("Load sample", "Charger l'exemple", "Beispiel laden"),
+  quote: l(
+    "Unclosed quote on line {line}.",
+    "Guillemet non fermé à la ligne {line}.",
+    "Anführungszeichen in Zeile {line} nicht geschlossen.",
+  ),
+  services: l("{n} services", "{n} services", "{n} Services"),
+  oneService: l("1 service", "1 service", "1 Service"),
   rmNote: l(
     '--rm: compose keeps stopped containers; for one-off runs use "docker compose run --rm SERVICE".',
     '--rm : compose garde les conteneurs arrêtés ; pour une exécution ponctuelle, utilise "docker compose run --rm SERVICE".',
+    '--rm: Compose behält gestoppte Container; für einmalige Läufe nutze "docker compose run --rm SERVICE".',
   ),
   hint: l(
     "Named volumes are declared at the end; custom networks are marked external (create them with docker network create, or remove the line).",
     "Les volumes nommés sont déclarés à la fin ; les réseaux personnalisés sont marqués external (crée-les avec docker network create, ou retire la ligne).",
+    "Benannte Volumes werden am Ende deklariert; eigene Netzwerke sind als external markiert (lege sie mit docker network create an oder entferne die Zeile).",
   ),
   w: {
     unsupported: l(
       "{service}: {subject} has no compose equivalent and was left out.",
       "{service} : {subject} n'a pas d'équivalent compose et a été ignoré.",
+      "{service}: {subject} hat keine Compose-Entsprechung und wurde weggelassen.",
     ),
     publishAll: l(
       "{service}: -P publishes every exposed port on random host ports; list them with -p instead.",
       "{service} : -P publie tous les ports exposés sur des ports aléatoires ; liste-les plutôt avec -p.",
+      "{service}: -P veröffentlicht alle freigegebenen Ports auf zufälligen Host-Ports; liste sie stattdessen mit -p auf.",
     ),
     notRun: l(
       "Skipped, not a docker run command: {subject}",
       "Ignorée, ce n'est pas une commande docker run : {subject}",
+      "Übersprungen, kein docker-run-Befehl: {subject}",
     ),
-    noImage: l("No image in: {subject}", "Aucune image dans : {subject}"),
+    noImage: l(
+      "No image in: {subject}",
+      "Aucune image dans : {subject}",
+      "Kein Image in: {subject}",
+    ),
   } satisfies Record<WarningCode, unknown>,
 };
 

@@ -9,35 +9,51 @@ import { parseQuery, toQuery } from "./logic";
 type Mode = "qs2json" | "json2qs";
 
 const T = {
-  qs2json: l("Query string → JSON", "Query string → JSON"),
-  json2qs: l("JSON → query string", "JSON → query string"),
-  qs: l("Query string or URL", "Query string ou URL"),
-  json: l("JSON", "JSON"),
+  qs2json: l("Query string → JSON", "Query string → JSON", "Query-String → JSON"),
+  json2qs: l("JSON → query string", "JSON → query string", "JSON → Query-String"),
+  qs: l("Query string or URL", "Query string ou URL", "Query-String oder URL"),
+  json: l("JSON", "JSON", "JSON"),
   phQs: l(
     "Paste a URL or a query string, e.g. https://example.com/?q=caf%C3%A9&tag=a&tag=b",
     "Colle une URL ou une query string, par ex. https://example.com/?q=caf%C3%A9&tag=a&tag=b",
+    "Füge eine URL oder einen Query-String ein, z. B. https://example.com/?q=caf%C3%A9&tag=a&tag=b",
   ),
   phJson: l(
     'Paste a JSON object, e.g. {"q": "café", "tags": ["a", "b"]}',
     'Colle un objet JSON, par ex. {"q": "café", "tags": ["a", "b"]}',
+    'Füge ein JSON-Objekt ein, z. B. {"q": "café", "tags": ["a", "b"]}',
   ),
-  plusIn: l("Read + as a space", "Lire + comme une espace"),
-  plusOut: l("Write spaces as +", "Écrire les espaces en +"),
-  brackets: l("Nested keys a[b]=1, a[]=1", "Clés imbriquées a[b]=1, a[]=1"),
-  infer: l("Detect numbers, booleans, null", "Détecter nombres, booléens, null"),
-  swap: l("Use the result as input", "Reprendre le résultat en entrée"),
-  notObject: l("Expected a JSON object.", "Attendu : un objet JSON."),
+  plusIn: l("Read + as a space", "Lire + comme une espace", "+ als Leerzeichen lesen"),
+  plusOut: l("Write spaces as +", "Écrire les espaces en +", "Leerzeichen als + schreiben"),
+  brackets: l(
+    "Nested keys a[b]=1, a[]=1",
+    "Clés imbriquées a[b]=1, a[]=1",
+    "Verschachtelte Schlüssel a[b]=1, a[]=1",
+  ),
+  infer: l(
+    "Detect numbers, booleans, null",
+    "Détecter nombres, booléens, null",
+    "Zahlen, Booleans, null erkennen",
+  ),
+  swap: l(
+    "Use the result as input",
+    "Reprendre le résultat en entrée",
+    "Ergebnis als Eingabe verwenden",
+  ),
+  notObject: l("Expected a JSON object.", "Attendu : un objet JSON.", "Erwartet: ein JSON-Objekt."),
   badEncoding: l(
     "Broken %-encoding, kept as typed: {parts}",
     "Encodage % invalide, gardé tel quel : {parts}",
+    "Fehlerhafte %-Kodierung, unverändert übernommen: {parts}",
   ),
   conflicts: l(
     "Keys used both as a value and as an object (the later one wins): {keys}",
     "Clés utilisées à la fois comme valeur et comme objet (la dernière l'emporte) : {keys}",
+    "Schlüssel, die sowohl als Wert als auch als Objekt verwendet werden (der spätere gilt): {keys}",
   ),
-  key: l("Key", "Clé"),
-  value: l("Value", "Valeur"),
-  count: l("{n} parameters", "{n} paramètres"),
+  key: l("Key", "Clé", "Schlüssel"),
+  value: l("Value", "Valeur", "Wert"),
+  count: l("{n} parameters", "{n} paramètres", "{n} Parameter"),
 };
 
 export default function QueryString() {

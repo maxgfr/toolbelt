@@ -1,4 +1,5 @@
 /** Small helpers shared by the data tools: safe keys, scalar inference, JSON paths, previews. */
+import { locale } from "../../i18n";
 
 export type Path = (string | number)[];
 
@@ -64,7 +65,14 @@ export function preview(value: unknown, max = 120): string {
   return s.length > max ? `${s.slice(0, max - 1)}…` : s;
 }
 
-const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+let collator: { loc: string; c: Intl.Collator } | undefined;
+
+/** A natural-order collator for the current language, rebuilt when the language changes. */
+function collatorFor(loc: string): Intl.Collator {
+  if (collator?.loc !== loc)
+    collator = { loc, c: new Intl.Collator(loc, { numeric: true, sensitivity: "base" }) };
+  return collator.c;
+}
 
 /** Compares table cells: numbers as numbers, text naturally ("item 2" before "item 10"), empty last. */
 export function compareCells(a: string, b: string): number {
@@ -74,7 +82,7 @@ export function compareCells(a: string, b: string): number {
   const na = Number(a);
   const nb = Number(b);
   if (!Number.isNaN(na) && !Number.isNaN(nb)) return na - nb;
-  return collator.compare(a, b);
+  return collatorFor(locale()).compare(a, b);
 }
 
 /** Row indices in sorted order by one column (stable; empty cells stay last either way). */

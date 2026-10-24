@@ -4,13 +4,14 @@ import { fmt, l, tr } from "../../i18n";
 import { type Located, sortOrder } from "./_shared";
 
 const T = {
-  at: l("line {line}, column {col}", "ligne {line}, colonne {col}"),
-  sortBy: l("Sort by {col}", "Trier par {col}"),
+  at: l("line {line}, column {col}", "ligne {line}, colonne {col}", "Zeile {line}, Spalte {col}"),
+  sortBy: l("Sort by {col}", "Trier par {col}", "Nach {col} sortieren"),
   capped: l(
     "Showing the first {shown} rows of {total}.",
     "Affichage des {shown} premières lignes sur {total}.",
+    "Die ersten {shown} von {total} Zeilen werden angezeigt.",
   ),
-  rows: l("{n} rows", "{n} lignes"),
+  rows: l("{n} rows", "{n} lignes", "{n} Zeilen"),
 };
 
 /** "line 3, column 7" in the current language. */

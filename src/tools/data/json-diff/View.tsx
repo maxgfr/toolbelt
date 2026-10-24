@@ -10,33 +10,40 @@ import { type Change, count, diffJson, report } from "./logic";
 type Filter = "all" | Change["kind"];
 
 const T = {
-  a: l("Original JSON", "JSON d'origine"),
-  b: l("Modified JSON", "JSON modifié"),
-  phA: l("Paste the original JSON…", "Colle le JSON d'origine…"),
-  phB: l("Paste the modified JSON…", "Colle le JSON modifié…"),
-  ignoreOrder: l("Ignore array order", "Ignorer l'ordre des tableaux"),
-  swap: l("Swap", "Inverser"),
-  copyReport: l("Copy report", "Copier le rapport"),
-  all: l("All", "Tout"),
-  added: l("Added", "Ajouté"),
-  removed: l("Removed", "Supprimé"),
-  changed: l("Changed", "Modifié"),
-  kind: l("Change", "Changement"),
-  path: l("Path", "Chemin"),
-  value: l("Value", "Valeur"),
+  a: l("Original JSON", "JSON d'origine", "Original-JSON"),
+  b: l("Modified JSON", "JSON modifié", "Geändertes JSON"),
+  phA: l("Paste the original JSON…", "Colle le JSON d'origine…", "Füge das Original-JSON ein…"),
+  phB: l("Paste the modified JSON…", "Colle le JSON modifié…", "Füge das geänderte JSON ein…"),
+  ignoreOrder: l(
+    "Ignore array order",
+    "Ignorer l'ordre des tableaux",
+    "Array-Reihenfolge ignorieren",
+  ),
+  swap: l("Swap", "Inverser", "Tauschen"),
+  copyReport: l("Copy report", "Copier le rapport", "Bericht kopieren"),
+  all: l("All", "Tout", "Alle"),
+  added: l("Added", "Ajouté", "Hinzugefügt"),
+  removed: l("Removed", "Supprimé", "Entfernt"),
+  changed: l("Changed", "Modifié", "Geändert"),
+  kind: l("Change", "Changement", "Änderung"),
+  path: l("Path", "Chemin", "Pfad"),
+  value: l("Value", "Valeur", "Wert"),
   empty: l(
     "Paste two JSON documents to compare them.",
     "Colle deux documents JSON pour les comparer.",
+    "Füge zwei JSON-Dokumente ein, um sie zu vergleichen.",
   ),
   same: l(
     "The two documents are equivalent (key order ignored).",
     "Les deux documents sont équivalents (ordre des clés ignoré).",
+    "Die beiden Dokumente sind gleichwertig (Schlüsselreihenfolge ignoriert).",
   ),
   capped: l(
     "Showing the first {shown} changes of {total}.",
     "Affichage des {shown} premiers changements sur {total}.",
+    "Die ersten {shown} von {total} Änderungen werden angezeigt.",
   ),
-  valid: l("Valid JSON", "JSON valide"),
+  valid: l("Valid JSON", "JSON valide", "Gültiges JSON"),
 };
 
 const MAX = 1000;

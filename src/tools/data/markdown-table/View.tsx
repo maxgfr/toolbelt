@@ -16,36 +16,48 @@ import {
 type Mode = "to-md" | "from-md";
 
 const T = {
-  toMd: l("CSV / JSON → Markdown", "CSV / JSON → Markdown"),
-  fromMd: l("Markdown → CSV / JSON", "Markdown → CSV / JSON"),
-  data: l("CSV, TSV or JSON array", "CSV, TSV ou tableau JSON"),
-  markdown: l("Markdown table", "Tableau Markdown"),
+  toMd: l("CSV / JSON → Markdown", "CSV / JSON → Markdown", "CSV / JSON → Markdown"),
+  fromMd: l("Markdown → CSV / JSON", "Markdown → CSV / JSON", "Markdown → CSV / JSON"),
+  data: l("CSV, TSV or JSON array", "CSV, TSV ou tableau JSON", "CSV, TSV oder JSON-Array"),
+  markdown: l("Markdown table", "Tableau Markdown", "Markdown-Tabelle"),
   phData: l(
     "Paste CSV, TSV (e.g. copied from a spreadsheet) or a JSON array…",
     "Colle du CSV, du TSV (copié d'un tableur par ex.) ou un tableau JSON…",
+    "Füge CSV, TSV (z. B. aus einer Tabellenkalkulation kopiert) oder ein JSON-Array ein…",
   ),
   phMd: l(
     "Paste a Markdown table (text around it is ignored)…",
     "Colle un tableau Markdown (le texte autour est ignoré)…",
+    "Füge eine Markdown-Tabelle ein (Text drumherum wird ignoriert)…",
   ),
-  pretty: l("Pad columns", "Aligner les colonnes"),
-  align: l("Column alignment", "Alignement des colonnes"),
-  all: l("All columns", "Toutes les colonnes"),
-  none: l("Default", "Par défaut"),
-  left: l("Left", "Gauche"),
-  center: l("Center", "Centre"),
-  right: l("Right", "Droite"),
-  swap: l("Use the result as input", "Reprendre le résultat en entrée"),
+  pretty: l("Pad columns", "Aligner les colonnes", "Spaltenbreiten angleichen"),
+  align: l("Column alignment", "Alignement des colonnes", "Spaltenausrichtung"),
+  all: l("All columns", "Toutes les colonnes", "Alle Spalten"),
+  none: l("Default", "Par défaut", "Standard"),
+  left: l("Left", "Gauche", "Links"),
+  center: l("Center", "Centre", "Zentriert"),
+  right: l("Right", "Droite", "Rechts"),
+  swap: l(
+    "Use the result as input",
+    "Reprendre le résultat en entrée",
+    "Ergebnis als Eingabe verwenden",
+  ),
   noTable: l(
     "No Markdown table found: it needs a header line, then a line like | --- | :-: |.",
     "Aucun tableau Markdown trouvé : il faut une ligne d'en-tête, puis une ligne comme | --- | :-: |.",
+    "Keine Markdown-Tabelle gefunden: Sie braucht eine Kopfzeile, dann eine Zeile wie | --- | :-: |.",
   ),
   shape: l(
     "Expected an array (of objects, arrays or values) or an object.",
     "Attendu : un tableau (d'objets, de tableaux ou de valeurs) ou un objet.",
+    "Erwartet: ein Array (aus Objekten, Arrays oder Werten) oder ein Objekt.",
   ),
-  found: l("{rows} rows × {cols} columns", "{rows} lignes × {cols} colonnes"),
-  preview: l("Preview", "Aperçu"),
+  found: l(
+    "{rows} rows × {cols} columns",
+    "{rows} lignes × {cols} colonnes",
+    "{rows} Zeilen × {cols} Spalten",
+  ),
+  preview: l("Preview", "Aperçu", "Vorschau"),
 };
 
 const ALIGNS: Align[] = ["none", "left", "center", "right"];

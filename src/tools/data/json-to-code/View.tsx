@@ -8,48 +8,56 @@ import { parseJson } from "../json/logic";
 import { type CodeOptions, LANGS, type Lang, toCode } from "./logic";
 
 const T = {
-  input: l("JSON sample", "Exemple JSON"),
+  input: l("JSON sample", "Exemple JSON", "JSON-Beispiel"),
   placeholder: l(
     'Paste a JSON sample, e.g. {"id": 1, "tags": ["a"], "owner": {"name": "Ann"}}',
     'Colle un exemple JSON, par ex. {"id": 1, "tags": ["a"], "owner": {"name": "Ann"}}',
+    'Füge ein JSON-Beispiel ein, z. B. {"id": 1, "tags": ["a"], "owner": {"name": "Ann"}}',
   ),
-  lang: l("Language", "Langage"),
-  rootName: l("Root type name", "Nom du type racine"),
-  style: l("Style", "Style"),
-  records: l("Records", "Records"),
-  pojo: l("Classes (getters/setters)", "Classes (getters/setters)"),
-  output: l("Code", "Code"),
-  valid: l("Valid JSON", "JSON valide"),
+  lang: l("Language", "Langage", "Sprache"),
+  rootName: l("Root type name", "Nom du type racine", "Name des Wurzeltyps"),
+  style: l("Style", "Style", "Stil"),
+  records: l("Records", "Records", "Records"),
+  pojo: l("Classes (getters/setters)", "Classes (getters/setters)", "Klassen (Getter/Setter)"),
+  output: l("Code", "Code", "Code"),
+  valid: l("Valid JSON", "JSON valide", "Gültiges JSON"),
   hint: l(
     "Keys missing from some array items become optional, null makes a value nullable, mixed values use the language's generic JSON type.",
     "Les clés absentes de certains éléments d'un tableau deviennent optionnelles, null rend une valeur nullable, les valeurs mélangées prennent le type JSON générique du langage.",
+    "Schlüssel, die in manchen Array-Elementen fehlen, werden optional, null macht einen Wert nullable, gemischte Werte nutzen den generischen JSON-Typ der Sprache.",
   ),
   notes: {
-    go: l("Go structs with json tags.", "Structs Go avec tags json."),
+    go: l("Go structs with json tags.", "Structs Go avec tags json.", "Go-Structs mit json-Tags."),
     rust: l(
       "Rust structs for serde (needs serde with derive, and serde_json for generic values).",
       "Structs Rust pour serde (nécessite serde avec derive, et serde_json pour les valeurs génériques).",
+      "Rust-Structs für serde (braucht serde mit derive und serde_json für generische Werte).",
     ),
     kotlin: l(
       "Kotlin data classes for kotlinx.serialization.",
       "Data classes Kotlin pour kotlinx.serialization.",
+      "Kotlin-Data-Classes für kotlinx.serialization.",
     ),
     java: l(
       "Java 16+ for records; renamed keys use Jackson's @JsonProperty.",
       "Java 16+ pour les records ; les clés renommées utilisent @JsonProperty de Jackson.",
+      "Java 16+ für Records; umbenannte Schlüssel nutzen @JsonProperty von Jackson.",
     ),
     csharp: l(
       "C# positional records for System.Text.Json.",
       "Records positionnels C# pour System.Text.Json.",
+      "Positionale C#-Records für System.Text.Json.",
     ),
     python: l(
       "Python 3.10+ (X | None syntax). Dataclasses do not rename keys: see the comments.",
       "Python 3.10+ (syntaxe X | None). Les dataclasses ne renomment pas les clés : voir les commentaires.",
+      "Python 3.10+ (Syntax X | None). Dataclasses benennen Schlüssel nicht um: siehe die Kommentare.",
     ),
-    swift: l("Swift Codable structs.", "Structs Swift Codable."),
+    swift: l("Swift Codable structs.", "Structs Swift Codable.", "Swift-Codable-Structs."),
     dart: l(
       "Dart classes with fromJson / toJson, no code generation needed.",
       "Classes Dart avec fromJson / toJson, sans génération de code.",
+      "Dart-Klassen mit fromJson / toJson, ohne Codegenerierung.",
     ),
   } satisfies Record<Lang, unknown>,
 };
