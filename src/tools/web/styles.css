@@ -667,3 +667,231 @@
   font-size: 13.5px;
   color: var(--muted);
 }
+
+/* ip-tools */
+.input.ip-tools-input {
+  font-size: 16px;
+}
+.ip-tools-outputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr));
+  gap: 8px;
+}
+
+/* mac-address */
+.mac-address-end {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 8px;
+}
+.mac-address-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+}
+.mac-address-legend div {
+  display: flex;
+  gap: 8px;
+}
+.mac-address-legend dt {
+  min-width: 32px;
+  font-weight: 640;
+}
+.mac-address-legend dd {
+  margin: 0;
+}
+
+/* ipv6-ula */
+.ipv6-ula-input {
+  flex-wrap: nowrap;
+}
+.ipv6-ula-input .input {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+}
+@media (max-width: 560px) {
+  .ipv6-ula-input {
+    flex-wrap: wrap;
+  }
+}
+.ipv6-ula-prefix.mono {
+  margin: 0;
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--accent-soft);
+  font-size: 22px;
+  font-weight: 640;
+  overflow-wrap: anywhere;
+}
+.ipv6-ula-outputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr));
+  gap: 8px;
+}
+
+/* random-port */
+.random-port-hero.mono {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.random-port-table {
+  max-height: 520px;
+}
+
+/* git-cheatsheet */
+.git-cheatsheet-select {
+  min-width: 220px;
+}
+.git-cheatsheet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.git-cheatsheet-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+}
+.git-cheatsheet-item p {
+  margin: 0;
+}
+.git-cheatsheet-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.git-cheatsheet-cmd {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.git-cheatsheet-cmd pre {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: var(--surface-2);
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* email-normalize */
+.email-normalize-options {
+  gap: 6px;
+}
+.email-normalize-table {
+  max-height: 520px;
+}
+
+/* http-headers */
+.http-headers-cat {
+  min-width: 220px;
+}
+.http-headers-list,
+.http-headers-findings {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.http-headers-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+}
+.http-headers-item p {
+  margin: 0;
+  color: var(--ink-2);
+}
+.http-headers-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.http-headers-example {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.http-headers-example code {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  overflow-wrap: anywhere;
+}
+.http-headers-finding {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-radius: 9px;
+  background: var(--surface);
+}
+.http-headers-finding p {
+  margin: 2px 0 0;
+}
+.http-headers-bad {
+  border-left-color: var(--danger);
+}
+.http-headers-warn {
+  border-left-color: var(--warn);
+}
+.http-headers-info {
+  border-left-color: var(--accent);
+}
+.http-headers-ok {
+  border-left-color: var(--success);
+}
+@media (max-width: 560px) {
+  .http-headers-finding {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* curl-convert */
+.curl-convert-warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.curl-convert-warnings li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
