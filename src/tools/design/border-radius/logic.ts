@@ -132,23 +132,35 @@ export function randomBlob(rand: () => number = Math.random): Radius {
 
 export interface RadiusPreset {
   id: string;
-  name: { en: string; fr: string };
+  name: { en: string; fr: string; de: string };
   r: Radius;
 }
 
 const pc = (h: Quad, v: Quad = h): Radius => ({ unit: "%", h, v });
 
 export const PRESETS: RadiusPreset[] = [
-  { id: "blob", name: { en: "Blob", fr: "Blob" }, r: pc([30, 70, 70, 30], [30, 30, 70, 70]) },
-  { id: "pebble", name: { en: "Pebble", fr: "Galet" }, r: pc([63, 37, 54, 46], [55, 48, 52, 45]) },
-  { id: "circle", name: { en: "Circle", fr: "Cercle" }, r: pc([50, 50, 50, 50]) },
-  { id: "egg", name: { en: "Egg", fr: "Œuf" }, r: pc([50, 50, 50, 50], [60, 60, 40, 40]) },
-  { id: "leaf", name: { en: "Leaf", fr: "Feuille" }, r: pc([0, 100, 0, 100]) },
-  { id: "drop", name: { en: "Drop", fr: "Goutte" }, r: pc([0, 50, 50, 50]) },
-  { id: "tab", name: { en: "Tab", fr: "Onglet" }, r: pc([20, 20, 0, 0]) },
+  {
+    id: "blob",
+    name: { en: "Blob", fr: "Blob", de: "Blob" },
+    r: pc([30, 70, 70, 30], [30, 30, 70, 70]),
+  },
+  {
+    id: "pebble",
+    name: { en: "Pebble", fr: "Galet", de: "Kiesel" },
+    r: pc([63, 37, 54, 46], [55, 48, 52, 45]),
+  },
+  { id: "circle", name: { en: "Circle", fr: "Cercle", de: "Kreis" }, r: pc([50, 50, 50, 50]) },
+  {
+    id: "egg",
+    name: { en: "Egg", fr: "Œuf", de: "Ei" },
+    r: pc([50, 50, 50, 50], [60, 60, 40, 40]),
+  },
+  { id: "leaf", name: { en: "Leaf", fr: "Feuille", de: "Blatt" }, r: pc([0, 100, 0, 100]) },
+  { id: "drop", name: { en: "Drop", fr: "Goutte", de: "Tropfen" }, r: pc([0, 50, 50, 50]) },
+  { id: "tab", name: { en: "Tab", fr: "Onglet", de: "Tab" }, r: pc([20, 20, 0, 0]) },
   {
     id: "rounded",
-    name: { en: "Rounded", fr: "Arrondi" },
+    name: { en: "Rounded", fr: "Arrondi", de: "Abgerundet" },
     r: { unit: "px", h: [16, 16, 16, 16], v: [16, 16, 16, 16] },
   },
 ];

@@ -31,25 +31,25 @@ export type Glass = {
 export const BACKGROUNDS = [
   {
     id: "aurora",
-    name: { en: "Aurora", fr: "Aurore" },
+    name: { en: "Aurora", fr: "Aurore", de: "Polarlicht" },
     ink: "#ffffff",
     css: "radial-gradient(circle at 20% 25%, #22d3ee 0, transparent 40%), radial-gradient(circle at 80% 30%, #a855f7 0, transparent 45%), radial-gradient(circle at 50% 85%, #f43f5e 0, transparent 45%), linear-gradient(135deg, #1e3a8a, #0f172a)",
   },
   {
     id: "sunset",
-    name: { en: "Sunset", fr: "Coucher de soleil" },
+    name: { en: "Sunset", fr: "Coucher de soleil", de: "Sonnenuntergang" },
     ink: "#ffffff",
     css: "radial-gradient(circle at 75% 20%, #fde047 0, transparent 35%), radial-gradient(circle at 15% 80%, #ec4899 0, transparent 45%), linear-gradient(160deg, #f97316, #9d174d)",
   },
   {
     id: "mint",
-    name: { en: "Mint", fr: "Menthe" },
+    name: { en: "Mint", fr: "Menthe", de: "Minze" },
     ink: "#ffffff",
     css: "radial-gradient(circle at 25% 30%, #a3e635 0, transparent 40%), radial-gradient(circle at 80% 70%, #06b6d4 0, transparent 45%), linear-gradient(135deg, #0f766e, #134e4a)",
   },
   {
     id: "candy",
-    name: { en: "Candy", fr: "Bonbon" },
+    name: { en: "Candy", fr: "Bonbon", de: "Bonbon" },
     ink: "#1e1b4b",
     css: "radial-gradient(circle at 30% 20%, #f9a8d4 0, transparent 45%), radial-gradient(circle at 70% 80%, #93c5fd 0, transparent 45%), linear-gradient(135deg, #fbcfe8, #c7d2fe)",
   },
@@ -132,34 +132,34 @@ export function cardInk(g: Glass): string {
 
 export interface GlassPreset {
   id: string;
-  name: { en: string; fr: string };
+  name: { en: string; fr: string; de: string };
   g: Partial<Glass>;
 }
 
 export const PRESETS: GlassPreset[] = [
   {
     id: "frosted",
-    name: { en: "Frosted", fr: "Givré" },
+    name: { en: "Frosted", fr: "Givré", de: "Milchglas" },
     g: { blur: 16, alpha: 0.18, saturation: 180, tint: "#ffffff", border: 0.3, shadow: 0.2 },
   },
   {
     id: "clear",
-    name: { en: "Clear", fr: "Transparent" },
+    name: { en: "Clear", fr: "Transparent", de: "Klar" },
     g: { blur: 6, alpha: 0.08, saturation: 120, tint: "#ffffff", border: 0.25, shadow: 0.1 },
   },
   {
     id: "milky",
-    name: { en: "Milky", fr: "Laiteux" },
+    name: { en: "Milky", fr: "Laiteux", de: "Milchig" },
     g: { blur: 28, alpha: 0.45, saturation: 140, tint: "#ffffff", border: 0.5, shadow: 0.15 },
   },
   {
     id: "dark",
-    name: { en: "Dark glass", fr: "Verre fumé" },
+    name: { en: "Dark glass", fr: "Verre fumé", de: "Rauchglas" },
     g: { blur: 20, alpha: 0.35, saturation: 160, tint: "#0f172a", border: 0.4, shadow: 0.35 },
   },
   {
     id: "tinted",
-    name: { en: "Tinted", fr: "Teinté" },
+    name: { en: "Tinted", fr: "Teinté", de: "Getönt" },
     g: { blur: 14, alpha: 0.22, saturation: 200, tint: "#f0abfc", border: 0.35, shadow: 0.2 },
   },
 ];

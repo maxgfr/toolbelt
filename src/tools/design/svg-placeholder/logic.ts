@@ -113,11 +113,23 @@ export function fileName(p: Placeholder, ext: string): string {
   return `placeholder-${p.w}x${p.h}.${ext}`;
 }
 
-export const SIZES: { name: { en: string; fr: string }; w: number; h: number }[] = [
-  { name: { en: "Square 400", fr: "Carré 400" }, w: 400, h: 400 },
-  { name: { en: "4:3 · 800×600", fr: "4:3 · 800×600" }, w: 800, h: 600 },
-  { name: { en: "16:9 · 1280×720", fr: "16:9 · 1280×720" }, w: 1280, h: 720 },
-  { name: { en: "Open Graph 1200×630", fr: "Open Graph 1200×630" }, w: 1200, h: 630 },
-  { name: { en: "Banner 1500×500", fr: "Bannière 1500×500" }, w: 1500, h: 500 },
-  { name: { en: "Avatar 128", fr: "Avatar 128" }, w: 128, h: 128 },
+export const SIZES: { name: { en: string; fr: string; de: string }; w: number; h: number }[] = [
+  { name: { en: "Square 400", fr: "Carré 400", de: "Quadrat 400" }, w: 400, h: 400 },
+  { name: { en: "4:3 · 800×600", fr: "4:3 · 800×600", de: "4:3 · 800×600" }, w: 800, h: 600 },
+  {
+    name: { en: "16:9 · 1280×720", fr: "16:9 · 1280×720", de: "16:9 · 1280×720" },
+    w: 1280,
+    h: 720,
+  },
+  {
+    name: { en: "Open Graph 1200×630", fr: "Open Graph 1200×630", de: "Open Graph 1200×630" },
+    w: 1200,
+    h: 630,
+  },
+  {
+    name: { en: "Banner 1500×500", fr: "Bannière 1500×500", de: "Banner 1500×500" },
+    w: 1500,
+    h: 500,
+  },
+  { name: { en: "Avatar 128", fr: "Avatar 128", de: "Avatar 128" }, w: 128, h: 128 },
 ];

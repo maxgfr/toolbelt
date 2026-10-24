@@ -174,7 +174,7 @@ export function splitLongestEdge(points: Pt[]): { points: Pt[]; index: number } 
 
 export interface ClipPreset {
   id: string;
-  name: { en: string; fr: string };
+  name: { en: string; fr: string; de: string };
   points: Pt[];
 }
 
@@ -185,37 +185,45 @@ const P = (...xs: number[]): Pt[] => {
 };
 
 export const PRESETS: ClipPreset[] = [
-  { id: "triangle", name: { en: "Triangle", fr: "Triangle" }, points: P(50, 0, 100, 100, 0, 100) },
+  {
+    id: "triangle",
+    name: { en: "Triangle", fr: "Triangle", de: "Dreieck" },
+    points: P(50, 0, 100, 100, 0, 100),
+  },
   {
     id: "trapezoid",
-    name: { en: "Trapezoid", fr: "Trapèze" },
+    name: { en: "Trapezoid", fr: "Trapèze", de: "Trapez" },
     points: P(20, 0, 80, 0, 100, 100, 0, 100),
   },
   {
     id: "parallelogram",
-    name: { en: "Parallelogram", fr: "Parallélogramme" },
+    name: { en: "Parallelogram", fr: "Parallélogramme", de: "Parallelogramm" },
     points: P(25, 0, 100, 0, 75, 100, 0, 100),
   },
   {
     id: "rhombus",
-    name: { en: "Rhombus", fr: "Losange" },
+    name: { en: "Rhombus", fr: "Losange", de: "Raute" },
     points: P(50, 0, 100, 50, 50, 100, 0, 50),
   },
-  { id: "pentagon", name: { en: "Pentagon", fr: "Pentagone" }, points: regularPolygon(5) },
+  {
+    id: "pentagon",
+    name: { en: "Pentagon", fr: "Pentagone", de: "Fünfeck" },
+    points: regularPolygon(5),
+  },
   {
     id: "hexagon",
-    name: { en: "Hexagon", fr: "Hexagone" },
+    name: { en: "Hexagon", fr: "Hexagone", de: "Sechseck" },
     points: P(25, 0, 75, 0, 100, 50, 75, 100, 25, 100, 0, 50),
   },
   {
     id: "octagon",
-    name: { en: "Octagon", fr: "Octogone" },
+    name: { en: "Octagon", fr: "Octogone", de: "Achteck" },
     points: P(30, 0, 70, 0, 100, 30, 100, 70, 70, 100, 30, 100, 0, 70, 0, 30),
   },
-  { id: "star", name: { en: "Star", fr: "Étoile" }, points: star(5, 0.4) },
+  { id: "star", name: { en: "Star", fr: "Étoile", de: "Stern" }, points: star(5, 0.4) },
   {
     id: "cross",
-    name: { en: "Cross", fr: "Croix" },
+    name: { en: "Cross", fr: "Croix", de: "Kreuz" },
     points: P(
       35,
       0,
@@ -245,22 +253,22 @@ export const PRESETS: ClipPreset[] = [
   },
   {
     id: "arrow-right",
-    name: { en: "Arrow", fr: "Flèche" },
+    name: { en: "Arrow", fr: "Flèche", de: "Pfeil" },
     points: P(0, 30, 60, 30, 60, 0, 100, 50, 60, 100, 60, 70, 0, 70),
   },
   {
     id: "chevron",
-    name: { en: "Chevron", fr: "Chevron" },
+    name: { en: "Chevron", fr: "Chevron", de: "Chevron" },
     points: P(75, 0, 100, 50, 75, 100, 0, 100, 25, 50, 0, 0),
   },
   {
     id: "message",
-    name: { en: "Speech bubble", fr: "Bulle" },
+    name: { en: "Speech bubble", fr: "Bulle", de: "Sprechblase" },
     points: P(0, 0, 100, 0, 100, 75, 75, 75, 75, 100, 50, 75, 0, 75),
   },
   {
     id: "frame",
-    name: { en: "Frame", fr: "Cadre" },
+    name: { en: "Frame", fr: "Cadre", de: "Rahmen" },
     points: P(0, 0, 0, 100, 25, 100, 25, 25, 75, 25, 75, 75, 25, 75, 25, 100, 100, 100, 100, 0),
   },
 ];

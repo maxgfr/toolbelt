@@ -24,28 +24,34 @@ import {
 } from "./logic";
 
 const T = {
-  presets: l("Presets", "Préréglages"),
-  curve: l("Curve", "Courbe"),
+  presets: l("Presets", "Préréglages", "Voreinstellungen"),
+  curve: l("Curve", "Courbe", "Kurve"),
   graphHint: l(
     "Drag the two handles, or focus one and use the arrow keys (Shift for bigger steps).",
     "Fais glisser les deux poignées, ou sélectionne-en une et utilise les flèches (Maj pour aller plus vite).",
+    "Zieh die beiden Griffe oder wähl einen aus und nutze die Pfeiltasten (Umschalt für größere Schritte).",
   ),
-  p1: l("First control point", "Premier point de contrôle"),
-  p2: l("Second control point", "Second point de contrôle"),
-  paste: l("Paste a timing function", "Coller une fonction de temporisation"),
+  p1: l("First control point", "Premier point de contrôle", "Erster Kontrollpunkt"),
+  p2: l("Second control point", "Second point de contrôle", "Zweiter Kontrollpunkt"),
+  paste: l(
+    "Paste a timing function",
+    "Coller une fonction de temporisation",
+    "Timing-Funktion einfügen",
+  ),
   pasteBad: l(
     "Not a cubic-bezier (four numbers, both x between 0 and 1).",
     "Pas une cubic-bezier (quatre nombres, les deux x entre 0 et 1).",
+    "Kein cubic-bezier (vier Zahlen, beide x zwischen 0 und 1).",
   ),
-  preview: l("Preview", "Aperçu"),
-  duration: l("Duration", "Durée"),
-  pause: l("Pause", "Pause"),
-  play: l("Play", "Lecture"),
-  replay: l("Restart", "Relancer"),
-  yours: l("Your curve", "Ta courbe"),
-  linear: l("linear", "linear"),
-  css: l("CSS", "CSS"),
-  tailwind: l("Tailwind", "Tailwind"),
+  preview: l("Preview", "Aperçu", "Vorschau"),
+  duration: l("Duration", "Durée", "Dauer"),
+  pause: l("Pause", "Pause", "Pause"),
+  play: l("Play", "Lecture", "Abspielen"),
+  replay: l("Restart", "Relancer", "Neu starten"),
+  yours: l("Your curve", "Ta courbe", "Deine Kurve"),
+  linear: l("linear", "linear", "linear"),
+  css: l("CSS", "CSS", "CSS"),
+  tailwind: l("Tailwind", "Tailwind", "Tailwind"),
 };
 
 const W = FRAME.size + 2 * FRAME.pad;

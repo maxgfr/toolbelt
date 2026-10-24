@@ -8,8 +8,8 @@ import { l, tr } from "../../i18n";
 import { hex6, parseColor } from "./_shared";
 
 const T = {
-  pick: l("Pick a color", "Choisir une couleur"),
-  invalid: l("Not a CSS color", "Pas une couleur CSS"),
+  pick: l("Pick a color", "Choisir une couleur", "Farbe wählen"),
+  invalid: l("Not a CSS color", "Pas une couleur CSS", "Keine CSS-Farbe"),
 };
 
 /** A color picker next to a text input that accepts any CSS color. */
@@ -129,7 +129,7 @@ export function Code({ label, code }: { label: string; code: string }) {
 }
 
 /** A row of preset buttons; each shows its name (and optionally a small preview). */
-export function Presets<P extends { id: string; name: { en: string; fr: string } }>({
+export function Presets<P extends { id: string; name: { en: string; fr: string; de: string } }>({
   label,
   presets,
   onPick,

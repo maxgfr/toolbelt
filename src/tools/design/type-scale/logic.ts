@@ -34,16 +34,19 @@ export const DEFAULT: Scale = {
   prefix: "step",
 };
 
-export const RATIOS: { value: number; name: { en: string; fr: string } }[] = [
-  { value: 1.067, name: { en: "Minor second", fr: "Seconde mineure" } },
-  { value: 1.125, name: { en: "Major second", fr: "Seconde majeure" } },
-  { value: 1.2, name: { en: "Minor third", fr: "Tierce mineure" } },
-  { value: 1.25, name: { en: "Major third", fr: "Tierce majeure" } },
-  { value: 1.333, name: { en: "Perfect fourth", fr: "Quarte juste" } },
-  // biome-ignore lint/suspicious/noApproximativeNumericConstant: the interval is named 1.414, not √2
-  { value: 1.414, name: { en: "Augmented fourth", fr: "Quarte augmentée" } },
-  { value: 1.5, name: { en: "Perfect fifth", fr: "Quinte juste" } },
-  { value: 1.618, name: { en: "Golden ratio", fr: "Nombre d'or" } },
+export const RATIOS: { value: number; name: { en: string; fr: string; de: string } }[] = [
+  { value: 1.067, name: { en: "Minor second", fr: "Seconde mineure", de: "Kleine Sekunde" } },
+  { value: 1.125, name: { en: "Major second", fr: "Seconde majeure", de: "Große Sekunde" } },
+  { value: 1.2, name: { en: "Minor third", fr: "Tierce mineure", de: "Kleine Terz" } },
+  { value: 1.25, name: { en: "Major third", fr: "Tierce majeure", de: "Große Terz" } },
+  { value: 1.333, name: { en: "Perfect fourth", fr: "Quarte juste", de: "Reine Quarte" } },
+  {
+    // biome-ignore lint/suspicious/noApproximativeNumericConstant: the interval is named 1.414, not √2
+    value: 1.414,
+    name: { en: "Augmented fourth", fr: "Quarte augmentée", de: "Übermäßige Quarte" },
+  },
+  { value: 1.5, name: { en: "Perfect fifth", fr: "Quinte juste", de: "Reine Quinte" } },
+  { value: 1.618, name: { en: "Golden ratio", fr: "Nombre d'or", de: "Goldener Schnitt" } },
 ];
 
 /** A safe CSS identifier fragment for the variable names. */

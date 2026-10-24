@@ -19,37 +19,39 @@ import {
 } from "./logic";
 
 const T = {
-  settings: l("Triangle", "Triangle"),
-  direction: l("Direction", "Direction"),
-  width: l("Width", "Largeur"),
-  height: l("Height", "Hauteur"),
-  color: l("Color", "Couleur"),
-  equilateral: l("Make it equilateral", "Le rendre équilatéral"),
-  preview: l("Preview", "Aperçu"),
-  border: l("Border technique", "Technique des bordures"),
+  settings: l("Triangle", "Triangle", "Dreieck"),
+  direction: l("Direction", "Direction", "Richtung"),
+  width: l("Width", "Largeur", "Breite"),
+  height: l("Height", "Hauteur", "Höhe"),
+  color: l("Color", "Couleur", "Farbe"),
+  equilateral: l("Make it equilateral", "Le rendre équilatéral", "Gleichseitig machen"),
+  preview: l("Preview", "Aperçu", "Vorschau"),
+  border: l("Border technique", "Technique des bordures", "Border-Technik"),
   borderHint: l(
     "Works everywhere, even in old browsers; the box itself has no size, so it cannot have a shadow or a gradient.",
     "Fonctionne partout, même dans les vieux navigateurs ; la boîte n'a pas de taille, donc ni ombre ni dégradé.",
+    "Funktioniert überall, auch in alten Browsern; die Box selbst hat keine Größe, kann also weder Schatten noch Farbverlauf haben.",
   ),
-  clip: l("clip-path alternative", "Alternative clip-path"),
+  clip: l("clip-path alternative", "Alternative clip-path", "Alternative mit clip-path"),
   clipHint: l(
     "A real box cut to shape: it can take a gradient, an image or a transition.",
     "Une vraie boîte découpée : elle accepte un dégradé, une image ou une transition.",
+    "Eine echte, zugeschnittene Box: Sie kann einen Farbverlauf, ein Bild oder eine Transition haben.",
   ),
-  css: l("CSS", "CSS"),
-  tailwind: l("Tailwind", "Tailwind"),
+  css: l("CSS", "CSS", "CSS"),
+  tailwind: l("Tailwind", "Tailwind", "Tailwind"),
 };
 
 const DIRS: { dir: Direction | null; label: ReturnType<typeof l>; arrow: string }[] = [
-  { dir: "up-left", label: l("Up left", "Haut gauche"), arrow: "◤" },
-  { dir: "up", label: l("Up", "Haut"), arrow: "▲" },
-  { dir: "up-right", label: l("Up right", "Haut droite"), arrow: "◥" },
-  { dir: "left", label: l("Left", "Gauche"), arrow: "◀" },
-  { dir: null, label: l("", ""), arrow: "" },
-  { dir: "right", label: l("Right", "Droite"), arrow: "▶" },
-  { dir: "down-left", label: l("Down left", "Bas gauche"), arrow: "◣" },
-  { dir: "down", label: l("Down", "Bas"), arrow: "▼" },
-  { dir: "down-right", label: l("Down right", "Bas droite"), arrow: "◢" },
+  { dir: "up-left", label: l("Up left", "Haut gauche", "Oben links"), arrow: "◤" },
+  { dir: "up", label: l("Up", "Haut", "Oben"), arrow: "▲" },
+  { dir: "up-right", label: l("Up right", "Haut droite", "Oben rechts"), arrow: "◥" },
+  { dir: "left", label: l("Left", "Gauche", "Links"), arrow: "◀" },
+  { dir: null, label: l("", "", ""), arrow: "" },
+  { dir: "right", label: l("Right", "Droite", "Rechts"), arrow: "▶" },
+  { dir: "down-left", label: l("Down left", "Bas gauche", "Unten links"), arrow: "◣" },
+  { dir: "down", label: l("Down", "Bas", "Unten"), arrow: "▼" },
+  { dir: "down-right", label: l("Down right", "Bas droite", "Unten rechts"), arrow: "◢" },
 ];
 
 export default function CssTriangle() {
