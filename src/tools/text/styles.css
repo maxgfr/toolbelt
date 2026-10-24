@@ -1,0 +1,123 @@
+/* Styles of the text tools. */
+
+/* counter */
+.limits {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.limits li {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr) 110px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+}
+.limits li > .mono {
+  text-align: right;
+}
+.limits meter {
+  width: 100%;
+  height: 8px;
+}
+
+/* diff */
+.diff-wrap {
+  overflow: auto;
+  max-height: 75vh;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.diff {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.diff-split {
+  table-layout: fixed;
+}
+.diff-split col,
+.diff-num {
+  width: 46px;
+}
+.diff td {
+  padding: 0 8px;
+  vertical-align: top;
+}
+.diff-num {
+  color: var(--muted);
+  text-align: right;
+  user-select: none;
+  background: var(--surface-2);
+  font-variant-numeric: tabular-nums;
+}
+.diff-sign {
+  width: 18px;
+  color: var(--muted);
+  user-select: none;
+}
+.diff-code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.side-del {
+  background: var(--del);
+}
+.side-add {
+  background: var(--add);
+}
+.hl-del {
+  background: var(--del-strong);
+  color: inherit;
+  border-radius: 2px;
+}
+.hl-add {
+  background: var(--add-strong);
+  color: inherit;
+  border-radius: 2px;
+}
+.diff-fold td {
+  padding: 3px 10px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 12px;
+}
+.diff-inline {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: var(--mono);
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.diff-inline .hl-del {
+  text-decoration: line-through;
+}
+.diff-summary {
+  display: flex;
+  gap: 14px;
+  font-weight: 560;
+}
+.add-text {
+  color: var(--success);
+}
+.del-text {
+  color: var(--danger);
+}
+.diff-same-note {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 560;
+}
