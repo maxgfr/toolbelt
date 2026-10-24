@@ -2,7 +2,7 @@ import { useComputed, useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 import { useToolState } from "../../../app/state";
 import { CopyButton, ErrorNote, Field, Panel, Segmented, TextBox, Toggle } from "../../../app/ui";
-import { l, lang, tr } from "../../../i18n";
+import { type L10n, l, lang, locale, tr } from "../../../i18n";
 import { attempt } from "../_shared";
 import { useAsync } from "../_ui";
 import {
@@ -18,53 +18,73 @@ import {
 } from "./logic";
 
 const T = {
-  token: l("Token", "Jeton"),
+  token: l("Token", "Jeton", "Token"),
   placeholder: l(
     "Paste a JWT (eyJhbGciOi…), with or without “Bearer ”",
     "Colle un JWT (eyJhbGciOi…), avec ou sans « Bearer »",
+    "JWT einfügen (eyJhbGciOi…), mit oder ohne „Bearer “",
   ),
   notSaved: l(
     "Tokens are credentials: this one is not saved nor put in share links.",
     "Un jeton est un identifiant : celui-ci n'est ni enregistré ni mis dans les liens de partage.",
+    "Tokens sind Zugangsdaten: Dieses wird weder gespeichert noch in Teilen-Links übernommen.",
   ),
-  header: l("Header", "En-tête"),
-  payload: l("Payload", "Contenu"),
-  signature: l("Signature", "Signature"),
-  claims: l("Dates", "Dates"),
-  claim: l("Claim", "Claim"),
-  value: l("Value", "Valeur"),
-  date: l("Date", "Date"),
-  relative: l("Relative", "Relatif"),
-  ago: l("{d} ago", "il y a {d}"),
-  in: l("in {d}", "dans {d}"),
-  validFor: l("Valid, expires in {d}", "Valide, expire dans {d}"),
-  validForever: l("Valid, no expiry date", "Valide, sans date d'expiration"),
-  expired: l("Expired {d} ago", "Expiré depuis {d}"),
-  early: l("Not valid yet, starts in {d}", "Pas encore valide, commence dans {d}"),
-  noDates: l("No exp / nbf claim", "Pas de claim exp / nbf"),
+  header: l("Header", "En-tête", "Header"),
+  payload: l("Payload", "Contenu", "Payload"),
+  signature: l("Signature", "Signature", "Signatur"),
+  claims: l("Dates", "Dates", "Daten"),
+  claim: l("Claim", "Claim", "Claim"),
+  value: l("Value", "Valeur", "Wert"),
+  date: l("Date", "Date", "Datum"),
+  relative: l("Relative", "Relatif", "Relativ"),
+  ago: l("{d} ago", "il y a {d}", "vor {d}"),
+  in: l("in {d}", "dans {d}", "in {d}"),
+  validFor: l("Valid, expires in {d}", "Valide, expire dans {d}", "Gültig, läuft in {d} ab"),
+  validForever: l(
+    "Valid, no expiry date",
+    "Valide, sans date d'expiration",
+    "Gültig, ohne Ablaufdatum",
+  ),
+  expired: l("Expired {d} ago", "Expiré depuis {d}", "Seit {d} abgelaufen"),
+  early: l(
+    "Not valid yet, starts in {d}",
+    "Pas encore valide, commence dans {d}",
+    "Noch nicht gültig, beginnt in {d}",
+  ),
+  noDates: l("No exp / nbf claim", "Pas de claim exp / nbf", "Kein exp-/nbf-Claim"),
   unsigned: l(
     "Unsigned token (alg “none”): anyone can forge it.",
     "Jeton non signé (alg « none ») : n'importe qui peut le forger.",
+    "Unsigniertes Token (alg „none“): Jeder kann es fälschen.",
   ),
-  verify: l("Verify the signature", "Vérifier la signature"),
-  secret: l("Secret", "Secret"),
-  secretPh: l("The HMAC secret the token was signed with", "Le secret HMAC qui a signé le jeton"),
-  show: l("Show", "Afficher"),
-  encoding: l("Secret format", "Format du secret"),
-  text: l("Text", "Texte"),
-  b64: l("Base64", "Base64"),
-  verified: l("Signature verified", "Signature vérifiée"),
-  invalidSig: l("Invalid signature", "Signature invalide"),
-  checking: l("Checking…", "Vérification…"),
+  verify: l("Verify the signature", "Vérifier la signature", "Signatur prüfen"),
+  secret: l("Secret", "Secret", "Secret"),
+  secretPh: l(
+    "The HMAC secret the token was signed with",
+    "Le secret HMAC qui a signé le jeton",
+    "Das HMAC-Secret, mit dem das Token signiert wurde",
+  ),
+  show: l("Show", "Afficher", "Anzeigen"),
+  encoding: l("Secret format", "Format du secret", "Secret-Format"),
+  text: l("Text", "Texte", "Text"),
+  b64: l("Base64", "Base64", "Base64"),
+  verified: l("Signature verified", "Signature vérifiée", "Signatur verifiziert"),
+  invalidSig: l("Invalid signature", "Signature invalide", "Ungültige Signatur"),
+  checking: l("Checking…", "Vérification…", "Wird geprüft…"),
   asymmetric: l(
     "This token uses {alg}: checking it needs the issuer's public key, which this tool does not handle.",
     "Ce jeton utilise {alg} : le vérifier demande la clé publique de l'émetteur, non gérée ici.",
+    "Dieses Token nutzt {alg}: Zur Prüfung braucht es den öffentlichen Schlüssel des Ausstellers, den dieses Werkzeug nicht unterstützt.",
   ),
-  notJson: l("The payload is not JSON:", "Le contenu n'est pas du JSON :"),
-  secretNote: l("Never saved.", "Jamais enregistré."),
+  notJson: l(
+    "The payload is not JSON:",
+    "Le contenu n'est pas du JSON :",
+    "Die Payload ist kein JSON:",
+  ),
+  secretNote: l("Never saved.", "Jamais enregistré.", "Wird nie gespeichert."),
 };
 
-function fill(s: { en: string; fr: string }, vars: Record<string, string>): string {
+function fill(s: L10n, vars: Record<string, string>): string {
   let out = tr(s);
   for (const [k, v] of Object.entries(vars)) out = out.replace(`{${k}}`, v);
   return out;
@@ -112,7 +132,6 @@ export default function Jwt() {
   const nowSec = Math.floor(now.value / 1000);
   const v = jwt ? validity(jwt.payload, nowSec) : null;
   const dur = (s: number) => humanDuration(s, lang.value);
-  const locale = lang.value === "fr" ? "fr-FR" : "en-US";
   const c = check.value;
 
   return (
@@ -198,7 +217,7 @@ export default function Jwt() {
                           <td>
                             {Number.isNaN(t.date.getTime())
                               ? "—"
-                              : t.date.toLocaleString(locale, {
+                              : t.date.toLocaleString(locale(), {
                                   dateStyle: "medium",
                                   timeStyle: "medium",
                                 })}

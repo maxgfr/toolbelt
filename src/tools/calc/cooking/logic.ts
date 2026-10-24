@@ -33,26 +33,62 @@ export function kitchenUnit(id: string): KitchenUnit {
 }
 
 /** Typical densities in g/ml (spooned and levelled for powders; packed for brown sugar). */
-export const INGREDIENTS: { id: string; density: number; en: string; fr: string }[] = [
-  { id: "water", density: 1, en: "Water", fr: "Eau" },
-  { id: "milk", density: 1.03, en: "Milk", fr: "Lait" },
-  { id: "cream", density: 1.0, en: "Cream", fr: "Crème" },
-  { id: "oil", density: 0.92, en: "Oil", fr: "Huile" },
-  { id: "butter", density: 0.959, en: "Butter", fr: "Beurre" },
-  { id: "flour", density: 0.53, en: "Flour (all-purpose)", fr: "Farine (T45/T55)" },
-  { id: "sugar", density: 0.85, en: "Sugar (granulated)", fr: "Sucre (en poudre)" },
-  { id: "brownSugar", density: 0.93, en: "Brown sugar (packed)", fr: "Cassonade (tassée)" },
-  { id: "icingSugar", density: 0.51, en: "Icing sugar", fr: "Sucre glace" },
-  { id: "honey", density: 1.42, en: "Honey", fr: "Miel" },
-  { id: "syrup", density: 1.33, en: "Maple syrup", fr: "Sirop d'érable" },
-  { id: "rice", density: 0.8, en: "Rice (uncooked)", fr: "Riz (cru)" },
-  { id: "oats", density: 0.38, en: "Rolled oats", fr: "Flocons d'avoine" },
-  { id: "cocoa", density: 0.42, en: "Cocoa powder", fr: "Cacao en poudre" },
-  { id: "cornstarch", density: 0.54, en: "Cornstarch", fr: "Fécule de maïs (Maïzena)" },
-  { id: "almond", density: 0.4, en: "Ground almonds", fr: "Poudre d'amande" },
-  { id: "salt", density: 1.2, en: "Salt (fine)", fr: "Sel (fin)" },
-  { id: "yogurt", density: 1.03, en: "Yogurt", fr: "Yaourt" },
-  { id: "chocolateChips", density: 0.72, en: "Chocolate chips", fr: "Pépites de chocolat" },
+export const INGREDIENTS: { id: string; density: number; en: string; fr: string; de: string }[] = [
+  { id: "water", density: 1, en: "Water", fr: "Eau", de: "Wasser" },
+  { id: "milk", density: 1.03, en: "Milk", fr: "Lait", de: "Milch" },
+  { id: "cream", density: 1.0, en: "Cream", fr: "Crème", de: "Sahne" },
+  { id: "oil", density: 0.92, en: "Oil", fr: "Huile", de: "Öl" },
+  { id: "butter", density: 0.959, en: "Butter", fr: "Beurre", de: "Butter" },
+  {
+    id: "flour",
+    density: 0.53,
+    en: "Flour (all-purpose)",
+    fr: "Farine (T45/T55)",
+    de: "Mehl (Type 405/550)",
+  },
+  {
+    id: "sugar",
+    density: 0.85,
+    en: "Sugar (granulated)",
+    fr: "Sucre (en poudre)",
+    de: "Zucker (Kristallzucker)",
+  },
+  {
+    id: "brownSugar",
+    density: 0.93,
+    en: "Brown sugar (packed)",
+    fr: "Cassonade (tassée)",
+    de: "Brauner Zucker (festgedrückt)",
+  },
+  { id: "icingSugar", density: 0.51, en: "Icing sugar", fr: "Sucre glace", de: "Puderzucker" },
+  { id: "honey", density: 1.42, en: "Honey", fr: "Miel", de: "Honig" },
+  { id: "syrup", density: 1.33, en: "Maple syrup", fr: "Sirop d'érable", de: "Ahornsirup" },
+  { id: "rice", density: 0.8, en: "Rice (uncooked)", fr: "Riz (cru)", de: "Reis (roh)" },
+  { id: "oats", density: 0.38, en: "Rolled oats", fr: "Flocons d'avoine", de: "Haferflocken" },
+  { id: "cocoa", density: 0.42, en: "Cocoa powder", fr: "Cacao en poudre", de: "Kakaopulver" },
+  {
+    id: "cornstarch",
+    density: 0.54,
+    en: "Cornstarch",
+    fr: "Fécule de maïs (Maïzena)",
+    de: "Speisestärke (Maisstärke)",
+  },
+  {
+    id: "almond",
+    density: 0.4,
+    en: "Ground almonds",
+    fr: "Poudre d'amande",
+    de: "Gemahlene Mandeln",
+  },
+  { id: "salt", density: 1.2, en: "Salt (fine)", fr: "Sel (fin)", de: "Salz (fein)" },
+  { id: "yogurt", density: 1.03, en: "Yogurt", fr: "Yaourt", de: "Joghurt" },
+  {
+    id: "chocolateChips",
+    density: 0.72,
+    en: "Chocolate chips",
+    fr: "Pépites de chocolat",
+    de: "Schokotropfen",
+  },
 ];
 
 export function density(id: string): number {
@@ -130,7 +166,10 @@ const UF = Object.keys(UNICODE_FRACTIONS).join("");
 
 /** One quantity: "1 1/2", "1 ½", "1½", "½", "3/4", "2", "1.5", "1,5". */
 const Q = `(?:\\d+\\s+\\d+\\/\\d+|\\d+\\s*[${UF}]|[${UF}]|\\d+\\/\\d+|\\d+(?:[.,]\\d+)?)`;
-const LINE = new RegExp(`^(\\s*(?:[-*•]\\s*)?)(${Q})(?:(\\s*(?:-|–|to|à)\\s*)(${Q}))?(.*)$`, "u");
+const LINE = new RegExp(
+  `^(\\s*(?:[-*•]\\s*)?)(${Q})(?:(\\s*(?:-|–|to|à|bis)\\s*)(${Q}))?(.*)$`,
+  "u",
+);
 
 export function parseQuantity(s: string): number | null {
   const t = s.trim();

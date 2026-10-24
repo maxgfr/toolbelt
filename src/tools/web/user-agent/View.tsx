@@ -6,68 +6,74 @@ import { Badge } from "../_ui";
 import { parseUA, SAMPLES } from "./logic";
 
 const T = {
-  ua: l("User agent", "User agent"),
-  placeholder: l("Paste a user-agent string…", "Colle une chaîne user-agent…"),
+  ua: l("User agent", "User agent", "User-Agent"),
+  placeholder: l(
+    "Paste a user-agent string…",
+    "Colle une chaîne user-agent…",
+    "User-Agent-String einfügen …",
+  ),
   mine: l(
     "Empty: showing this browser's user agent.",
     "Vide : c'est le user agent de ce navigateur qui est analysé.",
+    "Leer: Analysiert wird der User-Agent dieses Browsers.",
   ),
-  useMine: l("Use mine", "Utiliser le mien"),
-  samples: l("Examples", "Exemples"),
-  pick: l("Pick an example…", "Choisir un exemple…"),
-  browser: l("Browser", "Navigateur"),
-  engine: l("Engine", "Moteur"),
-  os: l("Operating system", "Système d'exploitation"),
-  device: l("Device", "Appareil"),
-  cpu: l("CPU", "Processeur"),
-  name: l("Name", "Nom"),
-  version: l("Version", "Version"),
-  major: l("Major version", "Version majeure"),
-  kind: l("Type", "Type"),
-  vendor: l("Vendor", "Fabricant"),
-  model: l("Model", "Modèle"),
-  arch: l("Architecture", "Architecture"),
-  unknown: l("unknown", "inconnu"),
-  desktop: l("desktop (probably)", "ordinateur (probablement)"),
-  bot: l("Bot / automated client", "Robot / client automatisé"),
-  aiBot: l("AI crawler or assistant", "Robot ou assistant d'IA"),
-  human: l("Regular browser", "Navigateur classique"),
+  useMine: l("Use mine", "Utiliser le mien", "Meinen verwenden"),
+  samples: l("Examples", "Exemples", "Beispiele"),
+  pick: l("Pick an example…", "Choisir un exemple…", "Beispiel auswählen …"),
+  browser: l("Browser", "Navigateur", "Browser"),
+  engine: l("Engine", "Moteur", "Engine"),
+  os: l("Operating system", "Système d'exploitation", "Betriebssystem"),
+  device: l("Device", "Appareil", "Gerät"),
+  cpu: l("CPU", "Processeur", "CPU"),
+  name: l("Name", "Nom", "Name"),
+  version: l("Version", "Version", "Version"),
+  major: l("Major version", "Version majeure", "Hauptversion"),
+  kind: l("Type", "Type", "Typ"),
+  vendor: l("Vendor", "Fabricant", "Hersteller"),
+  model: l("Model", "Modèle", "Modell"),
+  arch: l("Architecture", "Architecture", "Architektur"),
+  unknown: l("unknown", "inconnu", "unbekannt"),
+  desktop: l("desktop (probably)", "ordinateur (probablement)", "Desktop (wahrscheinlich)"),
+  bot: l("Bot / automated client", "Robot / client automatisé", "Bot / automatisierter Client"),
+  aiBot: l("AI crawler or assistant", "Robot ou assistant d'IA", "KI-Crawler oder -Assistent"),
+  human: l("Regular browser", "Navigateur classique", "Normaler Browser"),
   frozen: l(
     "Reduced (frozen) user agent: Chrome now sends a fixed OS version and device model, so those may be inaccurate. Only Client Hints tell the real values.",
     "User agent réduit (figé) : Chrome envoie désormais une version d'OS et un modèle fixes, ils peuvent donc être faux. Seuls les Client Hints donnent les vraies valeurs.",
+    "Reduzierter (eingefrorener) User-Agent: Chrome sendet inzwischen eine feste OS-Version und ein festes Gerätemodell, diese können also falsch sein. Nur Client Hints liefern die echten Werte.",
   ),
-  here: l("This browser", "Ce navigateur"),
-  languages: l("Languages", "Langues"),
-  platform: l("Platform", "Plateforme"),
-  screen: l("Screen", "Écran"),
-  viewport: l("Window", "Fenêtre"),
-  ratio: l("Pixel ratio", "Densité de pixels"),
-  cores: l("Logical cores", "Cœurs logiques"),
-  touch: l("Touch points", "Points tactiles"),
-  timezone: l("Time zone", "Fuseau horaire"),
-  cookies: l("Cookies", "Cookies"),
-  yes: l("enabled", "activés"),
-  no: l("disabled", "désactivés"),
+  here: l("This browser", "Ce navigateur", "Dieser Browser"),
+  languages: l("Languages", "Langues", "Sprachen"),
+  platform: l("Platform", "Plateforme", "Plattform"),
+  screen: l("Screen", "Écran", "Bildschirm"),
+  viewport: l("Window", "Fenêtre", "Fenster"),
+  ratio: l("Pixel ratio", "Densité de pixels", "Pixeldichte"),
+  cores: l("Logical cores", "Cœurs logiques", "Logische Kerne"),
+  touch: l("Touch points", "Points tactiles", "Touchpunkte"),
+  timezone: l("Time zone", "Fuseau horaire", "Zeitzone"),
+  cookies: l("Cookies", "Cookies", "Cookies"),
+  yes: l("enabled", "activés", "aktiviert"),
+  no: l("disabled", "désactivés", "deaktiviert"),
 };
 
 const DEVICE_TYPES: Record<string, L10n> = {
-  mobile: l("mobile phone", "téléphone mobile"),
-  tablet: l("tablet", "tablette"),
-  smarttv: l("smart TV", "télévision connectée"),
-  console: l("game console", "console de jeu"),
-  wearable: l("wearable", "objet connecté portable"),
-  xr: l("XR headset", "casque XR"),
-  embedded: l("embedded", "embarqué"),
+  mobile: l("mobile phone", "téléphone mobile", "Smartphone"),
+  tablet: l("tablet", "tablette", "Tablet"),
+  smarttv: l("smart TV", "télévision connectée", "Smart-TV"),
+  console: l("game console", "console de jeu", "Spielkonsole"),
+  wearable: l("wearable", "objet connecté portable", "Wearable"),
+  xr: l("XR headset", "casque XR", "XR-Headset"),
+  embedded: l("embedded", "embarqué", "eingebettet"),
 };
 
 const BROWSER_TYPES: Record<string, L10n> = {
-  crawler: l("crawler", "robot d'indexation"),
-  cli: l("command-line tool", "outil en ligne de commande"),
-  email: l("email client", "client mail"),
-  fetcher: l("fetcher", "récupérateur"),
-  inapp: l("in-app browser", "navigateur intégré"),
-  library: l("library", "bibliothèque"),
-  mediaplayer: l("media player", "lecteur multimédia"),
+  crawler: l("crawler", "robot d'indexation", "Crawler"),
+  cli: l("command-line tool", "outil en ligne de commande", "Kommandozeilenwerkzeug"),
+  email: l("email client", "client mail", "E-Mail-Client"),
+  fetcher: l("fetcher", "récupérateur", "Fetcher"),
+  inapp: l("in-app browser", "navigateur intégré", "In-App-Browser"),
+  library: l("library", "bibliothèque", "Bibliothek"),
+  mediaplayer: l("media player", "lecteur multimédia", "Mediaplayer"),
 };
 
 function Rows({ rows }: { rows: [L10n, string][] }) {
@@ -108,12 +114,12 @@ export default function UserAgent() {
   const effective = useComputed(() => ua.value.trim() || navigator.userAgent);
   const r = useComputed(() => parseUA(effective.value)).value;
   const deviceType = r.device.type
-    ? tr(DEVICE_TYPES[r.device.type] ?? l(r.device.type, r.device.type))
+    ? tr(DEVICE_TYPES[r.device.type] ?? l(r.device.type, r.device.type, r.device.type))
     : r.browser.name && !r.bot
       ? tr(T.desktop)
       : "";
   const browserType = r.browser.type
-    ? tr(BROWSER_TYPES[r.browser.type] ?? l(r.browser.type, r.browser.type))
+    ? tr(BROWSER_TYPES[r.browser.type] ?? l(r.browser.type, r.browser.type, r.browser.type))
     : "";
 
   return (

@@ -22,8 +22,10 @@ export interface Emoji {
   /** Takes the five skin tone modifiers. */
   tones: boolean;
   en: string;
-  /** French CLDR name ("" when none, use `en`). */
+  /** French CLDR name (`en` when none). */
   fr: string;
+  /** German CLDR name (`en` when none). */
+  de: string;
   keywords: string[];
   group: GroupId;
 }
@@ -45,13 +47,14 @@ export function parseCatalog(data: string): Group[] {
       continue;
     }
     if (!cur || !line) continue;
-    const [e = "", tone = "", en = "", fr = "", kw = ""] = line.split("\t");
+    const [e = "", tone = "", en = "", fr = "", de = "", kw = ""] = line.split("\t");
     if (!e) continue;
     cur.items.push({
       e,
       tones: tone === "1",
       en,
       fr: fr || en,
+      de: de || en,
       keywords: kw ? kw.split("|") : [],
       group: cur.id,
     });
@@ -123,8 +126,8 @@ export function buildIndex(groups: Group[]): Indexed[] {
   const out: Indexed[] = [];
   for (const g of groups)
     for (const emoji of g.items) {
-      const names = fold(`${emoji.en} | ${emoji.fr}`);
-      const words = fold([emoji.en, emoji.fr, ...emoji.keywords].join(" "))
+      const names = fold(`${emoji.en} | ${emoji.fr} | ${emoji.de}`);
+      const words = fold([emoji.en, emoji.fr, emoji.de, ...emoji.keywords].join(" "))
         .split(/[^\p{L}\p{N}]+/u)
         .filter(Boolean);
       out.push({ emoji, names, words });
@@ -150,11 +153,10 @@ export function search(index: Indexed[], query: string, limit = 400): Emoji[] {
     }
     if (terms.length === 0) return;
     if (!terms.every((t) => it.words.some((w) => w.startsWith(t)))) return;
-    const en = fold(it.emoji.en);
-    const fr = fold(it.emoji.fr);
+    const own = [it.emoji.en, it.emoji.fr, it.emoji.de].map(fold);
     let score = 4;
-    if (en === q || fr === q) score = 0;
-    else if (en.startsWith(q) || fr.startsWith(q)) score = 1;
+    if (own.includes(q)) score = 0;
+    else if (own.some((n) => n.startsWith(q))) score = 1;
     else if (it.names.includes(q)) score = 2;
     else if (terms.every((t) => it.names.split(/[^\p{L}\p{N}]+/u).some((w) => w.startsWith(t))))
       score = 3;

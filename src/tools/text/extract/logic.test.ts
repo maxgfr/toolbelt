@@ -95,6 +95,12 @@ describe("extract", () => {
     ]);
   });
 
+  it("finds German written dates", () => {
+    expect(
+      extract("am 3. Oktober 2024, 1. März 2025, 24. Dez. 2023, 7. Jänner, 32. Mai 2024", "date"),
+    ).toEqual(["3. Oktober 2024", "1. März 2025", "24. Dez. 2023", "7. Jänner"]);
+  });
+
   it("finds hex and functional colors", () => {
     expect(extract("#fff #11223344 #12345 rgb(255, 0, 0) hsl(120 50% 50%)", "color")).toEqual([
       "#fff",

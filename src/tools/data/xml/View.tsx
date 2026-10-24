@@ -9,29 +9,35 @@ type Mode = "format" | "minify" | "json";
 type Indent = "2" | "4" | "tab";
 
 const T = {
-  input: l("XML", "XML"),
-  output: l("Result", "Résultat"),
+  input: l("XML", "XML", "XML"),
+  output: l("Result", "Résultat", "Ergebnis"),
   placeholder: l(
     "Paste XML (or SVG, RSS, a sitemap…), or drop a file…",
     "Colle du XML (ou du SVG, du RSS, un sitemap…), ou dépose un fichier…",
+    "Füge XML ein (oder SVG, RSS, eine Sitemap…) oder lege eine Datei ab…",
   ),
-  format: l("Format", "Formater"),
-  minify: l("Minify", "Minifier"),
-  json: l("XML → JSON", "XML → JSON"),
-  indent: l("Indentation", "Indentation"),
-  spaces2: l("2 spaces", "2 espaces"),
-  spaces4: l("4 spaces", "4 espaces"),
-  tab: l("Tab", "Tabulation"),
-  removeComments: l("Remove comments", "Retirer les commentaires"),
-  collapse: l("Write empty elements as <a/>", "Écrire les éléments vides en <a/>"),
-  valid: l("Well-formed XML", "XML bien formé"),
+  format: l("Format", "Formater", "Formatieren"),
+  minify: l("Minify", "Minifier", "Minifizieren"),
+  json: l("XML → JSON", "XML → JSON", "XML → JSON"),
+  indent: l("Indentation", "Indentation", "Einrückung"),
+  spaces2: l("2 spaces", "2 espaces", "2 Leerzeichen"),
+  spaces4: l("4 spaces", "4 espaces", "4 Leerzeichen"),
+  tab: l("Tab", "Tabulation", "Tabulator"),
+  removeComments: l("Remove comments", "Retirer les commentaires", "Kommentare entfernen"),
+  collapse: l(
+    "Write empty elements as <a/>",
+    "Écrire les éléments vides en <a/>",
+    "Leere Elemente als <a/> schreiben",
+  ),
+  valid: l("Well-formed XML", "XML bien formé", "Wohlgeformtes XML"),
   jsonNote: l(
     'Attributes become "@name", text next to attributes or children becomes "#text", repeated elements become arrays.',
     'Les attributs deviennent "@nom", le texte à côté d\'attributs ou d\'enfants devient "#text", les éléments répétés deviennent des tableaux.',
+    'Attribute werden zu "@name", Text neben Attributen oder Kindelementen wird zu "#text", wiederholte Elemente werden zu Arrays.',
   ),
-  elements: l("Elements", "Éléments"),
-  attributes: l("Attributes", "Attributs"),
-  depth: l("Depth", "Profondeur"),
+  elements: l("Elements", "Éléments", "Elemente"),
+  attributes: l("Attributes", "Attributs", "Attribute"),
+  depth: l("Depth", "Profondeur", "Tiefe"),
 };
 
 const UNITS: Record<Indent, string> = { "2": "  ", "4": "    ", tab: "\t" };

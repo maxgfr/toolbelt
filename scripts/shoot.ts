@@ -17,7 +17,7 @@ for (const scheme of ["light", "dark"] as const) {
   if (seed)
     await page.addInitScript((s) => {
       for (const [k, v] of Object.entries(JSON.parse(s)))
-        localStorage.setItem(k, JSON.stringify(v));
+        localStorage.setItem(k, k === "toolbelt:lang" ? String(v) : JSON.stringify(v));
     }, seed);
   page.on("console", (m) => m.type() === "error" && errors.push(`${m.text()}`));
   page.on("pageerror", (e) => errors.push(String(e)));
@@ -25,7 +25,7 @@ for (const scheme of ["light", "dark"] as const) {
     await page.goto(`http://localhost:4199/toolbelt/${h}`);
     await page.waitForTimeout(400);
     const name = `${scheme}-${h.replace(/[^a-z0-9]+/gi, "_") || "home"}.png`;
-    await page.screenshot({ path: join(out, name), fullPage: true });
+    await page.screenshot({ path: join(out, name), fullPage: !process.env.TOP });
   }
   await page.close();
 }

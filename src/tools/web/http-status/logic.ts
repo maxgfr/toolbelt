@@ -1,4 +1,4 @@
-/** Searching the HTTP status reference by code, class ("4xx"), name or words, in both languages. */
+/** Searching the HTTP status reference by code, class ("4xx"), name or words, in every language. */
 import { matchesQuery } from "../_shared";
 import { STATUSES, type Status } from "./data";
 
@@ -34,7 +34,9 @@ export function searchStatuses(
     list = STATUSES.filter((s) => !filter || classOf(s.code) === filter);
     return list.filter((s) => String(s.code).startsWith(q));
   }
-  return list.filter((s) => matchesQuery(q, s.code, s.name, s.nameFr, s.en, s.fr, s.ref));
+  return list.filter((s) =>
+    matchesQuery(q, s.code, s.name, s.nameFr, s.nameDe, s.en, s.fr, s.de, s.ref),
+  );
 }
 
 /** Statuses grouped by class, keeping only non-empty groups. */

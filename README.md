@@ -3,8 +3,8 @@
 100+ small everyday utilities in one page: count characters, diff two files, format JSON, decode a
 JWT, hash a file, explain a cron expression, but also VAT, gross to net salary, a loan, a timer, a
 dice roll, a tuner or a favicon… Everything runs in your browser. There is no server and no
-tracking, nothing you type leaves the tab, and once loaded it works offline. English and French
-(French when your browser prefers it, English otherwise).
+tracking, nothing you type leaves the tab, and once loaded it works offline. English, French
+and German: the language of your browser, or English; a choice in the header list is kept.
 
 **→ [maxgfr.github.io/toolbelt](https://maxgfr.github.io/toolbelt/)**
 
@@ -30,7 +30,7 @@ tracking, nothing you type leaves the tab, and once loaded it works offline. Eng
 
 ## How it feels
 
-- **⌘K / Ctrl+K** jumps to any tool by name, in English or French (`diff`, `compter`, `sha`…).
+- **⌘K / Ctrl+K** jumps to any tool by name, in English, French or German (`diff`, `compter`, `Zeitzone`…).
 - **Files**: drop a file on any text box, or open one; results can be copied or downloaded.
 - **Your input stays**: each tool remembers what you typed (in your browser's storage), except
   secrets: passwords, keys, tokens and `.env` files are never stored.
@@ -39,6 +39,23 @@ tracking, nothing you type leaves the tab, and once loaded it works offline. Eng
 - **Camera, microphone, images**: the device tests, the tuner and the image tools work on the
   device; nothing is recorded or uploaded.
 - **Favorites and recent tools** on the home page, light and dark themes, installable as an app.
+
+## Use it from an AI agent
+
+The same tools ship as an [agent skill](skills/toolbelt/SKILL.md) for Claude Code, Codex, Cursor,
+Gemini CLI and other coding agents: a single offline Node script (no dependency, nothing sent
+anywhere) plus instructions telling the agent when to use it.
+
+```bash
+npx skills add maxgfr/toolbelt
+```
+
+Then ask, for example:
+- "Decode this JWT and tell me when it expires: eyJhbGciOi…"
+- "Diff config.old.yaml and config.yaml, then give me a toolbelt link to see it side by side."
+
+For visual tools (images, timers, tuner, camera), the agent gives you a link to the site with your
+input already filled in. The CLI also runs on its own: `node skills/toolbelt/scripts/toolbelt.mjs help`.
 
 ## Privacy
 
@@ -57,6 +74,7 @@ bun run test       # unit tests (the logic of every tool)
 bun run test:e2e   # Playwright: every tool in EN and FR, plus real round trips
 bun run lint && bun run typecheck
 bun run build      # dist/, deployed to GitHub Pages by .github/workflows/pages.yml
+bun run skill      # rebuild skills/toolbelt/ (the agent skill's CLI bundle and its command reference)
 ```
 
 Adding a tool is three files and a registry entry; see [AGENTS.md](AGENTS.md).

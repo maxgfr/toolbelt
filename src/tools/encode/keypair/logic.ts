@@ -36,7 +36,7 @@ export function toPem(der: Uint8Array, label: string): string {
 /** The DER bytes inside a PEM block (the first one found). */
 export function fromPem(pem: string): { label: string; der: Uint8Array<ArrayBuffer> } {
   const m = /-----BEGIN ([A-Z0-9 ]+)-----([\s\S]*?)-----END \1-----/.exec(pem);
-  if (!m) fail("No PEM block found.", "Aucun bloc PEM trouvé.");
+  if (!m) fail("No PEM block found.", "Aucun bloc PEM trouvé.", "Kein PEM-Block gefunden.");
   const body = (m[2] ?? "").replace(/\s/g, "");
   const bin = atob(body);
   const der = new Uint8Array(bin.length);
@@ -84,6 +84,7 @@ export async function generateKeyPair(spec: KeySpec): Promise<KeyPairOut> {
     fail(
       `This browser cannot generate ${label} keys.`,
       `Ce navigateur ne sait pas générer de clés ${label}.`,
+      `Dieser Browser kann keine ${label}-Schlüssel erzeugen.`,
     );
   }
   const spki = new Uint8Array(await crypto.subtle.exportKey("spki", pair.publicKey));

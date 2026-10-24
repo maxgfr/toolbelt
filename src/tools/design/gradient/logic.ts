@@ -171,7 +171,7 @@ export function newStopPosition(stops: Stop[]): number {
 
 export interface GradientPreset {
   id: string;
-  name: { en: string; fr: string };
+  name: { en: string; fr: string; de: string };
   g: Partial<Gradient>;
 }
 
@@ -180,22 +180,22 @@ const st = (...pairs: [string, number][]): Stop[] => pairs.map(([color, pos]) =>
 export const PRESETS: GradientPreset[] = [
   {
     id: "sunset",
-    name: { en: "Sunset", fr: "Coucher de soleil" },
+    name: { en: "Sunset", fr: "Coucher de soleil", de: "Sonnenuntergang" },
     g: { type: "linear", angle: 160, stops: st(["#f97316", 0], ["#db2777", 55], ["#4c1d95", 100]) },
   },
   {
     id: "ocean",
-    name: { en: "Ocean", fr: "Océan" },
+    name: { en: "Ocean", fr: "Océan", de: "Ozean" },
     g: { type: "linear", angle: 180, stops: st(["#22d3ee", 0], ["#0e7490", 60], ["#082f49", 100]) },
   },
   {
     id: "mint",
-    name: { en: "Mint", fr: "Menthe" },
+    name: { en: "Mint", fr: "Menthe", de: "Minze" },
     g: { type: "linear", angle: 120, stops: st(["#d9f99d", 0], ["#34d399", 100]) },
   },
   {
     id: "aurora",
-    name: { en: "Aurora", fr: "Aurore" },
+    name: { en: "Aurora", fr: "Aurore", de: "Polarlicht" },
     g: {
       type: "radial",
       shape: "ellipse",
@@ -206,7 +206,7 @@ export const PRESETS: GradientPreset[] = [
   },
   {
     id: "spotlight",
-    name: { en: "Spotlight", fr: "Projecteur" },
+    name: { en: "Spotlight", fr: "Projecteur", de: "Scheinwerfer" },
     g: {
       type: "radial",
       shape: "circle",
@@ -215,7 +215,7 @@ export const PRESETS: GradientPreset[] = [
   },
   {
     id: "rainbow",
-    name: { en: "Color wheel", fr: "Roue chromatique" },
+    name: { en: "Color wheel", fr: "Roue chromatique", de: "Farbkreis" },
     g: {
       type: "conic",
       angle: 0,
@@ -226,7 +226,7 @@ export const PRESETS: GradientPreset[] = [
   },
   {
     id: "stripes",
-    name: { en: "Stripes", fr: "Rayures" },
+    name: { en: "Stripes", fr: "Rayures", de: "Streifen" },
     g: {
       type: "linear",
       angle: 45,
@@ -237,7 +237,7 @@ export const PRESETS: GradientPreset[] = [
   },
   {
     id: "pie",
-    name: { en: "Pie", fr: "Camembert" },
+    name: { en: "Pie", fr: "Camembert", de: "Torte" },
     g: {
       type: "conic",
       angle: 0,

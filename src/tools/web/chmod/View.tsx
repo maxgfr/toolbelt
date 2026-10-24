@@ -1,6 +1,6 @@
 import { useToolState } from "../../../app/state";
 import { Button, Field, Output, Panel, Toggle } from "../../../app/ui";
-import { type L10n, l, lang, tr } from "../../../i18n";
+import { type L10n, l, locale, tr } from "../../../i18n";
 import { DraftInput } from "../_ui";
 import {
   bit,
@@ -21,78 +21,89 @@ import {
 } from "./logic";
 
 const T = {
-  permissions: l("Permissions", "Permissions"),
-  octal: l("Octal", "Octal"),
-  symbolic: l("Symbolic", "Symbolique"),
-  special: l("Special bits", "Bits spéciaux"),
-  presets: l("Common modes", "Modes courants"),
-  command: l("Command", "Commande"),
-  path: l("File or folder", "Fichier ou dossier"),
-  recursive: l("Recursive (-R)", "Récursif (-R)"),
-  useSymbolic: l("Symbolic form (u=…,g=…,o=…)", "Forme symbolique (u=…,g=…,o=…)"),
-  can: l("can", "peut"),
-  noAccess: l("has no access", "n'a aucun droit"),
+  permissions: l("Permissions", "Permissions", "Rechte"),
+  octal: l("Octal", "Octal", "Oktal"),
+  symbolic: l("Symbolic", "Symbolique", "Symbolisch"),
+  special: l("Special bits", "Bits spéciaux", "Spezialbits"),
+  presets: l("Common modes", "Modes courants", "Gängige Modi"),
+  command: l("Command", "Commande", "Befehl"),
+  path: l("File or folder", "Fichier ou dossier", "Datei oder Ordner"),
+  recursive: l("Recursive (-R)", "Récursif (-R)", "Rekursiv (-R)"),
+  useSymbolic: l(
+    "Symbolic form (u=…,g=…,o=…)",
+    "Forme symbolique (u=…,g=…,o=…)",
+    "Symbolische Form (u=…,g=…,o=…)",
+  ),
+  can: l("can", "peut", "kann"),
+  noAccess: l("has no access", "n'a aucun droit", "hat keinen Zugriff"),
   folderNote: l(
     "On a folder, r lists its content, w creates and deletes files in it, x lets you enter it.",
     "Sur un dossier, r liste son contenu, w y crée et supprime des fichiers, x permet d'y entrer.",
+    "Bei einem Ordner listet r den Inhalt auf, w legt darin Dateien an und löscht sie, x erlaubt das Betreten.",
   ),
 };
 
 const WHO_L: Record<Who, L10n> = {
-  owner: l("Owner (u)", "Propriétaire (u)"),
-  group: l("Group (g)", "Groupe (g)"),
-  others: l("Others (o)", "Autres (o)"),
+  owner: l("Owner (u)", "Propriétaire (u)", "Besitzer (u)"),
+  group: l("Group (g)", "Groupe (g)", "Gruppe (g)"),
+  others: l("Others (o)", "Autres (o)", "Andere (o)"),
 };
 const WHO_SHORT: Record<Who, L10n> = {
-  owner: l("The owner", "Le propriétaire"),
-  group: l("The group", "Le groupe"),
-  others: l("Everyone else", "Tous les autres"),
+  owner: l("The owner", "Le propriétaire", "Der Besitzer"),
+  group: l("The group", "Le groupe", "Die Gruppe"),
+  others: l("Everyone else", "Tous les autres", "Jeder andere"),
 };
 const PERM_L: Record<Perm, L10n> = {
-  r: l("Read", "Lecture"),
-  w: l("Write", "Écriture"),
-  x: l("Execute", "Exécution"),
+  r: l("Read", "Lecture", "Lesen"),
+  w: l("Write", "Écriture", "Schreiben"),
+  x: l("Execute", "Exécution", "Ausführen"),
 };
 const PERM_VERB: Record<Perm, L10n> = {
-  r: l("read", "lire"),
-  w: l("write", "écrire"),
-  x: l("execute", "exécuter"),
+  r: l("read", "lire", "lesen"),
+  w: l("write", "écrire", "schreiben"),
+  x: l("execute", "exécuter", "ausführen"),
 };
 const SPECIALS: { bit: number; label: L10n; hint: L10n }[] = [
   {
     bit: SETUID,
-    label: l("setuid", "setuid"),
-    hint: l("Runs as the file's owner", "S'exécute avec les droits du propriétaire"),
+    label: l("setuid", "setuid", "setuid"),
+    hint: l(
+      "Runs as the file's owner",
+      "S'exécute avec les droits du propriétaire",
+      "Läuft mit den Rechten des Dateibesitzers",
+    ),
   },
   {
     bit: SETGID,
-    label: l("setgid", "setgid"),
+    label: l("setgid", "setgid", "setgid"),
     hint: l(
       "Runs as the group; new files in a folder inherit its group",
       "S'exécute avec le groupe ; les fichiers créés dans un dossier héritent de son groupe",
+      "Läuft mit der Gruppe; neue Dateien in einem Ordner erben dessen Gruppe",
     ),
   },
   {
     bit: STICKY,
-    label: l("sticky", "sticky"),
+    label: l("sticky", "sticky", "sticky"),
     hint: l(
       "In a shared folder, only owners can delete their files (like /tmp)",
       "Dans un dossier partagé, seuls les propriétaires suppriment leurs fichiers (comme /tmp)",
+      "In einem geteilten Ordner können nur die Besitzer ihre Dateien löschen (wie /tmp)",
     ),
   },
 ];
 /** Keyed by the short octal form. */
 const PRESET_L: Record<string, L10n> = {
-  "644": l("files", "fichiers"),
-  "600": l("private file, keys", "fichier privé, clés"),
-  "755": l("scripts, folders", "scripts, dossiers"),
-  "700": l("private folder", "dossier privé"),
-  "664": l("shared with group", "partagé avec le groupe"),
-  "775": l("group folder", "dossier de groupe"),
-  "444": l("read-only", "lecture seule"),
-  "777": l("everyone, avoid", "tout le monde, à éviter"),
-  "1777": l("like /tmp", "comme /tmp"),
-  "2775": l("team folder", "dossier d'équipe"),
+  "644": l("files", "fichiers", "Dateien"),
+  "600": l("private file, keys", "fichier privé, clés", "private Datei, Schlüssel"),
+  "755": l("scripts, folders", "scripts, dossiers", "Skripte, Ordner"),
+  "700": l("private folder", "dossier privé", "privater Ordner"),
+  "664": l("shared with group", "partagé avec le groupe", "mit der Gruppe geteilt"),
+  "775": l("group folder", "dossier de groupe", "Gruppenordner"),
+  "444": l("read-only", "lecture seule", "schreibgeschützt"),
+  "777": l("everyone, avoid", "tout le monde, à éviter", "alle, vermeiden"),
+  "1777": l("like /tmp", "comme /tmp", "wie /tmp"),
+  "2775": l("team folder", "dossier d'équipe", "Teamordner"),
 };
 
 export default function Chmod() {
@@ -102,7 +113,7 @@ export default function Chmod() {
   const symbolic = useToolState("symbolic", false);
   const m = mode.value;
 
-  const list = new Intl.ListFormat(lang.value, { type: "conjunction" });
+  const list = new Intl.ListFormat(locale(), { type: "conjunction" });
   const flip = (b: number) => {
     mode.value = m ^ b;
   };
@@ -249,7 +260,7 @@ export default function Chmod() {
               }}
             >
               <span class="mono">{shortOctal(p)}</span>
-              <span class="chmod-preset-label">{tr(PRESET_L[shortOctal(p)] ?? l("", ""))}</span>
+              <span class="chmod-preset-label">{tr(PRESET_L[shortOctal(p)] ?? l("", "", ""))}</span>
             </Button>
           ))}
         </div>

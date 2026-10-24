@@ -2,6 +2,8 @@ import { describe, expect, it } from "bun:test";
 import {
   type CurlRequest,
   GENERATORS,
+  NOTE_MESSAGES,
+  PARSE_ERRORS,
   parseCurl,
   pyLiteral,
   TARGETS,
@@ -13,6 +15,7 @@ import {
   toPhp,
   toPython,
   toWget,
+  warningMessage,
 } from "./logic";
 
 const req = (cmd: string): CurlRequest => {
@@ -256,5 +259,23 @@ describe("curl-convert — generators", () => {
     expect(h.code).toContain("'tags:=[\"a\"]'");
     expect(h.code).not.toContain("Content-Type");
     expect(toHttpie(req("curl -L -d a=1 https://x.test")).code).toContain("--form");
+  });
+});
+
+describe("messages", () => {
+  it("explains warnings with their detail, notes and parse errors in every language", () => {
+    const p = parseCurl("curl --bogus example.com");
+    expect(p.ok).toBe(true);
+    if (!p.ok) return;
+    expect(p.request.warnings.length).toBeGreaterThan(0);
+    for (const w of p.request.warnings) {
+      const m = warningMessage(w);
+      for (const s of [m.en, m.fr, m.de]) expect(s).not.toContain("{d}");
+    }
+    expect(warningMessage({ code: "unknown-option", detail: "--bogus" }).en).toBe(
+      "Unknown option ignored: --bogus",
+    );
+    expect(NOTE_MESSAGES["proxy-unsupported"].en).toContain("proxy");
+    expect(PARSE_ERRORS["no-url"].fr).toContain("URL");
   });
 });

@@ -20,6 +20,18 @@ no network request at all (CSP `connect-src 'self'`), works offline (service wor
    FR, keywords in both languages, `load: () => import("./<id>/View")`).
 5. Styles, if the shared classes are not enough, in `src/tools/<category>/styles.css`, prefixed
    with the tool id.
+6. A CLI command in `cli/commands/<category>.ts` (name = tool id) that imports the tool's
+   `logic.ts` lazily, with tests in `cli/commands/<category>.test.ts`; tools that need a DOM,
+   canvas, camera, microphone or audio are declared `browserOnly` (the command prints the link).
+   Then `bun run skill` regenerates `skills/toolbelt/` (CI fails if it is stale).
+
+## CLI and agent skill
+
+`cli/` is an offline CLI over the tools' logic (`bun cli/main.ts <command>`), bundled by
+`scripts/build-skill.ts` into `skills/toolbelt/scripts/toolbelt.mjs` (one dependency-free Node
+script, committed) with `skills/toolbelt/references/commands.md` generated from the command
+registry. `toolbelt link <tool> --set key=value` builds share links; the keys come from the views'
+`useToolState` calls (`cli/gen/state-keys.ts`, generated).
 
 Categories: `text`, `encode` (encoding & crypto), `data` (data & formats), `convert` (time &
 numbers), `web` (web & dev), `design` (CSS & design), `image` (images), `calc` (everyday
@@ -27,11 +39,14 @@ calculators), `life` (timers, chance & devices).
 
 ## Conventions
 
-- **Strings**: every visible string is EN + FR. Declare them at the top of the view:
-  `const T = { label: l("English", "Français") }` and render with `tr(T.label)`. Format numbers
-  with `fmt()` from `src/i18n`. Never hardcode English in JSX.
-- **Language**: the UI follows the browser (French if it prefers French, English otherwise);
-  only the header switch stores a choice.
+- **Strings**: every visible string is in English, French and German. Declare them at the top
+  of the view: `const T = { label: l("English", "Français", "Deutsch") }` and render with
+  `tr(T.label)`. Objects typed `L10n` carry `{ en, fr, de }`. Never hardcode English in JSX.
+- **Formatting**: numbers with `fmt()`, and anything else locale-aware (dates, `Intl.*`,
+  `toLocaleString`) with `locale()` from `src/i18n` — never `lang.value === "fr" ? … : …`.
+  Per-language data (word lists, alphabets, examples) with `pick({ en, fr, de })`.
+- **Language**: the UI follows the browser's first language among en/fr/de (English otherwise);
+  only a choice in the header list is stored.
 - **State**: `useToolState(key, initial, { persist?, share? })` from `src/app/state.ts` instead
   of `useState` for anything the user typed or chose: it survives reloads and goes into share
   links. Use `{ persist: false, share: false }` for secrets (passwords, keys, HMAC secrets).

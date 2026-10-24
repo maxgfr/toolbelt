@@ -95,6 +95,9 @@ describe("timestamp formats", () => {
     const now = Date.UTC(2024, 0, 31, 12);
     expect(relative(now - 3 * 86400000, now, "en-US")).toBe("3 days ago");
     expect(relative(now - 3 * 86400000, now, "fr-FR")).toBe("il y a 3 jours");
+    expect(relative(now - 3 * 86400000, now, "de-DE")).toBe("vor 3 Tagen");
+    expect(relative(now + 2 * 3600000, now, "de-DE")).toBe("in 2 Stunden");
+    expect(relative(now - 86400000, now, "de-DE")).toBe("gestern");
     expect(relative(now + 2 * 3600000, now, "en-US")).toBe("in 2 hours");
     expect(relative(now, now, "en-US")).toBe("now");
   });

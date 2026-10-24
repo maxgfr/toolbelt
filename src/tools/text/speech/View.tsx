@@ -4,43 +4,51 @@ import { useEffect, useRef } from "preact/hooks";
 import { Badge, Select } from "../../../app/kit";
 import { useToolState } from "../../../app/state";
 import { Button, ErrorNote, Field, Panel, TextBox } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, locale, tr } from "../../../i18n";
 import { chunkText, clampSettings, languages, pickVoice, voicesFor, wordAt } from "./logic";
 
 const T = {
-  text: l("Text to read aloud", "Texte à lire à voix haute"),
-  placeholder: l("Type or paste a text…", "Tape ou colle un texte…"),
-  language: l("Language", "Langue"),
-  allLanguages: l("All languages", "Toutes les langues"),
-  voice: l("Voice", "Voix"),
-  rate: l("Speed", "Vitesse"),
-  pitch: l("Pitch", "Hauteur"),
-  volume: l("Volume", "Volume"),
-  play: l("Read aloud", "Lire"),
-  pause: l("Pause", "Pause"),
-  resume: l("Resume", "Reprendre"),
-  stop: l("Stop", "Arrêter"),
-  reading: l("Reading", "Lecture"),
-  online: l("online", "en ligne"),
+  text: l("Text to read aloud", "Texte à lire à voix haute", "Vorzulesender Text"),
+  placeholder: l(
+    "Type or paste a text…",
+    "Tape ou colle un texte…",
+    "Tippe oder füge einen Text ein…",
+  ),
+  language: l("Language", "Langue", "Sprache"),
+  allLanguages: l("All languages", "Toutes les langues", "Alle Sprachen"),
+  voice: l("Voice", "Voix", "Stimme"),
+  rate: l("Speed", "Vitesse", "Tempo"),
+  pitch: l("Pitch", "Hauteur", "Tonhöhe"),
+  volume: l("Volume", "Volume", "Lautstärke"),
+  play: l("Read aloud", "Lire", "Vorlesen"),
+  pause: l("Pause", "Pause", "Pause"),
+  resume: l("Resume", "Reprendre", "Fortsetzen"),
+  stop: l("Stop", "Arrêter", "Stopp"),
+  reading: l("Reading", "Lecture", "Wird gelesen"),
+  online: l("online", "en ligne", "online"),
   onlineWarn: l(
     "This voice is provided by an online service: your browser may send the text to it. Pick a local voice to keep the text on your device.",
     "Cette voix est fournie par un service en ligne : le navigateur peut lui envoyer le texte. Choisis une voix locale pour que le texte reste sur ton appareil.",
+    "Diese Stimme kommt von einem Online-Dienst: Dein Browser schickt den Text eventuell dorthin. Wähle eine lokale Stimme, damit der Text auf deinem Gerät bleibt.",
   ),
   unsupported: l(
     "This browser does not support speech synthesis (Web Speech API).",
     "Ce navigateur ne gère pas la synthèse vocale (Web Speech API).",
+    "Dieser Browser unterstützt keine Sprachausgabe (Web Speech API).",
   ),
   noVoices: l(
     "No voices are available in this browser. On Linux, install a speech engine (speech-dispatcher, espeak-ng); elsewhere, add voices in the system's speech settings.",
     "Aucune voix n'est disponible dans ce navigateur. Sous Linux, installe un moteur vocal (speech-dispatcher, espeak-ng) ; ailleurs, ajoute des voix dans les réglages de synthèse vocale du système.",
+    "In diesem Browser sind keine Stimmen verfügbar. Unter Linux installierst du eine Sprachausgabe (speech-dispatcher, espeak-ng); anderswo fügst du Stimmen in den Sprachausgabe-Einstellungen des Systems hinzu.",
   ),
-  loadingVoices: l("Loading voices…", "Chargement des voix…"),
+  loadingVoices: l("Loading voices…", "Chargement des voix…", "Stimmen werden geladen…"),
   noBoundary: l(
     "This voice does not report word positions: the sentence being read is highlighted instead.",
     "Cette voix n'indique pas la position des mots : la phrase lue est surlignée à la place.",
+    "Diese Stimme meldet keine Wortpositionen: Stattdessen wird der gelesene Satz hervorgehoben.",
   ),
-  failed: l("Speech failed:", "La lecture a échoué :"),
-  voicesCount: l("voices", "voix"),
+  failed: l("Speech failed:", "La lecture a échoué :", "Vorlesen fehlgeschlagen:"),
+  voicesCount: l("voices", "voix", "Stimmen"),
 };
 
 type Status = "idle" | "speaking" | "paused";
@@ -52,7 +60,7 @@ const supported =
 
 function languageName(code: string): string {
   try {
-    return new Intl.DisplayNames([lang.value], { type: "language" }).of(code) ?? code;
+    return new Intl.DisplayNames([locale()], { type: "language" }).of(code) ?? code;
   } catch {
     return code;
   }
@@ -96,7 +104,7 @@ export default function Speech() {
     };
   }, []);
 
-  const langs = useComputed(() => languages(voices.value, lang.value));
+  const langs = useComputed(() => languages(voices.value, locale()));
   const activeLang = useComputed(() => {
     if (langFilter.value === "all") return "all";
     if (langs.value.includes(langFilter.value)) return langFilter.value;

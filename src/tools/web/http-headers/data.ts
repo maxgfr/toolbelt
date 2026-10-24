@@ -1,4 +1,4 @@
-/** Common HTTP headers with short EN/FR descriptions and an example value. */
+/** Common HTTP headers with short EN/FR/DE descriptions and an example value. */
 
 export type HeaderKind = "request" | "response" | "both";
 export type HeaderCat =
@@ -19,11 +19,12 @@ export interface HeaderEntry {
   cat: HeaderCat;
   en: string;
   fr: string;
+  de: string;
   example: string;
   deprecated?: boolean;
 }
 
-type Row = [string, HeaderKind, HeaderCat, string, string, string, boolean?];
+type Row = [string, HeaderKind, HeaderCat, string, string, string, string, boolean?];
 
 const ROWS: Row[] = [
   // Security
@@ -33,6 +34,7 @@ const ROWS: Row[] = [
     "security",
     "Tells browsers to use HTTPS only for this host, for max-age seconds (HSTS).",
     "Impose HTTPS pour cet hôte pendant max-age secondes (HSTS).",
+    "Weist Browser an, für diesen Host max-age Sekunden lang nur HTTPS zu verwenden (HSTS).",
     "max-age=63072000; includeSubDomains; preload",
   ],
   [
@@ -41,6 +43,7 @@ const ROWS: Row[] = [
     "security",
     "Restricts where scripts, styles, images, frames… may load from; the main defence against XSS.",
     "Restreint d'où scripts, styles, images, cadres… peuvent venir ; la défense principale contre le XSS.",
+    "Legt fest, woher Skripte, Styles, Bilder, Frames… geladen werden dürfen; der wichtigste Schutz gegen XSS.",
     "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
   ],
   [
@@ -49,6 +52,7 @@ const ROWS: Row[] = [
     "security",
     "Like CSP, but only reports violations: to test a policy before enforcing it.",
     "Comme CSP, mais signale seulement les violations : pour tester une politique avant de l'imposer.",
+    "Wie CSP, meldet Verstöße aber nur: um eine Richtlinie vor dem Erzwingen zu testen.",
     "default-src 'self'; report-to csp",
   ],
   [
@@ -57,6 +61,7 @@ const ROWS: Row[] = [
     "security",
     "Allows or forbids showing the page in a frame (clickjacking). Superseded by CSP frame-ancestors.",
     "Autorise ou interdit l'affichage de la page dans un cadre (clickjacking). Remplacé par frame-ancestors de CSP.",
+    "Erlaubt oder verbietet die Anzeige der Seite in einem Frame (Clickjacking). Abgelöst durch frame-ancestors in CSP.",
     "DENY",
   ],
   [
@@ -65,6 +70,7 @@ const ROWS: Row[] = [
     "security",
     "nosniff: the browser must not guess a different content type than Content-Type.",
     "nosniff : le navigateur ne doit pas deviner un autre type que Content-Type.",
+    "nosniff: Der Browser darf keinen anderen Inhaltstyp als Content-Type erraten.",
     "nosniff",
   ],
   [
@@ -73,6 +79,7 @@ const ROWS: Row[] = [
     "security",
     "How much of the current URL is sent in the Referer header.",
     "Quelle part de l'URL courante est envoyée dans l'en-tête Referer.",
+    "Wie viel der aktuellen URL im Referer-Header mitgeschickt wird.",
     "strict-origin-when-cross-origin",
   ],
   [
@@ -81,6 +88,7 @@ const ROWS: Row[] = [
     "security",
     "Turns browser features (camera, microphone, geolocation…) on or off for the page and its frames.",
     "Active ou coupe des fonctions du navigateur (caméra, micro, géolocalisation…) pour la page et ses cadres.",
+    "Schaltet Browserfunktionen (Kamera, Mikrofon, Standort…) für die Seite und ihre Frames ein oder aus.",
     "camera=(), microphone=(), geolocation=()",
   ],
   [
@@ -89,6 +97,7 @@ const ROWS: Row[] = [
     "security",
     "Separates the page from cross-origin windows it opens or is opened by.",
     "Sépare la page des fenêtres d'autres origines qu'elle ouvre ou qui l'ouvrent.",
+    "Trennt die Seite von Fenstern anderer Origins, die sie öffnet oder von denen sie geöffnet wird.",
     "same-origin",
   ],
   [
@@ -97,6 +106,7 @@ const ROWS: Row[] = [
     "security",
     "Only loads cross-origin resources that opt in (CORP or CORS); needed for cross-origin isolation.",
     "Ne charge que les ressources d'autres origines qui l'acceptent (CORP ou CORS) ; nécessaire à l'isolation cross-origin.",
+    "Lädt Ressourcen anderer Origins nur, wenn sie zustimmen (CORP oder CORS); nötig für Cross-Origin-Isolation.",
     "require-corp",
   ],
   [
@@ -105,6 +115,7 @@ const ROWS: Row[] = [
     "security",
     "Which sites may embed this resource.",
     "Quels sites peuvent intégrer cette ressource.",
+    "Welche Websites diese Ressource einbinden dürfen.",
     "same-site",
   ],
   [
@@ -113,6 +124,7 @@ const ROWS: Row[] = [
     "security",
     "Switch for an old browser XSS filter that caused leaks; send 0 or nothing.",
     "Interrupteur d'un vieux filtre XSS des navigateurs source de fuites ; envoie 0 ou rien.",
+    "Schalter für einen alten XSS-Filter der Browser, der Lücken verursachte; sende 0 oder gar nichts.",
     "0",
     true,
   ],
@@ -122,6 +134,7 @@ const ROWS: Row[] = [
     "security",
     "Whether Flash/PDF clients may load cross-domain policy files.",
     "Si les clients Flash/PDF peuvent charger des fichiers de politique inter-domaines.",
+    "Ob Flash-/PDF-Clients domainübergreifende Richtliniendateien laden dürfen.",
     "none",
   ],
   [
@@ -130,6 +143,7 @@ const ROWS: Row[] = [
     "security",
     "Clears the site's cookies, storage or cache in the browser, e.g. on logout.",
     "Efface cookies, stockage ou cache du site dans le navigateur, par ex. à la déconnexion.",
+    "Löscht Cookies, Speicher oder Cache der Website im Browser, z. B. beim Abmelden.",
     '"cache", "cookies", "storage"',
   ],
   [
@@ -138,6 +152,7 @@ const ROWS: Row[] = [
     "security",
     "Asks to isolate the page per origin rather than per site.",
     "Demande d'isoler la page par origine plutôt que par site.",
+    "Bittet darum, die Seite pro Origin statt pro Website zu isolieren.",
     "?1",
   ],
   [
@@ -146,6 +161,7 @@ const ROWS: Row[] = [
     "security",
     "Named URLs where the browser sends reports (CSP, deprecations…).",
     "URL nommées où le navigateur envoie des rapports (CSP, dépréciations…).",
+    "Benannte URLs, an die der Browser Berichte schickt (CSP, veraltete Funktionen…).",
     'csp="https://example.com/reports"',
   ],
   [
@@ -154,6 +170,7 @@ const ROWS: Row[] = [
     "security",
     "Asked for Certificate Transparency; now obsolete.",
     "Exigeait la Certificate Transparency ; désormais obsolète.",
+    "Verlangte Certificate Transparency; inzwischen veraltet.",
     "max-age=86400, enforce",
     true,
   ],
@@ -163,6 +180,7 @@ const ROWS: Row[] = [
     "security",
     "Network Error Logging: report connection failures to an endpoint.",
     "Network Error Logging : signale les échecs de connexion à une adresse.",
+    "Network Error Logging: meldet Verbindungsfehler an einen Endpunkt.",
     '{"report_to":"default","max_age":2592000}',
   ],
   // CORS
@@ -172,6 +190,7 @@ const ROWS: Row[] = [
     "cors",
     "The origin (scheme, host, port) a request comes from.",
     "L'origine (schéma, hôte, port) d'où vient une requête.",
+    "Der Origin (Schema, Host, Port), von dem eine Anfrage stammt.",
     "https://app.example.com",
   ],
   [
@@ -180,6 +199,7 @@ const ROWS: Row[] = [
     "cors",
     "The origin allowed to read the response, or * for any (not with credentials).",
     "L'origine autorisée à lire la réponse, ou * pour toutes (pas avec des identifiants).",
+    "Der Origin, der die Antwort lesen darf, oder * für alle (nicht mit Zugangsdaten).",
     "https://app.example.com",
   ],
   [
@@ -188,6 +208,7 @@ const ROWS: Row[] = [
     "cors",
     "Lets cross-origin requests with cookies or auth read the response.",
     "Permet aux requêtes cross-origin avec cookies ou authentification de lire la réponse.",
+    "Erlaubt Cross-Origin-Anfragen mit Cookies oder Authentifizierung, die Antwort zu lesen.",
     "true",
   ],
   [
@@ -196,6 +217,7 @@ const ROWS: Row[] = [
     "cors",
     "Methods allowed, in a preflight answer.",
     "Méthodes autorisées, dans une réponse de pré-vérification.",
+    "Erlaubte Methoden, in der Antwort auf einen Preflight.",
     "GET, POST, PUT, DELETE",
   ],
   [
@@ -204,6 +226,7 @@ const ROWS: Row[] = [
     "cors",
     "Request headers allowed, in a preflight answer.",
     "En-têtes de requête autorisés, dans une réponse de pré-vérification.",
+    "Erlaubte Anfrage-Header, in der Antwort auf einen Preflight.",
     "Content-Type, Authorization",
   ],
   [
@@ -212,6 +235,7 @@ const ROWS: Row[] = [
     "cors",
     "Response headers that JavaScript may read.",
     "En-têtes de réponse lisibles par JavaScript.",
+    "Antwort-Header, die JavaScript lesen darf.",
     "X-Request-Id, Content-Disposition",
   ],
   [
@@ -220,6 +244,7 @@ const ROWS: Row[] = [
     "cors",
     "How long (seconds) a preflight answer can be cached.",
     "Durée (secondes) de mise en cache d'une pré-vérification.",
+    "Wie lange (Sekunden) die Antwort auf einen Preflight gecacht werden darf.",
     "600",
   ],
   [
@@ -228,6 +253,7 @@ const ROWS: Row[] = [
     "cors",
     "In a preflight: the method of the real request.",
     "Dans une pré-vérification : la méthode de la vraie requête.",
+    "Im Preflight: die Methode der eigentlichen Anfrage.",
     "PUT",
   ],
   [
@@ -236,6 +262,7 @@ const ROWS: Row[] = [
     "cors",
     "In a preflight: the headers of the real request.",
     "Dans une pré-vérification : les en-têtes de la vraie requête.",
+    "Im Preflight: die Header der eigentlichen Anfrage.",
     "content-type, authorization",
   ],
   [
@@ -244,6 +271,7 @@ const ROWS: Row[] = [
     "cors",
     "Origins allowed to see detailed Resource Timing data.",
     "Origines autorisées à voir le détail de Resource Timing.",
+    "Origins, die detaillierte Resource-Timing-Daten sehen dürfen.",
     "https://app.example.com",
   ],
   // Caching
@@ -253,6 +281,7 @@ const ROWS: Row[] = [
     "caching",
     "Caching rules: max-age, no-store, no-cache, private, immutable…",
     "Règles de cache : max-age, no-store, no-cache, private, immutable…",
+    "Caching-Regeln: max-age, no-store, no-cache, private, immutable…",
     "public, max-age=31536000, immutable",
   ],
   [
@@ -261,6 +290,7 @@ const ROWS: Row[] = [
     "caching",
     "Date after which the response is stale; Cache-Control max-age wins.",
     "Date après laquelle la réponse est périmée ; max-age de Cache-Control l'emporte.",
+    "Datum, ab dem die Antwort veraltet ist; max-age aus Cache-Control hat Vorrang.",
     "Wed, 21 Oct 2026 07:28:00 GMT",
   ],
   [
@@ -269,6 +299,7 @@ const ROWS: Row[] = [
     "caching",
     "Seconds the response has spent in a cache.",
     "Secondes passées par la réponse dans un cache.",
+    "Sekunden, die die Antwort in einem Cache verbracht hat.",
     "120",
   ],
   [
@@ -277,6 +308,7 @@ const ROWS: Row[] = [
     "caching",
     "An identifier of this version of the resource, for revalidation.",
     "Identifiant de cette version de la ressource, pour la revalidation.",
+    "Kennung dieser Version der Ressource, für die Revalidierung.",
     '"33a64df551425fcc55e4d42a148795d9f25f89d4"',
   ],
   [
@@ -285,6 +317,7 @@ const ROWS: Row[] = [
     "caching",
     "When the resource last changed.",
     "Date de dernière modification de la ressource.",
+    "Wann die Ressource zuletzt geändert wurde.",
     "Tue, 15 Oct 2026 12:45:26 GMT",
   ],
   [
@@ -293,6 +326,7 @@ const ROWS: Row[] = [
     "caching",
     "Request headers that change the response, so caches key on them.",
     "En-têtes de requête qui changent la réponse : les caches en tiennent compte.",
+    "Anfrage-Header, die die Antwort verändern; Caches berücksichtigen sie im Schlüssel.",
     "Accept-Encoding, Accept-Language",
   ],
   [
@@ -301,6 +335,7 @@ const ROWS: Row[] = [
     "caching",
     "Caching rules for CDNs only, overriding Cache-Control there.",
     "Règles de cache pour les CDN seulement, prioritaires sur Cache-Control.",
+    "Caching-Regeln nur für CDNs, die dort Cache-Control überschreiben.",
     "max-age=3600",
   ],
   [
@@ -309,6 +344,7 @@ const ROWS: Row[] = [
     "caching",
     "HTTP/1.0 no-cache; use Cache-Control instead.",
     "no-cache d'HTTP/1.0 ; utilise plutôt Cache-Control.",
+    "no-cache aus HTTP/1.0; nimm stattdessen Cache-Control.",
     "no-cache",
     true,
   ],
@@ -319,6 +355,7 @@ const ROWS: Row[] = [
     "conditional",
     "Send the body only if the ETag changed (else 304 Not Modified).",
     "Envoie le corps seulement si l'ETag a changé (sinon 304 Not Modified).",
+    "Body nur senden, wenn sich das ETag geändert hat (sonst 304 Not Modified).",
     '"33a64df5"',
   ],
   [
@@ -327,6 +364,7 @@ const ROWS: Row[] = [
     "conditional",
     "Send the body only if modified after this date.",
     "Envoie le corps seulement si modifié après cette date.",
+    "Body nur senden, wenn nach diesem Datum geändert.",
     "Tue, 15 Oct 2026 12:45:26 GMT",
   ],
   [
@@ -335,6 +373,7 @@ const ROWS: Row[] = [
     "conditional",
     "Proceed only if the ETag matches: avoids overwriting someone else's change.",
     "Continue seulement si l'ETag correspond : évite d'écraser la modification d'un autre.",
+    "Nur fortfahren, wenn das ETag passt: verhindert, dass du die Änderung eines anderen überschreibst.",
     '"33a64df5"',
   ],
   [
@@ -343,6 +382,7 @@ const ROWS: Row[] = [
     "conditional",
     "Proceed only if not modified since this date.",
     "Continue seulement si non modifié depuis cette date.",
+    "Nur fortfahren, wenn seit diesem Datum nicht geändert.",
     "Tue, 15 Oct 2026 12:45:26 GMT",
   ],
   [
@@ -351,6 +391,7 @@ const ROWS: Row[] = [
     "conditional",
     "Send the requested range only if unchanged, else the whole resource.",
     "Envoie la plage demandée seulement si inchangée, sinon toute la ressource.",
+    "Den angefragten Bereich nur senden, wenn unverändert, sonst die ganze Ressource.",
     '"33a64df5"',
   ],
   [
@@ -359,6 +400,7 @@ const ROWS: Row[] = [
     "conditional",
     "Asks for part of a resource (resume a download, seek in a video).",
     "Demande une partie d'une ressource (reprise de téléchargement, saut dans une vidéo).",
+    "Fordert einen Teil einer Ressource an (Download fortsetzen, in einem Video springen).",
     "bytes=0-1023",
   ],
   [
@@ -367,6 +409,7 @@ const ROWS: Row[] = [
     "conditional",
     "Whether the server supports range requests.",
     "Si le serveur accepte les requêtes partielles.",
+    "Ob der Server Bereichsanfragen unterstützt.",
     "bytes",
   ],
   [
@@ -375,6 +418,7 @@ const ROWS: Row[] = [
     "conditional",
     "Which part of the resource this response holds.",
     "Quelle partie de la ressource contient cette réponse.",
+    "Welchen Teil der Ressource diese Antwort enthält.",
     "bytes 0-1023/146515",
   ],
   // Content
@@ -384,6 +428,7 @@ const ROWS: Row[] = [
     "content",
     "Media type of the body, with its charset.",
     "Type de média du corps, avec son jeu de caractères.",
+    "Medientyp des Bodys, mit seinem Zeichensatz.",
     "application/json; charset=utf-8",
   ],
   [
@@ -392,6 +437,7 @@ const ROWS: Row[] = [
     "content",
     "Size of the body in bytes.",
     "Taille du corps en octets.",
+    "Größe des Bodys in Bytes.",
     "348",
   ],
   [
@@ -400,6 +446,7 @@ const ROWS: Row[] = [
     "content",
     "Compression applied to the body.",
     "Compression appliquée au corps.",
+    "Auf den Body angewendete Komprimierung.",
     "br",
   ],
   [
@@ -408,6 +455,7 @@ const ROWS: Row[] = [
     "content",
     "Language(s) of the content.",
     "Langue(s) du contenu.",
+    "Sprache(n) des Inhalts.",
     "fr-FR",
   ],
   [
@@ -416,6 +464,7 @@ const ROWS: Row[] = [
     "content",
     "Show inline or download as a file, with its name.",
     "Afficher ou télécharger comme fichier, avec son nom.",
+    "Direkt anzeigen oder als Datei herunterladen, mit ihrem Namen.",
     'attachment; filename="report.pdf"',
   ],
   [
@@ -424,6 +473,7 @@ const ROWS: Row[] = [
     "content",
     "Direct URL of the returned representation.",
     "URL directe de la représentation renvoyée.",
+    "Direkte URL der zurückgegebenen Repräsentation.",
     "/documents/foo.json",
   ],
   [
@@ -432,6 +482,7 @@ const ROWS: Row[] = [
     "content",
     "Media types the client accepts, with preferences (q).",
     "Types de média acceptés par le client, avec préférences (q).",
+    "Medientypen, die der Client akzeptiert, mit Präferenzen (q).",
     "text/html, application/json;q=0.9, */*;q=0.8",
   ],
   [
@@ -440,6 +491,7 @@ const ROWS: Row[] = [
     "content",
     "Compressions the client understands.",
     "Compressions comprises par le client.",
+    "Komprimierungen, die der Client versteht.",
     "gzip, deflate, br, zstd",
   ],
   [
@@ -448,6 +500,7 @@ const ROWS: Row[] = [
     "content",
     "Languages the user prefers.",
     "Langues préférées de l'utilisateur.",
+    "Vom Nutzer bevorzugte Sprachen.",
     "fr-FR, fr;q=0.9, en;q=0.8",
   ],
   [
@@ -456,6 +509,7 @@ const ROWS: Row[] = [
     "content",
     "chunked: the body comes in pieces (HTTP/1.1 only).",
     "chunked : le corps arrive par morceaux (HTTP/1.1 seulement).",
+    "chunked: Der Body kommt in Stücken (nur HTTP/1.1).",
     "chunked",
   ],
   [
@@ -464,6 +518,7 @@ const ROWS: Row[] = [
     "content",
     "Related links: preload, preconnect, canonical, next page…",
     "Liens associés : preload, preconnect, canonical, page suivante…",
+    "Verwandte Links: preload, preconnect, canonical, nächste Seite…",
     "</style.css>; rel=preload; as=style",
   ],
   [
@@ -472,6 +527,7 @@ const ROWS: Row[] = [
     "content",
     "Hash of the body, to check integrity.",
     "Empreinte du corps, pour en vérifier l'intégrité.",
+    "Hash des Bodys, um die Integrität zu prüfen.",
     "sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:",
   ],
   // Auth
@@ -481,6 +537,7 @@ const ROWS: Row[] = [
     "auth",
     "Credentials: Bearer token, Basic user:password in base64…",
     "Identifiants : jeton Bearer, Basic utilisateur:mot de passe en base64…",
+    "Zugangsdaten: Bearer-Token, Basic Benutzer:Passwort in Base64…",
     "Bearer eyJhbGciOiJIUzI1NiJ9…",
   ],
   [
@@ -489,6 +546,7 @@ const ROWS: Row[] = [
     "auth",
     "With 401: the authentication scheme to use.",
     "Avec 401 : le schéma d'authentification à utiliser.",
+    "Mit 401: das zu verwendende Authentifizierungsschema.",
     'Bearer realm="api", error="invalid_token"',
   ],
   [
@@ -497,6 +555,7 @@ const ROWS: Row[] = [
     "auth",
     "Credentials for a proxy.",
     "Identifiants pour un proxy.",
+    "Zugangsdaten für einen Proxy.",
     "Basic YWxhZGRpbjpvcGVuc2VzYW1l",
   ],
   [
@@ -505,6 +564,7 @@ const ROWS: Row[] = [
     "auth",
     "With 407: how to authenticate to the proxy.",
     "Avec 407 : comment s'authentifier auprès du proxy.",
+    "Mit 407: wie man sich beim Proxy authentifiziert.",
     'Basic realm="proxy"',
   ],
   // Cookies
@@ -514,6 +574,7 @@ const ROWS: Row[] = [
     "cookies",
     "Cookies the browser sends back.",
     "Cookies renvoyés par le navigateur.",
+    "Cookies, die der Browser zurückschickt.",
     "session=abc123; theme=dark",
   ],
   [
@@ -522,6 +583,7 @@ const ROWS: Row[] = [
     "cookies",
     "Stores a cookie; add Secure, HttpOnly and SameSite.",
     "Enregistre un cookie ; ajoute Secure, HttpOnly et SameSite.",
+    "Speichert ein Cookie; ergänze Secure, HttpOnly und SameSite.",
     "session=abc123; Path=/; Secure; HttpOnly; SameSite=Lax",
   ],
   // Connection & proxies
@@ -531,6 +593,7 @@ const ROWS: Row[] = [
     "connection",
     "Target host and port; required in HTTP/1.1.",
     "Hôte et port visés ; obligatoire en HTTP/1.1.",
+    "Ziel-Host und -Port; in HTTP/1.1 Pflicht.",
     "example.com",
   ],
   [
@@ -539,6 +602,7 @@ const ROWS: Row[] = [
     "connection",
     "keep-alive or close; not allowed in HTTP/2 and 3.",
     "keep-alive ou close ; interdit en HTTP/2 et 3.",
+    "keep-alive oder close; in HTTP/2 und 3 nicht erlaubt.",
     "keep-alive",
   ],
   [
@@ -547,6 +611,7 @@ const ROWS: Row[] = [
     "connection",
     "Idle timeout and request count of a persistent connection.",
     "Délai d'inactivité et nombre de requêtes d'une connexion persistante.",
+    "Leerlauf-Timeout und Anzahl der Anfragen einer persistenten Verbindung.",
     "timeout=5, max=1000",
   ],
   [
@@ -555,6 +620,7 @@ const ROWS: Row[] = [
     "connection",
     "Switch to another protocol on the same connection (WebSocket).",
     "Passe à un autre protocole sur la même connexion (WebSocket).",
+    "Wechselt auf derselben Verbindung zu einem anderen Protokoll (WebSocket).",
     "websocket",
   ],
   [
@@ -563,6 +629,7 @@ const ROWS: Row[] = [
     "connection",
     "Proxies the message went through.",
     "Proxys traversés par le message.",
+    "Proxys, die die Nachricht durchlaufen hat.",
     "1.1 varnish, 1.1 cloudfront",
   ],
   [
@@ -571,6 +638,7 @@ const ROWS: Row[] = [
     "connection",
     "Standard form of client and proxy info (RFC 7239).",
     "Forme standard des infos client et proxy (RFC 7239).",
+    "Standardisierte Form der Client- und Proxy-Infos (RFC 7239).",
     "for=192.0.2.60;proto=https;by=203.0.113.43",
   ],
   [
@@ -579,6 +647,7 @@ const ROWS: Row[] = [
     "connection",
     "Client IP, then each proxy's; trust only your own proxies' entries.",
     "IP du client puis de chaque proxy ; ne fais confiance qu'aux entrées de tes proxys.",
+    "IP des Clients, dann die jedes Proxys; vertraue nur den Einträgen deiner eigenen Proxys.",
     "203.0.113.195, 70.41.3.18",
   ],
   [
@@ -587,6 +656,7 @@ const ROWS: Row[] = [
     "connection",
     "Scheme (http/https) the client used, behind a proxy.",
     "Schéma (http/https) utilisé par le client, derrière un proxy.",
+    "Schema (http/https), das der Client hinter einem Proxy verwendet hat.",
     "https",
   ],
   [
@@ -595,6 +665,7 @@ const ROWS: Row[] = [
     "connection",
     "Host the client asked for, behind a proxy.",
     "Hôte demandé par le client, derrière un proxy.",
+    "Host, den der Client hinter einem Proxy angefragt hat.",
     "example.com",
   ],
   [
@@ -603,6 +674,7 @@ const ROWS: Row[] = [
     "connection",
     "Client IP set by a reverse proxy (nginx).",
     "IP du client posée par un proxy inverse (nginx).",
+    "Client-IP, gesetzt von einem Reverse Proxy (nginx).",
     "203.0.113.195",
   ],
   [
@@ -611,6 +683,7 @@ const ROWS: Row[] = [
     "connection",
     "The same service on another protocol or port (HTTP/3).",
     "Le même service sur un autre protocole ou port (HTTP/3).",
+    "Derselbe Dienst über ein anderes Protokoll oder einen anderen Port (HTTP/3).",
     'h3=":443"; ma=86400',
   ],
   [
@@ -619,6 +692,7 @@ const ROWS: Row[] = [
     "connection",
     "Transfer codings accepted; in practice “trailers”.",
     "Codages de transfert acceptés ; en pratique « trailers ».",
+    "Akzeptierte Transfer-Codierungen; in der Praxis „trailers“.",
     "trailers",
   ],
   [
@@ -627,6 +701,7 @@ const ROWS: Row[] = [
     "connection",
     "Headers that will come after the body.",
     "En-têtes qui viendront après le corps.",
+    "Header, die nach dem Body folgen.",
     "Server-Timing",
   ],
   [
@@ -635,6 +710,7 @@ const ROWS: Row[] = [
     "connection",
     "100-continue: check the server accepts before sending a big body.",
     "100-continue : vérifier que le serveur accepte avant d'envoyer un gros corps.",
+    "100-continue: prüfen, ob der Server annimmt, bevor ein großer Body gesendet wird.",
     "100-continue",
   ],
   [
@@ -643,6 +719,7 @@ const ROWS: Row[] = [
     "connection",
     "Random key of a WebSocket handshake.",
     "Clé aléatoire d'une poignée de main WebSocket.",
+    "Zufälliger Schlüssel eines WebSocket-Handshakes.",
     "dGhlIHNhbXBsZSBub25jZQ==",
   ],
   [
@@ -651,6 +728,7 @@ const ROWS: Row[] = [
     "connection",
     "Server's proof that it accepted the WebSocket handshake.",
     "Preuve que le serveur accepte la poignée de main WebSocket.",
+    "Nachweis des Servers, dass er den WebSocket-Handshake angenommen hat.",
     "s3pPLMBiTxaQ9kYGzzhZRbK+xOo=",
   ],
   [
@@ -659,6 +737,7 @@ const ROWS: Row[] = [
     "connection",
     "WebSocket subprotocols offered or chosen.",
     "Sous-protocoles WebSocket proposés ou choisis.",
+    "Angebotene oder gewählte WebSocket-Subprotokolle.",
     "graphql-ws",
   ],
   // Request context
@@ -668,6 +747,7 @@ const ROWS: Row[] = [
     "context",
     "The client software and version.",
     "Le logiciel client et sa version.",
+    "Die Client-Software und ihre Version.",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) …",
   ],
   [
@@ -676,6 +756,7 @@ const ROWS: Row[] = [
     "context",
     "The page the request came from (misspelt in the standard).",
     "La page d'où vient la requête (faute d'orthographe d'origine).",
+    "Die Seite, von der die Anfrage kommt (im Standard falsch geschrieben).",
     "https://example.com/page",
   ],
   [
@@ -684,6 +765,7 @@ const ROWS: Row[] = [
     "context",
     "Fetch metadata: same-origin, same-site, cross-site or none.",
     "Métadonnées fetch : same-origin, same-site, cross-site ou none.",
+    "Fetch-Metadaten: same-origin, same-site, cross-site oder none.",
     "same-origin",
   ],
   [
@@ -692,6 +774,7 @@ const ROWS: Row[] = [
     "context",
     "Fetch metadata: navigate, cors, no-cors, same-origin, websocket.",
     "Métadonnées fetch : navigate, cors, no-cors, same-origin, websocket.",
+    "Fetch-Metadaten: navigate, cors, no-cors, same-origin, websocket.",
     "navigate",
   ],
   [
@@ -700,6 +783,7 @@ const ROWS: Row[] = [
     "context",
     "Fetch metadata: what the response is for (document, image, script…).",
     "Métadonnées fetch : à quoi sert la réponse (document, image, script…).",
+    "Fetch-Metadaten: wofür die Antwort gedacht ist (document, image, script…).",
     "document",
   ],
   [
@@ -708,6 +792,7 @@ const ROWS: Row[] = [
     "context",
     "?1 when a navigation was triggered by the user.",
     "?1 quand une navigation vient d'une action de l'utilisateur.",
+    "?1, wenn eine Navigation vom Nutzer ausgelöst wurde.",
     "?1",
   ],
   [
@@ -716,6 +801,7 @@ const ROWS: Row[] = [
     "context",
     "The client prefers an HTTPS version of the page.",
     "Le client préfère une version HTTPS de la page.",
+    "Der Client bevorzugt eine HTTPS-Version der Seite.",
     "1",
   ],
   [
@@ -724,6 +810,7 @@ const ROWS: Row[] = [
     "context",
     "Global Privacy Control: do not sell or share my data.",
     "Global Privacy Control : ne vends ni ne partage mes données.",
+    "Global Privacy Control: Verkaufe oder teile meine Daten nicht.",
     "1",
   ],
   [
@@ -732,6 +819,7 @@ const ROWS: Row[] = [
     "context",
     "Do Not Track; replaced by Sec-GPC.",
     "Do Not Track ; remplacé par Sec-GPC.",
+    "Do Not Track; ersetzt durch Sec-GPC.",
     "1",
     true,
   ],
@@ -741,6 +829,7 @@ const ROWS: Row[] = [
     "context",
     "The user wants to save data (lighter pages).",
     "L'utilisateur veut économiser des données (pages plus légères).",
+    "Der Nutzer möchte Daten sparen (leichtere Seiten).",
     "on",
   ],
   [
@@ -749,6 +838,7 @@ const ROWS: Row[] = [
     "context",
     "User-agent client hint: browser brands and versions.",
     "Indice client : marques et versions du navigateur.",
+    "User-Agent Client Hint: Browsermarken und -versionen.",
     '"Chromium";v="130", "Google Chrome";v="130"',
   ],
   [
@@ -757,6 +847,7 @@ const ROWS: Row[] = [
     "context",
     "User-agent client hint: ?1 on a mobile device.",
     "Indice client : ?1 sur un appareil mobile.",
+    "User-Agent Client Hint: ?1 auf einem Mobilgerät.",
     "?0",
   ],
   [
@@ -765,6 +856,7 @@ const ROWS: Row[] = [
     "context",
     "User-agent client hint: operating system.",
     "Indice client : système d'exploitation.",
+    "User-Agent Client Hint: Betriebssystem.",
     '"macOS"',
   ],
   [
@@ -773,6 +865,7 @@ const ROWS: Row[] = [
     "context",
     "Client hints the server wants in later requests.",
     "Indices client voulus par le serveur dans les requêtes suivantes.",
+    "Client Hints, die der Server in späteren Anfragen haben möchte.",
     "Sec-CH-UA-Platform-Version, Sec-CH-UA-Model",
   ],
   [
@@ -781,6 +874,7 @@ const ROWS: Row[] = [
     "context",
     "Request priority hint: urgency and incremental (RFC 9218).",
     "Indice de priorité : urgence et incrémental (RFC 9218).",
+    "Hinweis zur Priorität der Anfrage: Dringlichkeit und inkrementell (RFC 9218).",
     "u=1, i",
   ],
   [
@@ -789,6 +883,7 @@ const ROWS: Row[] = [
     "context",
     "Why the browser fetches: prefetch or prerender.",
     "Pourquoi le navigateur charge : prefetch ou prerender.",
+    "Warum der Browser lädt: prefetch oder prerender.",
     "prefetch",
   ],
   [
@@ -797,6 +892,7 @@ const ROWS: Row[] = [
     "context",
     "Set by some JavaScript libraries to mark AJAX calls.",
     "Posé par certaines bibliothèques JavaScript pour marquer les appels AJAX.",
+    "Von manchen JavaScript-Bibliotheken gesetzt, um AJAX-Aufrufe zu kennzeichnen.",
     "XMLHttpRequest",
   ],
   [
@@ -805,6 +901,7 @@ const ROWS: Row[] = [
     "context",
     "Client preferences, e.g. return only a minimal body.",
     "Préférences du client, par ex. ne renvoyer qu'un corps minimal.",
+    "Präferenzen des Clients, z. B. nur einen minimalen Body zurückgeben.",
     "return=minimal",
   ],
   [
@@ -813,6 +910,7 @@ const ROWS: Row[] = [
     "context",
     "Unique key that makes retrying a POST safe.",
     "Clé unique qui rend sûre la répétition d'un POST.",
+    "Eindeutiger Schlüssel, der das Wiederholen eines POST sicher macht.",
     "8e03978e-40d5-43e8-bc93-6894a57f9324",
   ],
   [
@@ -821,6 +919,7 @@ const ROWS: Row[] = [
     "context",
     "1 when the request was sent in TLS 1.3 early data (replayable).",
     "1 quand la requête est partie en early data TLS 1.3 (rejouable).",
+    "1, wenn die Anfrage als TLS-1.3-Early-Data gesendet wurde (wiederholbar).",
     "1",
   ],
   // Misc response
@@ -830,6 +929,7 @@ const ROWS: Row[] = [
     "misc",
     "Where to go: redirect target, or URL of a created resource.",
     "Où aller : cible d'une redirection, ou URL d'une ressource créée.",
+    "Wohin es geht: Ziel einer Weiterleitung oder URL einer erstellten Ressource.",
     "/login",
   ],
   [
@@ -838,6 +938,7 @@ const ROWS: Row[] = [
     "misc",
     "Wait this long (seconds or a date) before retrying, with 429 or 503.",
     "Attendre ce délai (secondes ou date) avant de réessayer, avec 429 ou 503.",
+    "So lange warten (Sekunden oder Datum), bevor du es erneut versuchst, mit 429 oder 503.",
     "120",
   ],
   [
@@ -846,6 +947,7 @@ const ROWS: Row[] = [
     "misc",
     "Server software; avoid giving versions.",
     "Logiciel serveur ; évite d'indiquer des versions.",
+    "Server-Software; gib besser keine Versionen an.",
     "nginx",
   ],
   [
@@ -854,6 +956,7 @@ const ROWS: Row[] = [
     "misc",
     "Framework banner; better removed.",
     "Bannière du framework ; mieux vaut la retirer.",
+    "Framework-Banner; besser entfernen.",
     "Express",
   ],
   [
@@ -862,6 +965,7 @@ const ROWS: Row[] = [
     "misc",
     "When the message was sent.",
     "Date d'envoi du message.",
+    "Wann die Nachricht gesendet wurde.",
     "Thu, 24 Oct 2026 10:00:00 GMT",
   ],
   [
@@ -870,6 +974,7 @@ const ROWS: Row[] = [
     "misc",
     "Methods the resource supports, with 405.",
     "Méthodes acceptées par la ressource, avec 405.",
+    "Von der Ressource unterstützte Methoden, mit 405.",
     "GET, HEAD, OPTIONS",
   ],
   [
@@ -878,6 +983,7 @@ const ROWS: Row[] = [
     "misc",
     "Server-side timings shown in browser dev tools.",
     "Durées côté serveur affichées dans les outils de développement.",
+    "Serverseitige Zeiten, angezeigt in den Entwicklertools des Browsers.",
     "db;dur=53, app;dur=47.2",
   ],
   [
@@ -886,6 +992,7 @@ const ROWS: Row[] = [
     "misc",
     "Reload or redirect after some seconds.",
     "Recharger ou rediriger après quelques secondes.",
+    "Nach einigen Sekunden neu laden oder weiterleiten.",
     "5; url=https://example.com",
   ],
   [
@@ -894,6 +1001,7 @@ const ROWS: Row[] = [
     "misc",
     "Indexing rules for search engines, also for non-HTML files.",
     "Règles d'indexation pour les moteurs, aussi pour les fichiers non HTML.",
+    "Indexierungsregeln für Suchmaschinen, auch für Nicht-HTML-Dateien.",
     "noindex, nofollow",
   ],
   [
@@ -902,6 +1010,7 @@ const ROWS: Row[] = [
     "misc",
     "Turns the browser's DNS prefetching on or off.",
     "Active ou coupe la pré-résolution DNS du navigateur.",
+    "Schaltet die DNS-Vorabauflösung des Browsers ein oder aus.",
     "off",
   ],
   [
@@ -910,6 +1019,7 @@ const ROWS: Row[] = [
     "misc",
     "Correlation ID to follow a request through logs.",
     "Identifiant pour suivre une requête dans les journaux.",
+    "Korrelations-ID, um eine Anfrage durch die Logs zu verfolgen.",
     "f058ebd6-02f7-4d3f-942e-904344e8cde5",
   ],
   [
@@ -918,6 +1028,7 @@ const ROWS: Row[] = [
     "misc",
     "W3C trace context: trace and span IDs for distributed tracing.",
     "Contexte de trace W3C : identifiants de trace pour le traçage distribué.",
+    "W3C Trace Context: Trace- und Span-IDs für verteiltes Tracing.",
     "00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01",
   ],
   [
@@ -926,6 +1037,7 @@ const ROWS: Row[] = [
     "misc",
     "Rate limit state: limit, remaining, reset (IETF draft).",
     "État de la limite de débit : limite, restant, remise à zéro (brouillon IETF).",
+    "Stand des Rate Limits: Limit, verbleibend, Reset (IETF-Entwurf).",
     "limit=100, remaining=42, reset=30",
   ],
   [
@@ -934,6 +1046,7 @@ const ROWS: Row[] = [
     "misc",
     "Requests left in the current window (common convention).",
     "Requêtes restantes dans la fenêtre courante (convention courante).",
+    "Verbleibende Anfragen im aktuellen Zeitfenster (verbreitete Konvention).",
     "42",
   ],
   [
@@ -942,6 +1055,7 @@ const ROWS: Row[] = [
     "misc",
     "The resource is or will be deprecated.",
     "La ressource est ou sera dépréciée.",
+    "Die Ressource ist oder wird veraltet (deprecated).",
     "@1767225600",
   ],
   [
@@ -950,6 +1064,7 @@ const ROWS: Row[] = [
     "misc",
     "When the resource will stop responding.",
     "Date à laquelle la ressource cessera de répondre.",
+    "Wann die Ressource nicht mehr antworten wird.",
     "Sat, 31 Dec 2026 23:59:59 GMT",
   ],
   [
@@ -958,6 +1073,7 @@ const ROWS: Row[] = [
     "misc",
     "Widens the scope a service worker may control.",
     "Élargit la portée qu'un service worker peut contrôler.",
+    "Erweitert den Bereich, den ein Service Worker steuern darf.",
     "/",
   ],
   [
@@ -966,17 +1082,19 @@ const ROWS: Row[] = [
     "misc",
     "Where the source map of a script or stylesheet is.",
     "Emplacement de la source map d'un script ou d'une feuille de style.",
+    "Wo die Source Map eines Skripts oder Stylesheets liegt.",
     "/app.js.map",
   ],
 ];
 
 export const HEADERS: HeaderEntry[] = ROWS.map(
-  ([name, kind, cat, en, fr, example, deprecated]) => ({
+  ([name, kind, cat, en, fr, de, example, deprecated]) => ({
     name,
     kind,
     cat,
     en,
     fr,
+    de,
     example,
     ...(deprecated ? { deprecated: true } : {}),
   }),

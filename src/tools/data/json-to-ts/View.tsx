@@ -9,21 +9,23 @@ import { type Options, toTypeScript, toZod } from "./logic";
 type Tab = "ts" | "zod";
 
 const T = {
-  input: l("JSON sample", "Exemple JSON"),
+  input: l("JSON sample", "Exemple JSON", "JSON-Beispiel"),
   placeholder: l(
     'Paste a JSON sample, e.g. {"id": 1, "tags": ["a"], "owner": {"name": "Ann"}}',
     'Colle un exemple JSON, par ex. {"id": 1, "tags": ["a"], "owner": {"name": "Ann"}}',
+    'Füge ein JSON-Beispiel ein, z. B. {"id": 1, "tags": ["a"], "owner": {"name": "Ann"}}',
   ),
-  rootName: l("Root type name", "Nom du type racine"),
-  interfaces: l("Interfaces", "Interfaces"),
-  types: l("Type aliases", "Alias de type"),
-  readonly: l("readonly", "readonly"),
-  output: l("Types", "Types"),
+  rootName: l("Root type name", "Nom du type racine", "Name des Wurzeltyps"),
+  interfaces: l("Interfaces", "Interfaces", "Interfaces"),
+  types: l("Type aliases", "Alias de type", "Typ-Aliase"),
+  readonly: l("readonly", "readonly", "readonly"),
+  output: l("Types", "Types", "Typen"),
   hint: l(
     "Keys missing from some array items become optional; mixed values become unions.",
     "Les clés absentes de certains éléments d'un tableau deviennent optionnelles ; les valeurs mélangées deviennent des unions.",
+    "Schlüssel, die in manchen Array-Elementen fehlen, werden optional; gemischte Werte werden zu Unions.",
   ),
-  valid: l("Valid JSON", "JSON valide"),
+  valid: l("Valid JSON", "JSON valide", "Gültiges JSON"),
 };
 
 export default function JsonToTs() {

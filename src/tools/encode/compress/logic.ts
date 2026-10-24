@@ -18,9 +18,10 @@ export function compress(data: Uint8Array, format: Format): Promise<Uint8Array> 
   return pipe(data, new CompressionStream(format));
 }
 
-/** Decompresses; a bad header, a corrupted stream or a truncated one gives a bilingual error. */
+/** Decompresses; a bad header, a corrupted stream or a truncated one gives a translated error. */
 export async function decompress(data: Uint8Array, format: Format): Promise<Uint8Array> {
-  if (!data.length) fail("Nothing to decompress.", "Rien à décompresser.");
+  if (!data.length)
+    fail("Nothing to decompress.", "Rien à décompresser.", "Nichts zu dekomprimieren.");
   try {
     return await pipe(data, new DecompressionStream(format));
   } catch {
@@ -28,6 +29,7 @@ export async function decompress(data: Uint8Array, format: Format): Promise<Uint
     return fail(
       `This is not valid ${name} data (or it is truncated or corrupted).`,
       `Ce ne sont pas des données ${name} valides (ou elles sont tronquées ou corrompues).`,
+      `Das sind keine gültigen ${name}-Daten (oder sie sind abgeschnitten oder beschädigt).`,
     );
   }
 }
@@ -148,7 +150,12 @@ export function bytesToText(bytes: Uint8Array, enc: TextEncoding): string {
 /** Compressed data pasted as text. "auto" picks hex when only hex digits are present. */
 export function textToBytes(text: string, enc: TextEncoding | "auto"): Uint8Array {
   const t = text.trim();
-  if (!t) fail("Paste the compressed data.", "Colle les données compressées.");
+  if (!t)
+    fail(
+      "Paste the compressed data.",
+      "Colle les données compressées.",
+      "Füge die komprimierten Daten ein.",
+    );
   const isHex = /^(0x)?[0-9a-f\s:]+$/i.test(t) && t.replace(/[\s:]|^0x/gi, "").length % 2 === 0;
   return (enc === "auto" ? isHex : enc === "hex") ? fromHex(t) : fromBase64(t);
 }

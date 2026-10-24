@@ -1,6 +1,14 @@
 import { describe, expect, it } from "bun:test";
 import { HEADERS } from "./data";
-import { checkSecurity, type FindingCode, parseHeaders, searchHeaders, tally } from "./logic";
+import {
+  checkSecurity,
+  FINDING_MESSAGES,
+  type FindingCode,
+  findingMessage,
+  parseHeaders,
+  searchHeaders,
+  tally,
+} from "./logic";
 
 const codes = (raw: string): FindingCode[] => checkSecurity(parseHeaders(raw)).map((f) => f.code);
 
@@ -18,12 +26,13 @@ describe("http-headers — reference", () => {
     expect(HEADERS.length).toBeGreaterThanOrEqual(95);
     const names = HEADERS.map((h) => h.name.toLowerCase());
     expect(new Set(names).size).toBe(names.length);
-    for (const h of HEADERS) expect(h.en && h.fr && h.example).toBeTruthy();
+    for (const h of HEADERS) expect(h.en && h.fr && h.de && h.example).toBeTruthy();
   });
 
-  it("searches names and both languages, and filters", () => {
+  it("searches names and all three languages, and filters", () => {
     expect(searchHeaders("hsts").map((h) => h.name)).toContain("Strict-Transport-Security");
     expect(searchHeaders("cadre clickjacking").map((h) => h.name)).toContain("X-Frame-Options");
+    expect(searchHeaders("Weiterleitung").map((h) => h.name)).toContain("Location");
     expect(searchHeaders("", "request").every((h) => h.kind !== "response")).toBe(true);
     expect(searchHeaders("", "all", "cors").every((h) => h.cat === "cors")).toBe(true);
     expect(searchHeaders("qwertyuiop")).toEqual([]);
@@ -127,5 +136,21 @@ describe("http-headers — security check", () => {
       "cookie-samesite",
     ]);
     expect(codes("Set-Cookie: sid=1; SameSite=None; HttpOnly")).toContain("cookie-samesite-none");
+  });
+});
+
+describe("findingMessage", () => {
+  it("has a message for every finding, with the detail filled in every language", () => {
+    const all = checkSecurity(parseHeaders("Set-Cookie: sid=1; Path=/\nServer: Apache/2.4.1"));
+    for (const f of all) {
+      const m = findingMessage(f);
+      for (const s of [m.en, m.fr, m.de]) {
+        expect(s.length).toBeGreaterThan(0);
+        expect(s).not.toContain("{d}");
+      }
+    }
+    const cookie = all.find((f) => f.code === "cookie-secure");
+    expect(cookie && findingMessage(cookie).en).toContain("sid");
+    expect(Object.keys(FINDING_MESSAGES).length).toBeGreaterThan(30);
   });
 });

@@ -12,7 +12,9 @@
       "!test-results",
       "!playwright-report",
       "!public/models.json",
-      "!public/examples"
+      "!public/examples",
+      "!skills/toolbelt/scripts/toolbelt.mjs",
+      "!skills/**/*.md"
     ]
   },
   "formatter": {

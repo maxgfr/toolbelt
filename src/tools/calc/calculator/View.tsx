@@ -2,30 +2,32 @@ import { useComputed } from "@preact/signals";
 import { useRef } from "preact/hooks";
 import { useToolState } from "../../../app/state";
 import { Button, CopyButton, IconButton, Panel, Segmented } from "../../../app/ui";
-import { type L10n, l, lang, tr } from "../../../i18n";
+import { type L10n, l, pick, tr } from "../../../i18n";
 import { Formula, formatNumber, plain } from "../_ui";
 import { type Angle, type ErrorCode, evaluateSheet, type LineResult } from "./logic";
 
 const T = {
-  sheet: l("Calculations, one per line", "Calculs, un par ligne"),
-  results: l("Results", "Résultats"),
-  angle: l("Angles", "Angles"),
-  deg: l("Degrees", "Degrés"),
-  rad: l("Radians", "Radians"),
-  clear: l("Clear", "Effacer"),
-  example: l("Example", "Exemple"),
-  copyAll: l("Copy results", "Copier les résultats"),
-  history: l("History", "Historique"),
+  sheet: l("Calculations, one per line", "Calculs, un par ligne", "Rechnungen, eine pro Zeile"),
+  results: l("Results", "Résultats", "Ergebnisse"),
+  angle: l("Angles", "Angles", "Winkel"),
+  deg: l("Degrees", "Degrés", "Grad"),
+  rad: l("Radians", "Radians", "Bogenmaß"),
+  clear: l("Clear", "Effacer", "Leeren"),
+  example: l("Example", "Exemple", "Beispiel"),
+  copyAll: l("Copy results", "Copier les résultats", "Ergebnisse kopieren"),
+  history: l("History", "Historique", "Verlauf"),
   historyHint: l(
     "Press Enter after a line to keep its result here. Click one to reuse it.",
     "Appuie sur Entrée après une ligne pour garder son résultat ici. Clique pour le réutiliser.",
+    "Drück nach einer Zeile Enter, um ihr Ergebnis hier zu behalten. Klick darauf, um es wiederzuverwenden.",
   ),
-  clearHistory: l("Clear history", "Effacer l'historique"),
-  emptyHistory: l("Nothing yet.", "Rien pour l'instant."),
-  help: l("What you can type", "Ce que tu peux écrire"),
+  clearHistory: l("Clear history", "Effacer l'historique", "Verlauf leeren"),
+  emptyHistory: l("Nothing yet.", "Rien pour l'instant.", "Noch nichts."),
+  help: l("What you can type", "Ce que tu peux écrire", "Was du eingeben kannst"),
   decimals: l(
     "Decimal separator: “.” — thousands: spaces or commas (1,000).",
     "Séparateur décimal : « , » ou « . » — milliers : espaces (1 000). Entre les valeurs d'une fonction : « ; » ou « , » suivi d'une espace.",
+    "Dezimaltrennzeichen: „,“ oder „.“ – Tausender: Leerzeichen (1 000). Zwischen den Werten einer Funktion: „;“ oder „,“ mit Leerzeichen danach.",
   ),
 };
 
@@ -33,49 +35,65 @@ const HELP: L10n[] = [
   l(
     "Operations: + − × ÷ (or * /), ^ for powers, ! for factorials, mod for remainders, parentheses.",
     "Opérations : + − × ÷ (ou * /), ^ pour les puissances, ! pour les factorielles, mod pour le reste, parenthèses.",
+    "Rechenarten: + − × ÷ (oder * /), ^ für Potenzen, ! für Fakultäten, mod für den Rest, Klammern.",
   ),
   l(
     "Percentages: 20% is 0.2; 200 + 10% gives 220 and 200 − 25% gives 150, like a desk calculator.",
     "Pourcentages : 20% vaut 0,2 ; 200 + 10% donne 220 et 200 − 25% donne 150, comme une calculatrice de bureau.",
+    "Prozente: 20% ist 0,2; 200 + 10% ergibt 220 und 200 − 25% ergibt 150, wie bei einem Tischrechner.",
   ),
   l(
     "Functions: sqrt, sin, cos, tan, asin, acos, atan, log (base 10, or log(x; base)), ln, exp, abs, round(x; decimals), floor, ceil, min, max, avg. Constants: pi (π), e.",
     "Fonctions : sqrt (racine), sin, cos, tan, asin, acos, atan, log (base 10, ou log(x; base)), ln, exp, abs, round(x; décimales), floor, ceil, min, max, avg (moy). Constantes : pi (π), e.",
+    "Funktionen: sqrt (wurzel), sin, cos, tan, asin, acos, atan, log (Basis 10, oder log(x; Basis)), ln, exp, abs, round(x; Stellen) (runden), floor, ceil, min, max, avg (mittel). Konstanten: pi (π), e.",
   ),
   l(
     "Variables: “price = 12.5” on one line, then use price below. ans is the previous result; total (or sum) adds the results above, up to the last blank line.",
     "Variables : « prix = 12,5 » sur une ligne, puis prix plus bas. ans est le résultat précédent ; total (ou somme) additionne les résultats au-dessus, jusqu'à la dernière ligne vide.",
+    "Variablen: „preis = 12,5“ in eine Zeile, dann preis weiter unten verwenden. ans ist das vorige Ergebnis; summe (oder total) addiert die Ergebnisse darüber, bis zur letzten Leerzeile.",
   ),
   l(
     "Notes: “Rent: 850” shows a label; anything after # or // is ignored.",
     "Notes : « Loyer : 850 » affiche un libellé ; tout ce qui suit # ou // est ignoré.",
+    "Notizen: „Miete: 850“ zeigt eine Beschriftung; alles nach # oder // wird ignoriert.",
   ),
 ];
 
 const EXAMPLE: L10n = l(
   "Rent: 850\nFood: 12 × 30\nPhone: 19.99\ntotal\n\nprice = 49.90\nprice - 20%\nsqrt(2) * 10\n2^10",
   "Loyer : 850\nCourses : 12 × 30\nTéléphone : 19,99\ntotal\n\nprix = 49,90\nprix - 20%\nracine(2) * 10\n2^10",
+  "Miete: 850\nEinkauf: 12 × 30\nHandy: 19,99\nsumme\n\npreis = 49,90\npreis - 20%\nwurzel(2) * 10\n2^10",
 );
 
 const ERR: Record<ErrorCode, L10n> = {
-  char: l("Unknown character “{d}”", "Caractère inconnu « {d} »"),
-  syntax: l("Can't read this near “{d}”", "Illisible près de « {d} »"),
-  paren: l("A parenthesis is missing or extra", "Une parenthèse manque ou est en trop"),
-  name: l("Unknown name “{d}”", "Nom inconnu « {d} »"),
-  func: l("Unknown function “{d}”", "Fonction inconnue « {d} »"),
-  args: l("Wrong number of values for {d}()", "Mauvais nombre de valeurs pour {d}()"),
-  divZero: l("Division by zero", "Division par zéro"),
+  char: l("Unknown character “{d}”", "Caractère inconnu « {d} »", "Unbekanntes Zeichen „{d}“"),
+  syntax: l("Can't read this near “{d}”", "Illisible près de « {d} »", "Unverständlich bei „{d}“"),
+  paren: l(
+    "A parenthesis is missing or extra",
+    "Une parenthèse manque ou est en trop",
+    "Eine Klammer fehlt oder ist zu viel",
+  ),
+  name: l("Unknown name “{d}”", "Nom inconnu « {d} »", "Unbekannter Name „{d}“"),
+  func: l("Unknown function “{d}”", "Fonction inconnue « {d} »", "Unbekannte Funktion „{d}“"),
+  args: l(
+    "Wrong number of values for {d}()",
+    "Mauvais nombre de valeurs pour {d}()",
+    "Falsche Anzahl an Werten für {d}()",
+  ),
+  divZero: l("Division by zero", "Division par zéro", "Division durch null"),
   domain: l(
     "No result (e.g. √ of a negative number)",
     "Pas de résultat (ex. √ d'un nombre négatif)",
+    "Kein Ergebnis (z. B. √ einer negativen Zahl)",
   ),
-  overflow: l("Number too large", "Nombre trop grand"),
+  overflow: l("Number too large", "Nombre trop grand", "Zahl zu groß"),
   reserved: l(
     "“{d}” is a built-in name, pick another",
     "« {d} » est un nom réservé, choisis-en un autre",
+    "„{d}“ ist ein reservierter Name, nimm einen anderen",
   ),
 };
-const INCOMPLETE = l("Incomplete expression", "Expression incomplète");
+const INCOMPLETE = l("Incomplete expression", "Expression incomplète", "Unvollständiger Ausdruck");
 
 function errorText(r: Extract<LineResult, { kind: "error" }>): string {
   if (r.code === "syntax" && (r.detail === "end" || !r.detail)) return tr(INCOMPLETE);
@@ -95,7 +113,10 @@ export default function Calculator() {
   const side = useRef<HTMLElement>(null);
 
   const results = useComputed(() =>
-    evaluateSheet(text.value, { angle: angle.value, decimalComma: lang.value === "fr" }),
+    evaluateSheet(text.value, {
+      angle: angle.value,
+      decimalComma: pick({ en: false, fr: true, de: true }),
+    }),
   );
   const lines = results.value;
 

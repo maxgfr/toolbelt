@@ -110,7 +110,9 @@ const TLDS = new Set(
 /** Two-letter TLDs that are much more often file extensions in two-part names (readme.md). */
 const FILE_LIKE = new Set(["md", "sh", "py", "rs", "pl", "cc", "mk", "so", "ps", "ml", "pm"]);
 
+// English, French and German month names and abbreviations.
 const MONTHS =
+  "j[äa]nner|januar|februar|m[äa]rz|mrz\\.?|juni|juli|oktober|okt\\.?|dezember|dez\\.?|" +
   "jan(?:uary|v(?:ier|\\.)?|\\.)?|feb(?:ruary|\\.)?|f[ée]v(?:rier|\\.)?|mar(?:ch|s|\\.)?|apr(?:il|\\.)?|avr(?:il|\\.)?|may|mai|june?|juin|july?|juil(?:let|\\.)?|aug(?:ust|\\.)?|ao[uû]t?|sept?(?:ember|embre|\\.)?|oct(?:ober|obre|\\.)?|nov(?:ember|embre|\\.)?|d[ée]c(?:ember|embre|\\.)?";
 
 const RE: Record<Kind, RegExp> = {
@@ -131,7 +133,7 @@ const RE: Record<Kind, RegExp> = {
       "\\b\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:?\\d{2})?)?(?![\\d-])",
       "\\b\\d{4}/\\d{1,2}/\\d{1,2}\\b",
       "\\b\\d{1,2}([/.-])\\d{1,2}\\1(?:\\d{4}|\\d{2})(?![\\d.-]\\d)",
-      `\\b(?:1er|\\d{1,2})(?:st|nd|rd|th)? (?:of )?(?:${MONTHS})(?![\\p{L}])(?:,? \\d{4})?`,
+      `\\b(?:1er|\\d{1,2})(?:st|nd|rd|th|\\.)? (?:of )?(?:${MONTHS})(?![\\p{L}])(?:,? \\d{4})?`,
       `(?<![\\p{L}])(?:${MONTHS}) \\d{1,2}(?:st|nd|rd|th)?(?:,? \\d{4})?\\b`,
     ].join("|"),
     "giu",

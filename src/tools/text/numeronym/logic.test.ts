@@ -55,6 +55,8 @@ describe("expand", () => {
   it("has a list whose entries are unique words", () => {
     expect(new Set(KNOWN.map((k) => k.word)).size).toBe(KNOWN.length);
     for (const k of KNOWN) expect(expand(numeronym(k.word))).toContainEqual(k);
+    expect(KNOWN.every((k) => k.fr && k.de)).toBe(true);
+    expect(expand("a11y")[0]?.de).toBe("Barrierefreiheit");
   });
 
   it("looks up every numeronym in a text once", () => {

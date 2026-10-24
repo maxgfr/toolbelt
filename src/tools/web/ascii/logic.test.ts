@@ -16,11 +16,12 @@ const key = (k: Partial<KeyInfo>): KeyInfo => ({
 });
 
 describe("ascii", () => {
-  it("has the 128 codes, each named in both languages", () => {
+  it("has the 128 codes, each named in all three languages", () => {
     expect(ASCII).toHaveLength(128);
     for (const r of ASCII) {
       expect(r.name.en).not.toBe("");
       expect(r.name.fr).not.toBe("");
+      expect(r.name.de).toBeTruthy();
     }
   });
 
@@ -28,6 +29,7 @@ describe("ascii", () => {
     const a = ASCII[65];
     expect(a).toMatchObject({ char: "A", hex: "41", oct: "101", bin: "1000001", html: "&#65;" });
     expect(a?.name.en).toBe("Latin capital letter A");
+    expect(a?.name.de).toBe("Lateinisches großes A");
     expect(ASCII[38]?.htmlNamed).toBe("&amp;");
     expect(ASCII[60]?.htmlNamed).toBe("&lt;");
   });
@@ -48,6 +50,7 @@ describe("ascii", () => {
     expect(searchAscii("0x7e").map((r) => r.code)).toEqual([126]);
     expect(searchAscii("\\x0A").map((r) => r.code)).toEqual([10]);
     expect(searchAscii("tab").map((r) => r.code)).toEqual([9, 11]);
+    expect(searchAscii("klammeraffe").map((r) => r.code)).toEqual([64]);
     expect(searchAscii("accolade").map((r) => r.code)).toEqual([123, 125]);
     expect(searchAscii("esperluette").map((r) => r.code)).toEqual([38]);
     expect(searchAscii("")).toHaveLength(128);

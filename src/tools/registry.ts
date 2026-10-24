@@ -18,17 +18,25 @@ export interface Category {
 }
 
 export const CATEGORIES: Category[] = [
-  { id: "text", title: l("Text", "Texte"), tools: text },
-  { id: "encode", title: l("Encoding & crypto", "Encodage & crypto"), tools: encode },
-  { id: "data", title: l("Data & formats", "Données & formats"), tools: data },
-  { id: "convert", title: l("Time & numbers", "Temps & nombres"), tools: convert },
-  { id: "web", title: l("Web & dev", "Web & dev"), tools: web },
-  { id: "design", title: l("CSS & design", "CSS & design"), tools: design },
-  { id: "image", title: l("Images", "Images"), tools: image },
-  { id: "calc", title: l("Everyday calculators", "Calculs du quotidien"), tools: calc },
+  { id: "text", title: l("Text", "Texte", "Text"), tools: text },
+  {
+    id: "encode",
+    title: l("Encoding & crypto", "Encodage & crypto", "Kodierung & Krypto"),
+    tools: encode,
+  },
+  { id: "data", title: l("Data & formats", "Données & formats", "Daten & Formate"), tools: data },
+  { id: "convert", title: l("Time & numbers", "Temps & nombres", "Zeit & Zahlen"), tools: convert },
+  { id: "web", title: l("Web & dev", "Web & dev", "Web & Entwicklung"), tools: web },
+  { id: "design", title: l("CSS & design", "CSS & design", "CSS & Design"), tools: design },
+  { id: "image", title: l("Images", "Images", "Bilder"), tools: image },
+  {
+    id: "calc",
+    title: l("Everyday calculators", "Calculs du quotidien", "Alltagsrechner"),
+    tools: calc,
+  },
   {
     id: "life",
-    title: l("Timers, chance & devices", "Minuteurs, hasard & appareils"),
+    title: l("Timers, chance & devices", "Minuteurs, hasard & appareils", "Timer, Zufall & Geräte"),
     tools: life,
   },
 ];
@@ -51,8 +59,10 @@ export function searchTools(query: string): ToolMeta[] {
   if (!words.length) return TOOLS;
   const scored: { t: ToolMeta; score: number }[] = [];
   for (const t of TOOLS) {
-    const title = fold(`${t.title.en} ${t.title.fr}`);
-    const rest = fold(`${t.id} ${t.keywords.join(" ")} ${t.desc.en} ${t.desc.fr}`);
+    const title = fold(`${t.title.en} ${t.title.fr} ${t.title.de ?? ""}`);
+    const rest = fold(
+      `${t.id} ${t.keywords.join(" ")} ${t.desc.en} ${t.desc.fr} ${t.desc.de ?? ""}`,
+    );
     let score = 0;
     for (const w of words) {
       if (title.split(/[\s&/,()-]+/).some((x) => x.startsWith(w))) score += 4;

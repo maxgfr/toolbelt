@@ -179,12 +179,19 @@ describe("text form", () => {
 
   it("describes the key derivation and names files", () => {
     const f = (n: number) => n.toLocaleString("en-US");
-    expect(kdfLabel({ kind: "pbkdf2", iterations: 600_000 }, f, false)).toBe(
+    expect(kdfLabel({ kind: "pbkdf2", iterations: 600_000 }, f, "en")).toBe(
       "PBKDF2-HMAC-SHA256, 600,000 iterations",
     );
     expect(
-      kdfLabel({ kind: "argon2id", memory: 65536, iterations: 3, parallelism: 1 }, f, false),
+      kdfLabel({ kind: "argon2id", memory: 65536, iterations: 3, parallelism: 1 }, f, "en"),
     ).toBe("Argon2id, 64 MiB, 3 passes, 1 lane(s)");
+    const g = (n: number) => n.toLocaleString("de-DE");
+    expect(kdfLabel({ kind: "pbkdf2", iterations: 600_000 }, g, "de")).toBe(
+      "PBKDF2-HMAC-SHA256, 600.000 Iterationen",
+    );
+    expect(
+      kdfLabel({ kind: "argon2id", memory: 19456, iterations: 2, parallelism: 1 }, g, "de"),
+    ).toBe("Argon2id, 19 MiB, 2 Durchläufe, 1 Lane(s)");
     expect(encName("a.txt")).toBe("a.txt.enc");
   });
 });

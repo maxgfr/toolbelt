@@ -18,13 +18,17 @@ export function bcryptTruncates(password: string): boolean {
 }
 
 function needPassword(password: string): void {
-  if (!password) fail("Enter a password.", "Saisis un mot de passe.");
+  if (!password) fail("Enter a password.", "Saisis un mot de passe.", "Gib ein Passwort ein.");
 }
 
 export async function bcryptHash(password: string, cost: number): Promise<string> {
   needPassword(password);
   if (!Number.isInteger(cost) || cost < 4 || cost > 31)
-    fail("The bcrypt cost goes from 4 to 31.", "Le coût bcrypt va de 4 à 31.");
+    fail(
+      "The bcrypt cost goes from 4 to 31.",
+      "Le coût bcrypt va de 4 à 31.",
+      "Die bcrypt-Kosten reichen von 4 bis 31.",
+    );
   const h = await bcrypt({
     password: bcryptBytes(password),
     salt: randomBytes(16),
@@ -51,6 +55,7 @@ export async function argon2Hash(password: string, p: Argon2Params): Promise<str
     fail(
       "Argon2 needs at least 1 iteration, 1 lane and 8 KiB of memory per lane.",
       "Argon2 demande au moins 1 itération, 1 voie et 8 Kio de mémoire par voie.",
+      "Argon2 braucht mindestens 1 Iteration, 1 Lane und 8 KiB Speicher pro Lane.",
     );
   return argon2id({
     password: utf8(password),
@@ -103,6 +108,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
     fail(
       "Not a bcrypt ($2b$…) or Argon2 ($argon2id$…) hash.",
       "Ce n'est pas un hash bcrypt ($2b$…) ni Argon2 ($argon2id$…).",
+      "Kein bcrypt- ($2b$…) oder Argon2-Hash ($argon2id$…).",
     );
   needPassword(password);
   const h = hash.trim();

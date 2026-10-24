@@ -11,53 +11,70 @@ import { type Deficiency, PREVALENCE, SAMPLE_PAIRS, simulate } from "./logic";
 type Source = "sample" | "image";
 
 const T = {
-  sample: l("Built-in sample", "Exemple intégré"),
-  image: l("My image", "Mon image"),
-  anomalous: l("Show the milder (anomalous) forms", "Afficher les formes atténuées (anomalies)"),
-  original: l("Normal vision", "Vision normale"),
-  download: l("Download PNG", "Télécharger en PNG"),
-  men: l("men", "hommes"),
-  women: l("women", "femmes"),
+  sample: l("Built-in sample", "Exemple intégré", "Integriertes Beispiel"),
+  image: l("My image", "Mon image", "Mein Bild"),
+  anomalous: l(
+    "Show the milder (anomalous) forms",
+    "Afficher les formes atténuées (anomalies)",
+    "Die schwächeren Formen (Anomalien) zeigen",
+  ),
+  original: l("Normal vision", "Vision normale", "Normales Sehen"),
+  download: l("Download PNG", "Télécharger en PNG", "PNG herunterladen"),
+  men: l("men", "hommes", "der Männer"),
+  women: l("women", "femmes", "der Frauen"),
   note: l(
     "Simulation with the Machado et al. (2009) model; real perception varies from person to person.",
     "Simulation selon le modèle de Machado et al. (2009) ; la perception réelle varie d'une personne à l'autre.",
+    "Simulation nach dem Modell von Machado et al. (2009); die tatsächliche Wahrnehmung ist von Person zu Person verschieden.",
   ),
-  empty: l("Choose an image to simulate.", "Choisis une image à simuler."),
-  sampleTitle: l("Can you tell these apart?", "Arrives-tu à les distinguer ?"),
+  empty: l(
+    "Choose an image to simulate.",
+    "Choisis une image à simuler.",
+    "Wähle ein Bild für die Simulation.",
+  ),
+  sampleTitle: l(
+    "Can you tell these apart?",
+    "Arrives-tu à les distinguer ?",
+    "Kannst du sie unterscheiden?",
+  ),
 };
 
 const INFO: Record<Deficiency, { name: L10n; desc: L10n }> = {
   protanopia: {
-    name: l("Protanopia", "Protanopie"),
-    desc: l("No red cones", "Pas de cônes rouges"),
+    name: l("Protanopia", "Protanopie", "Protanopie"),
+    desc: l("No red cones", "Pas de cônes rouges", "Keine Rotzapfen"),
   },
   deuteranopia: {
-    name: l("Deuteranopia", "Deutéranopie"),
-    desc: l("No green cones", "Pas de cônes verts"),
+    name: l("Deuteranopia", "Deutéranopie", "Deuteranopie"),
+    desc: l("No green cones", "Pas de cônes verts", "Keine Grünzapfen"),
   },
   tritanopia: {
-    name: l("Tritanopia", "Tritanopie"),
-    desc: l("No blue cones", "Pas de cônes bleus"),
+    name: l("Tritanopia", "Tritanopie", "Tritanopie"),
+    desc: l("No blue cones", "Pas de cônes bleus", "Keine Blauzapfen"),
   },
   achromatopsia: {
-    name: l("Achromatopsia", "Achromatopsie"),
-    desc: l("No color at all", "Aucune couleur"),
+    name: l("Achromatopsia", "Achromatopsie", "Achromatopsie"),
+    desc: l("No color at all", "Aucune couleur", "Gar keine Farben"),
   },
   protanomaly: {
-    name: l("Protanomaly", "Protanomalie"),
-    desc: l("Weak red cones", "Cônes rouges affaiblis"),
+    name: l("Protanomaly", "Protanomalie", "Protanomalie"),
+    desc: l("Weak red cones", "Cônes rouges affaiblis", "Schwache Rotzapfen"),
   },
   deuteranomaly: {
-    name: l("Deuteranomaly", "Deutéranomalie"),
-    desc: l("Weak green cones (most common)", "Cônes verts affaiblis (le plus fréquent)"),
+    name: l("Deuteranomaly", "Deutéranomalie", "Deuteranomalie"),
+    desc: l(
+      "Weak green cones (most common)",
+      "Cônes verts affaiblis (le plus fréquent)",
+      "Schwache Grünzapfen (am häufigsten)",
+    ),
   },
   tritanomaly: {
-    name: l("Tritanomaly", "Tritanomalie"),
-    desc: l("Weak blue cones", "Cônes bleus affaiblis"),
+    name: l("Tritanomaly", "Tritanomalie", "Tritanomalie"),
+    desc: l("Weak blue cones", "Cônes bleus affaiblis", "Schwache Blauzapfen"),
   },
   achromatomaly: {
-    name: l("Achromatomaly", "Achromatomalie"),
-    desc: l("Faded colors", "Couleurs ternes"),
+    name: l("Achromatomaly", "Achromatomalie", "Achromatomalie"),
+    desc: l("Faded colors", "Couleurs ternes", "Blasse Farben"),
   },
 };
 

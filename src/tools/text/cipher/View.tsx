@@ -7,35 +7,44 @@ import { applyCipher, bruteForce, type Cipher } from "./logic";
 type Dir = "encode" | "decode";
 
 const T = {
-  input: l("Text", "Texte"),
+  input: l("Text", "Texte", "Text"),
   placeholder: l(
     "Type or paste text to encode or decode…",
     "Tape ou colle le texte à chiffrer ou déchiffrer…",
+    "Tippe oder füge Text zum Ver- oder Entschlüsseln ein…",
   ),
-  output: l("Result", "Résultat"),
-  caesar: l("Caesar", "César"),
-  encode: l("Encode", "Chiffrer"),
-  decode: l("Decode", "Déchiffrer"),
-  shift: l("Shift: {n}", "Décalage : {n}"),
+  output: l("Result", "Résultat", "Ergebnis"),
+  caesar: l("Caesar", "César", "Caesar"),
+  encode: l("Encode", "Chiffrer", "Verschlüsseln"),
+  decode: l("Decode", "Déchiffrer", "Entschlüsseln"),
+  shift: l("Shift: {n}", "Décalage : {n}", "Verschiebung: {n}"),
   rot13: l(
     "Each letter moves 13 places: applying it twice gives the text back.",
     "Chaque lettre avance de 13 places : l'appliquer deux fois redonne le texte.",
+    "Jeder Buchstabe rückt 13 Stellen weiter: Zweimal angewendet ergibt wieder den Ausgangstext.",
   ),
   rot47: l(
     "Rotates every printable ASCII character (letters, digits, punctuation) by 47; its own inverse.",
     "Fait tourner chaque caractère ASCII imprimable (lettres, chiffres, ponctuation) de 47 ; son propre inverse.",
+    "Verschiebt jedes druckbare ASCII-Zeichen (Buchstaben, Ziffern, Satzzeichen) um 47; ist seine eigene Umkehrung.",
   ),
   atbash: l(
     "Mirrors the alphabet: A ↔ Z, B ↔ Y…; its own inverse.",
     "Inverse l'alphabet : A ↔ Z, B ↔ Y… ; son propre inverse.",
+    "Spiegelt das Alphabet: A ↔ Z, B ↔ Y…; ist seine eigene Umkehrung.",
   ),
   caesarHint: l(
     "Each letter moves by the shift. Accented letters, digits and symbols do not change.",
     "Chaque lettre avance du décalage. Les lettres accentuées, chiffres et symboles ne changent pas.",
+    "Jeder Buchstabe rückt um die Verschiebung weiter. Umlaute, Buchstaben mit Akzent, Ziffern und Symbole bleiben unverändert.",
   ),
-  all: l("All 25 shifts (most readable first)", "Les 25 décalages (les plus lisibles d'abord)"),
-  use: l("Use", "Utiliser"),
-  swap: l("Use as input", "Reprendre en entrée"),
+  all: l(
+    "All 25 shifts (most readable first)",
+    "Les 25 décalages (les plus lisibles d'abord)",
+    "Alle 25 Verschiebungen (lesbarste zuerst)",
+  ),
+  use: l("Use", "Utiliser", "Übernehmen"),
+  swap: l("Use as input", "Reprendre en entrée", "Als Eingabe nutzen"),
 };
 
 export default function CipherView() {

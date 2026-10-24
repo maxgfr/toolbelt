@@ -5,7 +5,8 @@
 
 export type LineEnding = "keep" | "lf" | "crlf";
 export type Tabs = "keep" | "spaces" | "tabs";
-export type Quotes = "keep" | "straight" | "smart";
+/** "smart": English “…” ‘…’; "german": „…“ ‚…‘. */
+export type Quotes = "keep" | "straight" | "smart" | "german";
 export type Dashes = "keep" | "ascii" | "smart";
 export type Ellipsis = "keep" | "ascii" | "smart";
 export type BlankLines = "keep" | "collapse" | "remove";
@@ -142,14 +143,22 @@ export function expandTabs(line: string, size: number): string {
   return out;
 }
 
-/** Straight quotes → typographic ones: opening after a space or bracket, closing otherwise. */
-function smartQuotes(text: string): [string, number] {
+/**
+ * Straight quotes → typographic ones: opening after a space or bracket, closing otherwise. An
+ * apostrophe between letters is always ’ (it’s, geht’s), whatever the quote style.
+ */
+function smartQuotes(text: string, german = false): [string, number] {
   let n = 0;
   const out = text.replace(/["']/g, (q, i: number, s: string) => {
     const prev = s[i - 1] ?? "";
     const opening = prev === "" || /[\s([{—–-]/.test(prev);
     n++;
-    if (q === "'") return opening ? "‘" : "’";
+    if (q === "'") {
+      if (opening) return german ? "‚" : "‘";
+      if (german && !/[\p{L}\p{N}]/u.test(s[i + 1] ?? "")) return "‘";
+      return "’";
+    }
+    if (german) return opening ? "„" : "“";
     return opening ? "“" : "”";
   });
   return [out, n];
@@ -193,7 +202,8 @@ export function clean(input: string, o: CleanOptions): CleanResult {
       // French guillemets come with a (no-break) space inside: « mot » → "mot".
       replaceCount(t, GUILLEMETS_AND_CURLY, (m) => (/[‹›‘’‚‛′]/.test(m) ? "'" : '"')),
     );
-  if (o.quotes === "smart") step("quotes", smartQuotes);
+  if (o.quotes === "smart") step("quotes", (t) => smartQuotes(t));
+  if (o.quotes === "german") step("quotes", (t) => smartQuotes(t, true));
 
   if (o.dashes === "ascii") step("dashes", (t) => replaceCount(t, /[‐‑‒–—―−]/g, "-"));
   if (o.dashes === "smart")
@@ -268,7 +278,7 @@ export function inspect(text: string): Findings {
     tabs: c(/\t/g),
     crlf: c(/\r\n|\r(?!\n)/g),
     trailing: c(/[ \t]+(?=\r?\n|$)/g),
-    smartQuotes: c(/[‘’“”«»]/g),
+    smartQuotes: c(/[‘’‚“”„«»‹›]/g),
     nonAscii: c(/\P{ASCII}/gu),
   };
 }

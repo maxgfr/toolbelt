@@ -1,14 +1,18 @@
 /**
  * A calculator without eval: a tokenizer, a recursive-descent parser to a small tree, and an
  * evaluator. One expression per line, `x = 3` defines a variable, `ans` is the last result,
- * `sum` / `total` add the lines above (up to a blank line).
+ * `sum` / `total` add the lines above (up to a blank line). French and German names work too
+ * (`racine`, `wurzel`, `somme`, `summe`…).
  */
 
 export type Angle = "deg" | "rad";
 
 export interface CalcOptions {
   angle: Angle;
-  /** French style: "1,5" is one and a half (use ";" or ", " between function arguments). */
+  /**
+   * French and German style: "1,5" is one and a half (use ";" or ", " between function
+   * arguments).
+   */
   decimalComma: boolean;
 }
 
@@ -341,6 +345,9 @@ export const FUNCS: Record<string, Func> = {
 };
 FUNCS.moy = FUNCS.avg as Func;
 FUNCS.arrondi = FUNCS.round as Func;
+FUNCS.wurzel = FUNCS.sqrt as Func;
+FUNCS.mittel = FUNCS.avg as Func;
+FUNCS.runden = FUNCS.round as Func;
 
 function factorial(n: number): number {
   if (!Number.isInteger(n) || n < 0) return Number.NaN;
@@ -356,7 +363,7 @@ export function isReserved(name: string): boolean {
   return n in CONSTS || n in FUNCS || n === "ans" || n === "mod" || SUM_NAMES.has(n);
 }
 
-const SUM_NAMES = new Set(["sum", "total", "somme"]);
+const SUM_NAMES = new Set(["sum", "total", "somme", "summe"]);
 
 export function evaluate(node: Node, vars: ReadonlyMap<string, number>, opts: CalcOptions): number {
   const ev = (n: Node): number => {

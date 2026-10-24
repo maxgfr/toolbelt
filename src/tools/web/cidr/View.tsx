@@ -1,7 +1,7 @@
 import type { Signal } from "@preact/signals";
 import { useToolState } from "../../../app/state";
 import { Button, CopyButton, Field, Output, Panel, Segmented, Stats } from "../../../app/ui";
-import { fmt, type L10n, l, tr } from "../../../i18n";
+import { fmt, type L10n, l, locale, tr } from "../../../i18n";
 import { Badge, NumberField } from "../_ui";
 import {
   type ParseError,
@@ -18,91 +18,136 @@ import {
 type Version = "v4" | "v6";
 
 const T = {
-  v4: l("IPv4", "IPv4"),
-  v6: l("IPv6", "IPv6"),
-  address: l("Address / prefix", "Adresse / préfixe"),
+  v4: l("IPv4", "IPv4", "IPv4"),
+  v6: l("IPv6", "IPv6", "IPv6"),
+  address: l("Address / prefix", "Adresse / préfixe", "Adresse / Präfix"),
   hint4: l(
     "192.168.1.10/24, 10.0.0.1 255.255.0.0, or a bare address",
     "192.168.1.10/24, 10.0.0.1 255.255.0.0, ou une adresse seule",
+    "192.168.1.10/24, 10.0.0.1 255.255.0.0 oder nur eine Adresse",
   ),
-  hint6: l("2001:db8::1/64, or a bare address", "2001:db8::1/64, ou une adresse seule"),
-  network: l("Network", "Réseau"),
-  broadcast: l("Broadcast", "Diffusion (broadcast)"),
-  netmask: l("Netmask", "Masque"),
-  wildcard: l("Wildcard mask", "Masque inverse (wildcard)"),
-  first: l("First host", "Premier hôte"),
-  last: l("Last host", "Dernier hôte"),
-  firstAddr: l("First address", "Première adresse"),
-  lastAddr: l("Last address", "Dernière adresse"),
-  total: l("Addresses", "Adresses"),
-  hosts: l("Usable hosts", "Hôtes utilisables"),
-  prefix: l("Prefix", "Préfixe"),
-  ipClass: l("Class", "Classe"),
-  binary: l("Binary", "Binaire"),
-  integer: l("Integer", "Entier"),
+  hint6: l(
+    "2001:db8::1/64, or a bare address",
+    "2001:db8::1/64, ou une adresse seule",
+    "2001:db8::1/64 oder nur eine Adresse",
+  ),
+  network: l("Network", "Réseau", "Netzwerk"),
+  broadcast: l("Broadcast", "Diffusion (broadcast)", "Broadcast"),
+  netmask: l("Netmask", "Masque", "Netzmaske"),
+  wildcard: l("Wildcard mask", "Masque inverse (wildcard)", "Wildcard-Maske"),
+  first: l("First host", "Premier hôte", "Erster Host"),
+  last: l("Last host", "Dernier hôte", "Letzter Host"),
+  firstAddr: l("First address", "Première adresse", "Erste Adresse"),
+  lastAddr: l("Last address", "Dernière adresse", "Letzte Adresse"),
+  total: l("Addresses", "Adresses", "Adressen"),
+  hosts: l("Usable hosts", "Hôtes utilisables", "Nutzbare Hosts"),
+  prefix: l("Prefix", "Préfixe", "Präfix"),
+  ipClass: l("Class", "Classe", "Klasse"),
+  binary: l("Binary", "Binaire", "Binär"),
+  integer: l("Integer", "Entier", "Ganzzahl"),
   hostBits: l(
     "The address has host bits set: the network is {net}.",
     "L'adresse a des bits d'hôte : le réseau est {net}.",
+    "In der Adresse sind Host-Bits gesetzt: Das Netzwerk ist {net}.",
   ),
-  useNetwork: l("Use the network", "Prendre le réseau"),
-  split: l("Split into subnets", "Découper en sous-réseaux"),
-  count: l("Number of subnets", "Nombre de sous-réseaux"),
+  useNetwork: l("Use the network", "Prendre le réseau", "Netzwerk übernehmen"),
+  split: l("Split into subnets", "Découper en sous-réseaux", "In Subnetze aufteilen"),
+  count: l("Number of subnets", "Nombre de sous-réseaux", "Anzahl der Subnetze"),
   splitResult: l(
     "{n} subnets of /{p}, {h} hosts each",
     "{n} sous-réseaux en /{p}, {h} hôtes chacun",
+    "{n} Subnetze mit /{p}, je {h} Hosts",
   ),
   splitTooMany: l(
     "Too many subnets for this block (at most /32).",
     "Trop de sous-réseaux pour ce bloc (au plus /32).",
+    "Zu viele Subnetze für diesen Block (höchstens /32).",
   ),
-  shown: l("First {n} shown.", "Les {n} premiers sont affichés."),
-  copyList: l("Copy the list", "Copier la liste"),
-  expanded: l("Expanded", "Développée"),
-  compressed: l("Compressed", "Compressée"),
-  range: l("Prefix range", "Plage du préfixe"),
-  reverse: l("Reverse DNS", "DNS inverse"),
-  type: l("Type", "Type"),
-  subnet: l("Subnet", "Sous-réseau"),
-  subnets64: l("/64 subnets", "Sous-réseaux /64"),
+  shown: l(
+    "First {n} shown.",
+    "Les {n} premiers sont affichés.",
+    "Die ersten {n} werden angezeigt.",
+  ),
+  copyList: l("Copy the list", "Copier la liste", "Liste kopieren"),
+  expanded: l("Expanded", "Développée", "Ausgeschrieben"),
+  compressed: l("Compressed", "Compressée", "Verkürzt"),
+  range: l("Prefix range", "Plage du préfixe", "Präfixbereich"),
+  reverse: l("Reverse DNS", "DNS inverse", "Reverse DNS"),
+  type: l("Type", "Type", "Typ"),
+  subnet: l("Subnet", "Sous-réseau", "Subnetz"),
+  subnets64: l("/64 subnets", "Sous-réseaux /64", "/64-Subnetze"),
 };
 
 const ERRORS: Record<ParseError, L10n> = {
-  empty: l("Type an address.", "Tape une adresse."),
-  address: l("This is not a valid address.", "Ce n'est pas une adresse valide."),
-  prefix: l("The prefix is not valid.", "Le préfixe n'est pas valide."),
+  empty: l("Type an address.", "Tape une adresse.", "Gib eine Adresse ein."),
+  address: l(
+    "This is not a valid address.",
+    "Ce n'est pas une adresse valide.",
+    "Das ist keine gültige Adresse.",
+  ),
+  prefix: l("The prefix is not valid.", "Le préfixe n'est pas valide.", "Das Präfix ist ungültig."),
   mask: l(
     "This netmask is not contiguous (ones then zeros).",
     "Ce masque n'est pas contigu (des 1 puis des 0).",
+    "Diese Netzmaske ist nicht zusammenhängend (erst Einsen, dann Nullen).",
   ),
 };
 
 const SCOPE4: Record<V4Scope, L10n> = {
-  "this-network": l("“This network” (0.0.0.0/8)", "« Ce réseau » (0.0.0.0/8)"),
-  private: l("Private (RFC 1918)", "Privée (RFC 1918)"),
-  shared: l("Carrier-grade NAT (RFC 6598)", "NAT opérateur (RFC 6598)"),
-  loopback: l("Loopback", "Boucle locale"),
-  "link-local": l("Link-local (APIPA)", "Lien local (APIPA)"),
-  protocol: l("IETF protocol assignments", "Affectations de protocoles IETF"),
-  documentation: l("Documentation (TEST-NET)", "Documentation (TEST-NET)"),
-  benchmarking: l("Benchmarking (RFC 2544)", "Tests de performance (RFC 2544)"),
-  multicast: l("Multicast", "Multidiffusion"),
-  reserved: l("Reserved (future use)", "Réservée (usage futur)"),
-  broadcast: l("Limited broadcast", "Diffusion limitée"),
-  public: l("Public", "Publique"),
+  "this-network": l(
+    "“This network” (0.0.0.0/8)",
+    "« Ce réseau » (0.0.0.0/8)",
+    "„Dieses Netzwerk“ (0.0.0.0/8)",
+  ),
+  private: l("Private (RFC 1918)", "Privée (RFC 1918)", "Privat (RFC 1918)"),
+  shared: l(
+    "Carrier-grade NAT (RFC 6598)",
+    "NAT opérateur (RFC 6598)",
+    "Carrier-Grade-NAT (RFC 6598)",
+  ),
+  loopback: l("Loopback", "Boucle locale", "Loopback"),
+  "link-local": l("Link-local (APIPA)", "Lien local (APIPA)", "Link-local (APIPA)"),
+  protocol: l(
+    "IETF protocol assignments",
+    "Affectations de protocoles IETF",
+    "IETF-Protokollzuweisungen",
+  ),
+  documentation: l(
+    "Documentation (TEST-NET)",
+    "Documentation (TEST-NET)",
+    "Dokumentation (TEST-NET)",
+  ),
+  benchmarking: l(
+    "Benchmarking (RFC 2544)",
+    "Tests de performance (RFC 2544)",
+    "Benchmarking (RFC 2544)",
+  ),
+  multicast: l("Multicast", "Multidiffusion", "Multicast"),
+  reserved: l("Reserved (future use)", "Réservée (usage futur)", "Reserviert (künftige Nutzung)"),
+  broadcast: l("Limited broadcast", "Diffusion limitée", "Begrenzter Broadcast"),
+  public: l("Public", "Publique", "Öffentlich"),
 };
 
 const SCOPE6: Record<V6Scope, L10n> = {
-  unspecified: l("Unspecified (::)", "Non spécifiée (::)"),
-  loopback: l("Loopback (::1)", "Boucle locale (::1)"),
-  "ipv4-mapped": l("IPv4-mapped", "IPv4 mappée"),
-  documentation: l("Documentation (2001:db8::/32)", "Documentation (2001:db8::/32)"),
-  "6to4": l("6to4 (2002::/16)", "6to4 (2002::/16)"),
-  teredo: l("Teredo (2001::/32)", "Teredo (2001::/32)"),
-  "link-local": l("Link-local (fe80::/10)", "Lien local (fe80::/10)"),
-  "unique-local": l("Unique local (fc00::/7)", "Locale unique (fc00::/7)"),
-  multicast: l("Multicast (ff00::/8)", "Multidiffusion (ff00::/8)"),
-  global: l("Global unicast (2000::/3)", "Unicast global (2000::/3)"),
-  reserved: l("Reserved", "Réservée"),
+  unspecified: l("Unspecified (::)", "Non spécifiée (::)", "Unspezifiziert (::)"),
+  loopback: l("Loopback (::1)", "Boucle locale (::1)", "Loopback (::1)"),
+  "ipv4-mapped": l("IPv4-mapped", "IPv4 mappée", "IPv4-gemappt"),
+  documentation: l(
+    "Documentation (2001:db8::/32)",
+    "Documentation (2001:db8::/32)",
+    "Dokumentation (2001:db8::/32)",
+  ),
+  "6to4": l("6to4 (2002::/16)", "6to4 (2002::/16)", "6to4 (2002::/16)"),
+  teredo: l("Teredo (2001::/32)", "Teredo (2001::/32)", "Teredo (2001::/32)"),
+  "link-local": l("Link-local (fe80::/10)", "Lien local (fe80::/10)", "Link-local (fe80::/10)"),
+  "unique-local": l(
+    "Unique local (fc00::/7)",
+    "Locale unique (fc00::/7)",
+    "Unique Local (fc00::/7)",
+  ),
+  multicast: l("Multicast (ff00::/8)", "Multidiffusion (ff00::/8)", "Multicast (ff00::/8)"),
+  global: l("Global unicast (2000::/3)", "Unicast global (2000::/3)", "Global Unicast (2000::/3)"),
+  reserved: l("Reserved", "Réservée", "Reserviert"),
 };
 
 function V4({
@@ -238,10 +283,10 @@ function V6({ text }: { text: string }) {
       <Stats
         items={[
           { label: tr(T.prefix), value: `/${s.prefix}` },
-          { label: tr(T.total), value: powerLabel(s.total) },
+          { label: tr(T.total), value: powerLabel(s.total, locale()) },
           {
             label: tr(T.subnets64),
-            value: s.prefix <= 64 ? powerLabel(1n << BigInt(64 - s.prefix)) : "—",
+            value: s.prefix <= 64 ? powerLabel(1n << BigInt(64 - s.prefix), locale()) : "—",
           },
         ]}
       />

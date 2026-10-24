@@ -1,6 +1,6 @@
 /**
  * Bytes to and from hex, binary, octal, decimal, Base32 (RFC 4648), Base58 (Bitcoin alphabet)
- * and Ascii85. Text goes through UTF-8 first; decoding errors carry an EN + FR message.
+ * and Ascii85. Text goes through UTF-8 first; decoding errors carry an EN + FR + DE message.
  */
 import { fail, fromHex, toHex } from "../_shared";
 
@@ -18,6 +18,15 @@ export const ENCODINGS: Encoding[] = [
 
 /** Encodings written as one number per byte, which take a separator. */
 export const PER_BYTE: Encoding[] = ["hex", "binary", "octal", "decimal"];
+
+/** The separators the tool offers between bytes, by name. */
+export type Separator = "space" | "none" | "comma" | "newline";
+export const SEPARATORS: Record<Separator, string> = {
+  space: " ",
+  none: "",
+  comma: ", ",
+  newline: "\n",
+};
 
 export interface EncodeOptions {
   /** Between bytes, for hex / binary / octal / decimal. */
@@ -81,10 +90,10 @@ export function decode(text: string, enc: Encoding): Uint8Array {
   }
 }
 
-const NAMES: Record<number, { en: string; fr: string }> = {
-  2: { en: "Binary", fr: "Le binaire" },
-  8: { en: "Octal", fr: "L'octal" },
-  10: { en: "Decimal", fr: "Le décimal" },
+const NAMES: Record<number, { en: string; fr: string; de: string }> = {
+  2: { en: "Binary", fr: "Le binaire", de: "Binärzahlen" },
+  8: { en: "Octal", fr: "L'octal", de: "Oktalzahlen" },
+  10: { en: "Decimal", fr: "Le décimal", de: "Dezimalzahlen" },
 };
 
 /**
@@ -92,7 +101,7 @@ const NAMES: Record<number, { en: string; fr: string }> = {
  * the digits are read in fixed groups of `width` (not possible for decimal).
  */
 function fromDigits(text: string, radix: number, width: number): Uint8Array {
-  const name = NAMES[radix] ?? { en: "", fr: "" };
+  const name = NAMES[radix] ?? { en: "", fr: "", de: "" };
   const digits = radix === 2 ? "01" : radix === 8 ? "0-7" : "0-9";
   const trimmed = text.trim();
   if (!trimmed) return new Uint8Array();
@@ -100,6 +109,7 @@ function fromDigits(text: string, radix: number, width: number): Uint8Array {
     fail(
       `${name.en} may only contain the digits ${radix === 10 ? "0–9" : radix === 8 ? "0–7" : "0 and 1"} and separators.`,
       `${name.fr} ne contient que les chiffres ${radix === 10 ? "0–9" : radix === 8 ? "0–7" : "0 et 1"} et des séparateurs.`,
+      `${name.de} dürfen nur die Ziffern ${radix === 10 ? "0–9" : radix === 8 ? "0–7" : "0 und 1"} und Trennzeichen enthalten.`,
     );
   let tokens = trimmed.split(/[\s,;]+/).filter(Boolean);
   if (tokens.length === 1 && width && trimmed.length > width) {
@@ -107,13 +117,19 @@ function fromDigits(text: string, radix: number, width: number): Uint8Array {
       fail(
         `Without separators, the digits must come in groups of ${width}.`,
         `Sans séparateurs, les chiffres doivent aller par groupes de ${width}.`,
+        `Ohne Trennzeichen müssen die Ziffern in Gruppen zu ${width} kommen.`,
       );
     tokens = trimmed.match(new RegExp(`.{${width}}`, "g")) ?? [];
   }
   const out = new Uint8Array(tokens.length);
   tokens.forEach((t, i) => {
     const n = Number.parseInt(t, radix);
-    if (n > 255) fail(`"${t}" is more than one byte (255).`, `« ${t} » dépasse un octet (255).`);
+    if (n > 255)
+      fail(
+        `"${t}" is more than one byte (255).`,
+        `« ${t} » dépasse un octet (255).`,
+        `„${t}“ ist größer als ein Byte (255).`,
+      );
     out[i] = n;
   });
   return out;
@@ -148,11 +164,13 @@ export function fromBase32(text: string): Uint8Array {
     fail(
       "Base32 may only contain A–Z, 2–7 and = at the end.",
       "Le Base32 ne contient que A–Z, 2–7 et = à la fin.",
+      "Base32 darf nur A–Z, 2–7 und = am Ende enthalten.",
     );
   if ([1, 3, 6].includes(s.length % 8))
     fail(
       "Truncated Base32: the length does not match whole bytes.",
       "Base32 tronqué : la longueur ne correspond pas à des octets entiers.",
+      "Abgeschnittenes Base32: Die Länge ergibt keine ganzen Bytes.",
     );
   const out: number[] = [];
   let buffer = 0;
@@ -206,6 +224,7 @@ export function fromBase58(text: string): Uint8Array {
     fail(
       `"${bad}" is not in the Base58 alphabet (no 0, O, I or l).`,
       `« ${bad} » n'est pas dans l'alphabet Base58 (pas de 0, O, I ni l).`,
+      `„${bad}“ gehört nicht zum Base58-Alphabet (kein 0, O, I oder l).`,
     );
   let zeros = 0;
   while (zeros < s.length && s[zeros] === "1") zeros++;
@@ -258,7 +277,11 @@ export function fromAscii85(text: string): Uint8Array {
     let v = 0;
     for (let k = 0; k < 5; k++) v = v * 85 + (group[k] ?? 84);
     if (v > 0xffffffff)
-      fail("Invalid Ascii85 group (too large).", "Groupe Ascii85 invalide (trop grand).");
+      fail(
+        "Invalid Ascii85 group (too large).",
+        "Groupe Ascii85 invalide (trop grand).",
+        "Ungültige Ascii85-Gruppe (zu groß).",
+      );
     const four = [v >>> 24, (v >>> 16) & 255, (v >>> 8) & 255, v & 255];
     out.push(...four.slice(0, count));
     group = [];
@@ -269,6 +292,7 @@ export function fromAscii85(text: string): Uint8Array {
         fail(
           "“z” may only appear between groups of 5 characters.",
           "« z » ne peut apparaître qu'entre deux groupes de 5 caractères.",
+          "„z“ darf nur zwischen Gruppen von 5 Zeichen stehen.",
         );
       out.push(0, 0, 0, 0);
       continue;
@@ -278,6 +302,7 @@ export function fromAscii85(text: string): Uint8Array {
       fail(
         `"${c}" is not an Ascii85 character (! to u, and z).`,
         `« ${c} » n'est pas un caractère Ascii85 (! à u, et z).`,
+        `„${c}“ ist kein Ascii85-Zeichen (! bis u, und z).`,
       );
     group.push(d);
     if (group.length === 5) flush(4);
@@ -286,6 +311,7 @@ export function fromAscii85(text: string): Uint8Array {
     fail(
       "Truncated Ascii85: a final group needs at least 2 characters.",
       "Ascii85 tronqué : un dernier groupe demande au moins 2 caractères.",
+      "Abgeschnittenes Ascii85: Eine letzte Gruppe braucht mindestens 2 Zeichen.",
     );
   if (group.length) flush(group.length - 1);
   return new Uint8Array(out);

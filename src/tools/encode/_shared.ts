@@ -1,6 +1,6 @@
 /**
  * Byte helpers shared by the encode tools: UTF-8, hex, Base64, sizes, secure randomness, and
- * errors that carry their message in both languages. Pure: no DOM, no Preact.
+ * errors that carry their message in every language. Pure: no DOM, no Preact.
  */
 import { type L10n, l } from "../../i18n";
 
@@ -13,9 +13,9 @@ export class EncodeError extends Error {
   }
 }
 
-/** Throws an `EncodeError` (EN + FR). */
-export function fail(en: string, fr: string): never {
-  throw new EncodeError(l(en, fr));
+/** Throws an `EncodeError` (EN + FR + DE). */
+export function fail(en: string, fr: string, de: string): never {
+  throw new EncodeError(l(en, fr, de));
 }
 
 export type Result<T> = { ok: true; value: T } | { ok: false; error: L10n };
@@ -29,11 +29,11 @@ export function attempt<T>(fn: () => T): Result<T> {
   }
 }
 
-/** The bilingual message of any thrown value (other errors keep their own text in both). */
+/** The translated message of any thrown value (other errors keep their own text in all). */
 export function errorL10n(err: unknown): L10n {
   if (err instanceof EncodeError) return err.text;
   const msg = err instanceof Error ? err.message : String(err);
-  return { en: msg, fr: msg };
+  return { en: msg, fr: msg, de: msg };
 }
 
 /* --- UTF-8 ------------------------------------------------------------------ */
@@ -49,7 +49,11 @@ export function fromUtf8(bytes: Uint8Array, fatal = false): string {
   try {
     return new TextDecoder("utf-8", { fatal }).decode(bytes);
   } catch {
-    fail("The bytes are not valid UTF-8 text.", "Les octets ne sont pas du texte UTF-8 valide.");
+    fail(
+      "The bytes are not valid UTF-8 text.",
+      "Les octets ne sont pas du texte UTF-8 valide.",
+      "Die Bytes sind kein gültiger UTF-8-Text.",
+    );
   }
 }
 
@@ -85,11 +89,16 @@ export function toHex(bytes: Uint8Array, upper = false): string {
 export function fromHex(text: string): Uint8Array {
   const clean = text.replace(/^0x/i, "").replace(/[\s:-]/g, "");
   if (/[^0-9a-f]/i.test(clean))
-    fail("Hex may only contain 0–9 and a–f.", "L'hexadécimal ne contient que 0–9 et a–f.");
+    fail(
+      "Hex may only contain 0–9 and a–f.",
+      "L'hexadécimal ne contient que 0–9 et a–f.",
+      "Hex darf nur 0–9 und a–f enthalten.",
+    );
   if (clean.length % 2)
     fail(
       "Hex needs an even number of digits.",
       "L'hexadécimal demande un nombre pair de chiffres.",
+      "Hex braucht eine gerade Anzahl von Ziffern.",
     );
   const out = new Uint8Array(clean.length / 2);
   for (let i = 0; i < out.length; i++) out[i] = Number.parseInt(clean.slice(i * 2, i * 2 + 2), 16);
@@ -111,12 +120,14 @@ export function fromBase64(text: string): Uint8Array {
     fail(
       "Base64 may only contain A–Z, a–z, 0–9, + / (or - _) and = at the end.",
       "Le Base64 ne contient que A–Z, a–z, 0–9, + / (ou - _) et = à la fin.",
+      "Base64 darf nur A–Z, a–z, 0–9, + / (oder - _) und = am Ende enthalten.",
     );
   s = s.replace(/=+$/, "");
   if (s.length % 4 === 1)
     fail(
       "Truncated Base64: the length does not match whole bytes.",
       "Base64 tronqué : la longueur ne correspond pas à des octets entiers.",
+      "Abgeschnittenes Base64: Die Länge ergibt keine ganzen Bytes.",
     );
   s += "=".repeat((4 - (s.length % 4)) % 4);
   const bin = atob(s);

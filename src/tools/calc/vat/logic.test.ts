@@ -57,4 +57,14 @@ describe("VAT", () => {
     expect(findCountry("nope").id).toBe("fr");
     expect(new Set(COUNTRIES.map((c) => c.id)).size).toBe(COUNTRIES.length);
   });
+
+  it("has the German-speaking countries' rates, in three languages", () => {
+    expect(findCountry("de").rates.map((r) => r.rate)).toEqual([19, 7]);
+    expect(findCountry("at").rates.map((r) => r.rate)).toEqual([20, 13, 10, 4.9]);
+    expect(findCountry("ch").rates.map((r) => r.rate)).toEqual([8.1, 3.8, 2.6]);
+    for (const c of COUNTRIES) {
+      expect(c.name.de).toBeTruthy();
+      for (const r of c.rates) expect(r.de).toBeTruthy();
+    }
+  });
 });

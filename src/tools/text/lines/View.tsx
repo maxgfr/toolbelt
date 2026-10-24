@@ -1,39 +1,39 @@
 import { useComputed } from "@preact/signals";
 import { useToolState } from "../../../app/state";
 import { Button, Field, Panel, Segmented, Stats, TextBox, Toggle } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, locale, tr } from "../../../i18n";
 import { splitLines } from "../_shared";
 import { Group, NumberInput } from "../_ui";
 import { DEFAULTS, processLines, type SortMode } from "./logic";
 
 const T = {
-  input: l("Lines", "Lignes"),
-  output: l("Result", "Résultat"),
-  placeholder: l("One item per line…", "Un élément par ligne…"),
-  operations: l("Operations", "Opérations"),
-  clean: l("Clean up", "Nettoyage"),
-  trim: l("Trim spaces", "Retirer les espaces autour"),
-  removeEmpty: l("Remove empty lines", "Supprimer les lignes vides"),
-  dedupe: l("Remove duplicates", "Supprimer les doublons"),
-  ignoreCase: l("Ignore case", "Ignorer la casse"),
-  sort: l("Sort", "Tri"),
-  none: l("None", "Aucun"),
-  az: l("A → Z", "A → Z"),
-  za: l("Z → A", "Z → A"),
-  natural: l("Natural (2 < 10)", "Naturel (2 < 10)"),
-  length: l("By length", "Par longueur"),
-  order: l("Order", "Ordre"),
-  reverse: l("Reverse", "Inverser"),
-  shuffle: l("Shuffle", "Mélanger"),
-  reshuffle: l("Shuffle again", "Remélanger"),
-  number: l("Number lines", "Numéroter les lignes"),
-  start: l("Start at", "Commencer à"),
-  numberSep: l("After the number", "Après le numéro"),
-  prefix: l("Prefix", "Préfixe"),
-  suffix: l("Suffix", "Suffixe"),
-  before: l("Lines before", "Lignes avant"),
-  after: l("Lines after", "Lignes après"),
-  removed: l("Removed", "Supprimées"),
+  input: l("Lines", "Lignes", "Zeilen"),
+  output: l("Result", "Résultat", "Ergebnis"),
+  placeholder: l("One item per line…", "Un élément par ligne…", "Ein Eintrag pro Zeile…"),
+  operations: l("Operations", "Opérations", "Operationen"),
+  clean: l("Clean up", "Nettoyage", "Bereinigen"),
+  trim: l("Trim spaces", "Retirer les espaces autour", "Leerzeichen am Rand entfernen"),
+  removeEmpty: l("Remove empty lines", "Supprimer les lignes vides", "Leere Zeilen entfernen"),
+  dedupe: l("Remove duplicates", "Supprimer les doublons", "Duplikate entfernen"),
+  ignoreCase: l("Ignore case", "Ignorer la casse", "Groß-/Kleinschreibung ignorieren"),
+  sort: l("Sort", "Tri", "Sortieren"),
+  none: l("None", "Aucun", "Keine"),
+  az: l("A → Z", "A → Z", "A → Z"),
+  za: l("Z → A", "Z → A", "Z → A"),
+  natural: l("Natural (2 < 10)", "Naturel (2 < 10)", "Natürlich (2 < 10)"),
+  length: l("By length", "Par longueur", "Nach Länge"),
+  order: l("Order", "Ordre", "Reihenfolge"),
+  reverse: l("Reverse", "Inverser", "Umkehren"),
+  shuffle: l("Shuffle", "Mélanger", "Mischen"),
+  reshuffle: l("Shuffle again", "Remélanger", "Neu mischen"),
+  number: l("Number lines", "Numéroter les lignes", "Zeilen nummerieren"),
+  start: l("Start at", "Commencer à", "Beginnen bei"),
+  numberSep: l("After the number", "Après le numéro", "Nach der Nummer"),
+  prefix: l("Prefix", "Préfixe", "Präfix"),
+  suffix: l("Suffix", "Suffixe", "Suffix"),
+  before: l("Lines before", "Lignes avant", "Zeilen vorher"),
+  after: l("Lines after", "Lignes après", "Zeilen nachher"),
+  removed: l("Removed", "Supprimées", "Entfernt"),
 };
 
 export default function Lines() {
@@ -73,7 +73,7 @@ export default function Lines() {
         prefix: prefix.value,
         suffix: suffix.value,
       },
-      lang.value,
+      locale(),
     ),
   );
   const output = useComputed(() => lines.value.join("\n"));

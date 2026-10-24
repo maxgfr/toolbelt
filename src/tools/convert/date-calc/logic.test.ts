@@ -7,6 +7,7 @@ import {
   type DateTime,
   difference,
   formatDateTime,
+  readDateTime,
 } from "./logic";
 
 const d = (year: number, month: number, day: number, hour = 0, minute = 0): DateTime => ({
@@ -91,5 +92,17 @@ describe("adding durations", () => {
     expect(addBusinessDays(d(2024, 1, 5), 10)).toEqual(d(2024, 1, 19));
     expect(addBusinessDays(d(2024, 1, 8), -1)).toEqual(d(2024, 1, 5));
     expect(addBusinessDays(d(2024, 1, 8), 0)).toEqual(d(2024, 1, 8));
+  });
+});
+
+describe("readDateTime", () => {
+  it("reads a date with an optional time", () => {
+    expect(readDateTime("2024-01-31", "")).toEqual(d(2024, 1, 31));
+    expect(readDateTime("2024-01-31", "09:30")).toEqual(d(2024, 1, 31, 9, 30));
+  });
+  it("names what is invalid", () => {
+    expect(readDateTime("2024-02-30", "")).toBe("date");
+    expect(readDateTime("nope", "09:00")).toBe("date");
+    expect(readDateTime("2024-01-31", "25:00")).toBe("time");
   });
 });

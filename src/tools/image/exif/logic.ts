@@ -70,16 +70,23 @@ const POINTERS: Record<number, IfdKind> = { 34665: "Exif", 34853: "GPS", 40965: 
  * Malformed entries are skipped; a broken header throws.
  */
 export function parseTiff(b: Uint8Array): Tag[] {
-  if (b.length < 8) fail("EXIF data is truncated.", "Les données EXIF sont tronquées.");
+  if (b.length < 8)
+    fail(
+      "EXIF data is truncated.",
+      "Les données EXIF sont tronquées.",
+      "Die EXIF-Daten sind unvollständig.",
+    );
   const order = String.fromCharCode(b[0] as number, b[1] as number);
   if (order !== "II" && order !== "MM")
     fail(
       "EXIF data has no valid byte order.",
       "Les données EXIF n'ont pas d'ordre d'octets valide.",
+      "Die EXIF-Daten haben keine gültige Byte-Reihenfolge.",
     );
   const le = order === "II";
   const dv = new DataView(b.buffer, b.byteOffset, b.byteLength);
-  if (dv.getUint16(2, le) !== 42) fail("Not a TIFF/EXIF block.", "Ce n'est pas un bloc TIFF/EXIF.");
+  if (dv.getUint16(2, le) !== 42)
+    fail("Not a TIFF/EXIF block.", "Ce n'est pas un bloc TIFF/EXIF.", "Kein TIFF-/EXIF-Block.");
   const tags: Tag[] = [];
   const seen = new Set<number>();
 
@@ -261,68 +268,88 @@ function round(v: number, digits: number): string {
 }
 
 const ORIENTATION: Record<number, L10n> = {
-  1: l("Normal", "Normale"),
-  2: l("Mirrored horizontally", "Miroir horizontal"),
-  3: l("Rotated 180°", "Pivotée de 180°"),
-  4: l("Mirrored vertically", "Miroir vertical"),
-  5: l("Mirrored, rotated 90° counter-clockwise", "Miroir, pivotée de 90° antihoraire"),
-  6: l("Rotated 90° clockwise", "Pivotée de 90° horaire"),
-  7: l("Mirrored, rotated 90° clockwise", "Miroir, pivotée de 90° horaire"),
-  8: l("Rotated 90° counter-clockwise", "Pivotée de 90° antihoraire"),
+  1: l("Normal", "Normale", "Normal"),
+  2: l("Mirrored horizontally", "Miroir horizontal", "Horizontal gespiegelt"),
+  3: l("Rotated 180°", "Pivotée de 180°", "Um 180° gedreht"),
+  4: l("Mirrored vertically", "Miroir vertical", "Vertikal gespiegelt"),
+  5: l(
+    "Mirrored, rotated 90° counter-clockwise",
+    "Miroir, pivotée de 90° antihoraire",
+    "Gespiegelt, um 90° gegen den Uhrzeigersinn gedreht",
+  ),
+  6: l("Rotated 90° clockwise", "Pivotée de 90° horaire", "Um 90° im Uhrzeigersinn gedreht"),
+  7: l(
+    "Mirrored, rotated 90° clockwise",
+    "Miroir, pivotée de 90° horaire",
+    "Gespiegelt, um 90° im Uhrzeigersinn gedreht",
+  ),
+  8: l(
+    "Rotated 90° counter-clockwise",
+    "Pivotée de 90° antihoraire",
+    "Um 90° gegen den Uhrzeigersinn gedreht",
+  ),
 };
 
 const EXPOSURE_PROGRAM: Record<number, L10n> = {
-  0: l("Not defined", "Non défini"),
-  1: l("Manual", "Manuel"),
-  2: l("Program (auto)", "Programme (auto)"),
-  3: l("Aperture priority", "Priorité ouverture"),
-  4: l("Shutter priority", "Priorité vitesse"),
-  5: l("Creative", "Créatif"),
-  6: l("Action", "Action"),
-  7: l("Portrait", "Portrait"),
-  8: l("Landscape", "Paysage"),
+  0: l("Not defined", "Non défini", "Nicht definiert"),
+  1: l("Manual", "Manuel", "Manuell"),
+  2: l("Program (auto)", "Programme (auto)", "Programm (Auto)"),
+  3: l("Aperture priority", "Priorité ouverture", "Zeitautomatik (Blendenpriorität)"),
+  4: l("Shutter priority", "Priorité vitesse", "Blendenautomatik (Zeitpriorität)"),
+  5: l("Creative", "Créatif", "Kreativ"),
+  6: l("Action", "Action", "Action"),
+  7: l("Portrait", "Portrait", "Porträt"),
+  8: l("Landscape", "Paysage", "Landschaft"),
 };
 
 const METERING: Record<number, L10n> = {
-  0: l("Unknown", "Inconnu"),
-  1: l("Average", "Moyenne"),
-  2: l("Center-weighted", "Pondérée centrale"),
-  3: l("Spot", "Spot"),
-  4: l("Multi-spot", "Multi-spot"),
-  5: l("Pattern (matrix)", "Matricielle"),
-  6: l("Partial", "Partielle"),
-  255: l("Other", "Autre"),
+  0: l("Unknown", "Inconnu", "Unbekannt"),
+  1: l("Average", "Moyenne", "Durchschnitt"),
+  2: l("Center-weighted", "Pondérée centrale", "Mittenbetont"),
+  3: l("Spot", "Spot", "Spot"),
+  4: l("Multi-spot", "Multi-spot", "Mehrfeld-Spot"),
+  5: l("Pattern (matrix)", "Matricielle", "Matrix"),
+  6: l("Partial", "Partielle", "Selektiv"),
+  255: l("Other", "Autre", "Sonstiges"),
 };
 
-const WHITE_BALANCE: Record<number, L10n> = { 0: l("Auto", "Auto"), 1: l("Manual", "Manuelle") };
+const WHITE_BALANCE: Record<number, L10n> = {
+  0: l("Auto", "Auto", "Auto"),
+  1: l("Manual", "Manuelle", "Manuell"),
+};
 const EXPOSURE_MODE: Record<number, L10n> = {
-  0: l("Auto", "Auto"),
-  1: l("Manual", "Manuelle"),
-  2: l("Auto bracket", "Bracketing auto"),
+  0: l("Auto", "Auto", "Auto"),
+  1: l("Manual", "Manuelle", "Manuell"),
+  2: l("Auto bracket", "Bracketing auto", "Belichtungsreihe (Auto)"),
 };
 const SCENE: Record<number, L10n> = {
-  0: l("Standard", "Standard"),
-  1: l("Landscape", "Paysage"),
-  2: l("Portrait", "Portrait"),
-  3: l("Night", "Nuit"),
+  0: l("Standard", "Standard", "Standard"),
+  1: l("Landscape", "Paysage", "Landschaft"),
+  2: l("Portrait", "Portrait", "Porträt"),
+  3: l("Night", "Nuit", "Nacht"),
 };
 const RES_UNIT: Record<number, L10n> = {
-  1: l("none", "aucune"),
-  2: l("inch", "pouce"),
-  3: l("cm", "cm"),
+  1: l("none", "aucune", "keine"),
+  2: l("inch", "pouce", "Zoll"),
+  3: l("cm", "cm", "cm"),
 };
 
 export function orientationText(o: number): L10n {
-  return ORIENTATION[o] ?? l(String(o), String(o));
+  return ORIENTATION[o] ?? l(String(o), String(o), String(o));
 }
 
 function flashText(v: number): L10n {
   const fired = (v & 1) === 1;
   const mode = (v >> 3) & 3;
-  const base = fired ? l("Fired", "Déclenché") : l("Did not fire", "Non déclenché");
-  if (mode === 3) return l(`${base.en} (auto)`, `${base.fr} (auto)`);
-  if (mode === 1) return l(`${base.en} (forced)`, `${base.fr} (forcé)`);
-  if (mode === 2) return l(`${base.en} (off)`, `${base.fr} (désactivé)`);
+  const base = fired
+    ? l("Fired", "Déclenché", "Ausgelöst")
+    : l("Did not fire", "Non déclenché", "Nicht ausgelöst");
+  if (mode === 3)
+    return l(`${base.en} (auto)`, `${base.fr} (auto)`, `${base.de ?? base.en} (Auto)`);
+  if (mode === 1)
+    return l(`${base.en} (forced)`, `${base.fr} (forcé)`, `${base.de ?? base.en} (erzwungen)`);
+  if (mode === 2)
+    return l(`${base.en} (off)`, `${base.fr} (désactivé)`, `${base.de ?? base.en} (aus)`);
   return base;
 }
 
@@ -347,12 +374,12 @@ function userComment(b: Uint8Array): string {
 }
 
 function enumText(table: Record<number, L10n>, v: number): L10n {
-  return table[v] ?? l(String(v), String(v));
+  return table[v] ?? l(String(v), String(v), String(v));
 }
 
-/** A readable value for a tag, in both languages. */
+/** A readable value for a tag, in every language. */
 export function formatTag(t: Tag): L10n {
-  const same = (s: string) => l(s, s);
+  const same = (s: string) => l(s, s, s);
   const v = t.value;
   const n = Array.isArray(v) ? (v[0] ?? 0) : 0;
   switch (t.name) {
@@ -389,7 +416,7 @@ export function formatTag(t: Tag): L10n {
       return n === 1
         ? same("sRGB")
         : n === 65535
-          ? l("Uncalibrated", "Non calibré")
+          ? l("Uncalibrated", "Non calibré", "Nicht kalibriert")
           : same(String(n));
     case "GPSLatitude":
     case "GPSLongitude":
@@ -431,7 +458,9 @@ export function formatTag(t: Tag): L10n {
   if (typeof v === "string") return same(v);
   if (v instanceof Uint8Array) {
     const s = bytesText(v);
-    return /^\d+ bytes$/.test(s) ? l(s, s.replace("bytes", "octets")) : same(s);
+    return /^\d+ bytes$/.test(s)
+      ? l(s, s.replace("bytes", "octets"), s.replace("bytes", "Bytes"))
+      : same(s);
   }
   if (t.rationals && t.rationals.length <= 4)
     return same(
@@ -531,11 +560,17 @@ export interface Segment {
 
 /** JPEG marker segments up to (and including) SOS; `scan` is where the image data starts. */
 export function jpegSegments(b: Uint8Array): { segments: Segment[]; scan: number } {
-  if (!(b[0] === 0xff && b[1] === 0xd8)) fail("Not a JPEG file.", "Ce n'est pas un fichier JPEG.");
+  if (!(b[0] === 0xff && b[1] === 0xd8))
+    fail("Not a JPEG file.", "Ce n'est pas un fichier JPEG.", "Keine JPEG-Datei.");
   const segments: Segment[] = [];
   let p = 2;
   while (p < b.length) {
-    if (b[p] !== 0xff) fail("Corrupt JPEG: marker expected.", "JPEG corrompu : marqueur attendu.");
+    if (b[p] !== 0xff)
+      fail(
+        "Corrupt JPEG: marker expected.",
+        "JPEG corrompu : marqueur attendu.",
+        "Beschädigtes JPEG: Marker erwartet.",
+      );
     let m = b[p + 1] as number;
     while (m === 0xff && p + 2 < b.length) {
       p++;
@@ -552,13 +587,18 @@ export function jpegSegments(b: Uint8Array): { segments: Segment[]; scan: number
       fail(
         "Corrupt JPEG: segment overruns the file.",
         "JPEG corrompu : un segment dépasse la fin du fichier.",
+        "Beschädigtes JPEG: Ein Segment reicht über das Dateiende hinaus.",
       );
     const seg = { marker: m, start: p, end: p + 2 + len, data: b.subarray(p + 4, p + 2 + len) };
     segments.push(seg);
     p = seg.end;
     if (m === 0xda) return { segments, scan: seg.start };
   }
-  fail("Corrupt JPEG: no image data.", "JPEG corrompu : aucune donnée d'image.");
+  fail(
+    "Corrupt JPEG: no image data.",
+    "JPEG corrompu : aucune donnée d'image.",
+    "Beschädigtes JPEG: keine Bilddaten.",
+  );
 }
 
 function latin1(b: Uint8Array): string {
@@ -629,7 +669,8 @@ export interface Chunk {
 const PNG_SIG = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 
 export function pngChunks(b: Uint8Array): Chunk[] {
-  if (!PNG_SIG.every((x, i) => b[i] === x)) fail("Not a PNG file.", "Ce n'est pas un fichier PNG.");
+  if (!PNG_SIG.every((x, i) => b[i] === x))
+    fail("Not a PNG file.", "Ce n'est pas un fichier PNG.", "Keine PNG-Datei.");
   const dv = new DataView(b.buffer, b.byteOffset, b.byteLength);
   const out: Chunk[] = [];
   let p = 8;
@@ -640,6 +681,7 @@ export function pngChunks(b: Uint8Array): Chunk[] {
       fail(
         "Corrupt PNG: chunk overruns the file.",
         "PNG corrompu : un bloc dépasse la fin du fichier.",
+        "Beschädigtes PNG: Ein Chunk reicht über das Dateiende hinaus.",
       );
     const type = ascii(b, p + 4, 4);
     out.push({ type, start: p, end, data: b.subarray(p + 8, p + 8 + len) });
@@ -712,7 +754,7 @@ function pngMeta(b: Uint8Array): ParsedMeta {
 
 export function webpChunks(b: Uint8Array): Chunk[] {
   if (!(startsWith(b, 0, "RIFF") && startsWith(b, 8, "WEBP")))
-    fail("Not a WebP file.", "Ce n'est pas un fichier WebP.");
+    fail("Not a WebP file.", "Ce n'est pas un fichier WebP.", "Keine WebP-Datei.");
   const dv = new DataView(b.buffer, b.byteOffset, b.byteLength);
   const out: Chunk[] = [];
   let p = 12;
@@ -723,6 +765,7 @@ export function webpChunks(b: Uint8Array): Chunk[] {
       fail(
         "Corrupt WebP: chunk overruns the file.",
         "WebP corrompu : un bloc dépasse la fin du fichier.",
+        "Beschädigtes WebP: Ein Chunk reicht über das Dateiende hinaus.",
       );
     out.push({
       type: ascii(b, p, 4),

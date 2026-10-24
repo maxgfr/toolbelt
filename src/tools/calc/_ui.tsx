@@ -6,17 +6,15 @@ import type { ComponentChildren } from "preact";
 import { Select } from "../../app/kit";
 import { useToolState } from "../../app/state";
 import { CopyButton, Field } from "../../app/ui";
-import { fmt, l, lang, tr } from "../../i18n";
+import { fmt, l, locale, pick, tr } from "../../i18n";
 import { parseNumber } from "./_shared";
 
 const T = {
-  currency: l("Currency", "Devise"),
-  how: l("How it's computed", "Comment c'est calculé"),
+  currency: l("Currency", "Devise", "Währung"),
+  how: l("How it's computed", "Comment c'est calculé", "So wird gerechnet"),
 };
 
-export function locale(): string {
-  return lang.value === "fr" ? "fr-FR" : "en-US";
-}
+export { locale };
 
 export const CURRENCIES = [
   "EUR",
@@ -50,10 +48,10 @@ export const CURRENCIES = [
   "KRW",
 ] as const;
 
-/** The tool's currency: EUR in French, USD in English, until the user picks one. */
+/** The tool's currency: EUR in French and German, USD in English, until the user picks one. */
 export function useCurrency() {
   const sig = useToolState("currency", "");
-  const code = sig.value || (lang.value === "fr" ? "EUR" : "USD");
+  const code = sig.value || pick({ en: "USD", fr: "EUR", de: "EUR" });
   return { sig, code };
 }
 
@@ -117,6 +115,12 @@ export function num(n: number, max = 2, min = 0): string {
 export function pct(n: number, max = 2): string {
   if (!Number.isFinite(n)) return "—";
   return fmt(n / 100, { style: "percent", maximumFractionDigits: max });
+}
+
+/** A default decimal for a text input, as people type it: "12.5", or "12,5" in French and German. */
+export function typed(s: string): string {
+  const comma = s.replace(".", ",");
+  return pick({ en: s, fr: comma, de: comma });
 }
 
 /** Grouped digits, up to 12 significant digits, scientific when extreme. */

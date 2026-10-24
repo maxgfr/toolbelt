@@ -20,13 +20,13 @@ const base: PickOptions = {
 };
 
 describe("random-port — data", () => {
-  it("has about 150 unique, valid entries in both languages", () => {
+  it("has about 150 unique, valid entries in every language", () => {
     expect(PORTS.length).toBeGreaterThanOrEqual(140);
     const keys = PORTS.map((p) => `${p.port}/${p.proto}`);
     expect(new Set(keys).size).toBe(keys.length);
     for (const p of PORTS) {
       expect(portClass(p.port)).not.toBe("invalid");
-      expect(p.name && p.en && p.fr).toBeTruthy();
+      expect(p.name && p.en && p.fr && p.de).toBeTruthy();
     }
   });
 });
@@ -104,6 +104,8 @@ describe("random-port — search", () => {
     expect(searchPorts("postgres").map((p) => p.port)).toEqual([5432]);
     expect(searchPorts("bureau distance").map((p) => p.port)).toContain(3389);
     expect(searchPorts("remote desktop").map((p) => p.port)).toContain(3389);
+    expect(searchPorts("remotedesktop").map((p) => p.port)).toContain(3389);
+    expect(searchPorts("zeitsynchronisation").map((p) => p.port)).toEqual([123]);
     expect(searchPorts("zzzz")).toEqual([]);
     expect(searchPorts("")).toHaveLength(PORTS.length);
   });

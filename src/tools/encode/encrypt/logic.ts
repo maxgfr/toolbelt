@@ -26,6 +26,7 @@
  * As text, the container is written in standard Base64 (it starts with "VEJFTg", the magic).
  */
 import { argon2id } from "hash-wasm";
+import type { Lang } from "../../../i18n";
 import { fail, fromBase64, fromUtf8, randomBytes, utf8 } from "../_shared";
 
 export const MAGIC = new Uint8Array([0x54, 0x42, 0x45, 0x4e]);
@@ -74,6 +75,7 @@ function checkKdf(kdf: Kdf): void {
       fail(
         `PBKDF2 iterations must be between 1 and ${MAX_PBKDF2}.`,
         `Les itérations PBKDF2 vont de 1 à ${MAX_PBKDF2}.`,
+        `Die PBKDF2-Iterationen müssen zwischen 1 und ${MAX_PBKDF2} liegen.`,
       );
     return;
   }
@@ -92,6 +94,7 @@ function checkKdf(kdf: Kdf): void {
     fail(
       "Argon2id parameters out of range (memory 8 KiB to 1 GiB, 1–100 passes, 1–255 lanes).",
       "Paramètres Argon2id hors limites (mémoire de 8 Kio à 1 Gio, 1 à 100 passes, 1 à 255 voies).",
+      "Argon2id-Parameter außerhalb des Bereichs (Speicher 8 KiB bis 1 GiB, 1–100 Durchläufe, 1–255 Lanes).",
     );
 }
 
@@ -159,6 +162,7 @@ function corrupted(): never {
   fail(
     "The data is truncated or corrupted (the header cannot be read).",
     "Les données sont tronquées ou corrompues (l'en-tête est illisible).",
+    "Die Daten sind abgeschnitten oder beschädigt (der Header ist nicht lesbar).",
   );
 }
 
@@ -173,6 +177,7 @@ export function readHeader(bytes: Uint8Array): Header {
     fail(
       "This is not data encrypted by this tool (the TBEN signature is missing).",
       "Ce ne sont pas des données chiffrées par cet outil (la signature TBEN manque).",
+      "Das sind keine mit diesem Werkzeug verschlüsselten Daten (die TBEN-Signatur fehlt).",
     );
   if (bytes.length < 6) corrupted();
   const version = bytes[4] as number;
@@ -180,6 +185,7 @@ export function readHeader(bytes: Uint8Array): Header {
     fail(
       `Unsupported format version ${version} (this tool reads version ${VERSION}).`,
       `Version de format ${version} non prise en charge (cet outil lit la version ${VERSION}).`,
+      `Nicht unterstützte Formatversion ${version} (dieses Werkzeug liest Version ${VERSION}).`,
     );
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const id = bytes[5];
@@ -199,7 +205,11 @@ export function readHeader(bytes: Uint8Array): Header {
     };
     p += 9;
   } else {
-    fail(`Unknown key derivation (id ${id}).`, `Dérivation de clé inconnue (id ${id}).`);
+    fail(
+      `Unknown key derivation (id ${id}).`,
+      `Dérivation de clé inconnue (id ${id}).`,
+      `Unbekannte Schlüsselableitung (ID ${id}).`,
+    );
   }
   checkKdf(kdf);
   const saltLen = bytes[p++];
@@ -254,7 +264,7 @@ export async function encrypt(
   kdf: Kdf,
   opts: EncryptOptions = {},
 ): Promise<Uint8Array> {
-  if (!password) fail("Enter a password.", "Saisis un mot de passe.");
+  if (!password) fail("Enter a password.", "Saisis un mot de passe.", "Gib ein Passwort ein.");
   const salt = opts.salt ?? randomBytes(SALT_BYTES);
   const iv = opts.iv ?? randomBytes(IV_BYTES);
   const header = writeHeader(kdf, salt, iv);
@@ -281,7 +291,7 @@ export async function decrypt(
   password: string,
 ): Promise<{ payload: Payload; header: Header }> {
   const header = readHeader(bytes);
-  if (!password) fail("Enter the password.", "Saisis le mot de passe.");
+  if (!password) fail("Enter the password.", "Saisis le mot de passe.", "Gib das Passwort ein.");
   const key = await aesKey(await deriveKeyBytes(password, header.salt, header.kdf), "decrypt");
   let plain: ArrayBuffer;
   try {
@@ -299,6 +309,7 @@ export async function decrypt(
     fail(
       "Wrong password, or the data was modified or corrupted.",
       "Mauvais mot de passe, ou les données ont été modifiées ou corrompues.",
+      "Falsches Passwort, oder die Daten wurden verändert oder beschädigt.",
     );
   }
   return { payload: unpackPayload(new Uint8Array(plain)), header };
@@ -315,21 +326,32 @@ export function armor(bytes: Uint8Array, wrap = false): string {
 /** Base64 text (whitespace allowed) back to the container's bytes. */
 export function dearmor(text: string): Uint8Array {
   const t = text.trim();
-  if (!t) fail("Paste the encrypted text.", "Colle le texte chiffré.");
+  if (!t)
+    fail(
+      "Paste the encrypted text.",
+      "Colle le texte chiffré.",
+      "Füge den verschlüsselten Text ein.",
+    );
   return fromBase64(t);
 }
 
+/** The words of `kdfLabel` in each language. */
+const KDF_WORDS: Record<
+  Lang,
+  { iterations: string; mib: string; kib: string; passes: string; lanes: string }
+> = {
+  en: { iterations: "iterations", mib: "MiB", kib: "KiB", passes: "passes", lanes: "lane(s)" },
+  fr: { iterations: "itérations", mib: "Mio", kib: "Kio", passes: "passes", lanes: "voie(s)" },
+  de: { iterations: "Iterationen", mib: "MiB", kib: "KiB", passes: "Durchläufe", lanes: "Lane(s)" },
+};
+
 /** A short description of the key derivation, e.g. "PBKDF2-SHA256, 600,000 iterations". */
-export function kdfLabel(kdf: Kdf, fmt: (n: number) => string, fr: boolean): string {
-  if (kdf.kind === "pbkdf2")
-    return `PBKDF2-HMAC-SHA256, ${fmt(kdf.iterations)} ${fr ? "itérations" : "iterations"}`;
+export function kdfLabel(kdf: Kdf, fmt: (n: number) => string, lang: Lang = "en"): string {
+  const w = KDF_WORDS[lang];
+  if (kdf.kind === "pbkdf2") return `PBKDF2-HMAC-SHA256, ${fmt(kdf.iterations)} ${w.iterations}`;
   const mib = kdf.memory / 1024;
-  const mem = Number.isInteger(mib)
-    ? `${fmt(mib)} ${fr ? "Mio" : "MiB"}`
-    : `${fmt(kdf.memory)} ${fr ? "Kio" : "KiB"}`;
-  return fr
-    ? `Argon2id, ${mem}, ${fmt(kdf.iterations)} passes, ${fmt(kdf.parallelism)} voie(s)`
-    : `Argon2id, ${mem}, ${fmt(kdf.iterations)} passes, ${fmt(kdf.parallelism)} lane(s)`;
+  const mem = Number.isInteger(mib) ? `${fmt(mib)} ${w.mib}` : `${fmt(kdf.memory)} ${w.kib}`;
+  return `Argon2id, ${mem}, ${fmt(kdf.iterations)} ${w.passes}, ${fmt(kdf.parallelism)} ${w.lanes}`;
 }
 
 /** Name of the encrypted file: "photo.jpg" → "photo.jpg.enc". */

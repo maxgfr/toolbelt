@@ -8,28 +8,38 @@ import { CHART, decode, dotMs, encode, looksLikeMorse, timings } from "./logic";
 type Mode = "auto" | "encode" | "decode";
 
 const T = {
-  auto: l("Auto", "Auto"),
-  encode: l("Text → Morse", "Texte → Morse"),
-  decode: l("Morse → Text", "Morse → Texte"),
-  input: l("Input", "Entrée"),
+  auto: l("Auto", "Auto", "Auto"),
+  encode: l("Text → Morse", "Texte → Morse", "Text → Morse"),
+  decode: l("Morse → Text", "Morse → Texte", "Morse → Text"),
+  input: l("Input", "Entrée", "Eingabe"),
   placeholder: l(
     "Type text, or paste Morse code (. - with / between words)…",
     "Tape du texte, ou colle du morse (. - avec / entre les mots)…",
+    "Tippe Text oder füge Morsecode ein (. - mit / zwischen Wörtern)…",
   ),
-  morse: l("Morse", "Morse"),
-  text: l("Text", "Texte"),
-  detected: l("Detected: {m}", "Détecté : {m}"),
-  unknownChars: l("No Morse code for: {c}", "Pas de code morse pour : {c}"),
-  unknownCodes: l("Unknown codes (shown as ?): {c}", "Codes inconnus (affichés ?) : {c}"),
-  play: l("Play", "Écouter"),
-  stop: l("Stop", "Arrêter"),
-  speed: l("Speed: {n} WPM", "Vitesse : {n} mots/min"),
-  tone: l("Tone: {n} Hz", "Tonalité : {n} Hz"),
+  morse: l("Morse", "Morse", "Morse"),
+  text: l("Text", "Texte", "Text"),
+  detected: l("Detected: {m}", "Détecté : {m}", "Erkannt: {m}"),
+  unknownChars: l(
+    "No Morse code for: {c}",
+    "Pas de code morse pour : {c}",
+    "Kein Morsecode für: {c}",
+  ),
+  unknownCodes: l(
+    "Unknown codes (shown as ?): {c}",
+    "Codes inconnus (affichés ?) : {c}",
+    "Unbekannte Codes (als ? angezeigt): {c}",
+  ),
+  play: l("Play", "Écouter", "Abspielen"),
+  stop: l("Stop", "Arrêter", "Stopp"),
+  speed: l("Speed: {n} WPM", "Vitesse : {n} mots/min", "Tempo: {n} WpM"),
+  tone: l("Tone: {n} Hz", "Tonalité : {n} Hz", "Ton: {n} Hz"),
   noAudio: l(
     "Audio is not available in this browser.",
     "L'audio n'est pas disponible dans ce navigateur.",
+    "Audio ist in diesem Browser nicht verfügbar.",
   ),
-  chart: l("Morse alphabet", "Alphabet morse"),
+  chart: l("Morse alphabet", "Alphabet morse", "Morsealphabet"),
 };
 
 export default function Morse() {

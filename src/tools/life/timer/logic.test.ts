@@ -94,6 +94,12 @@ describe("parseDuration", () => {
     ["5m30", 330_000],
     ["2 heures", 120 * MIN],
     ["10 secondes", 10_000],
+    ["2 Stunden", 120 * MIN],
+    ["1 Std. 30 Min.", 90 * MIN],
+    ["90 Sek.", 90_000],
+    ["45 Sekunden", 45_000],
+    ["3 Minuten", 3 * MIN],
+    ["2,5 min", 150_000],
   ])("%p", (text, ms) => {
     expect(parseDuration(text)).toBe(ms);
   });

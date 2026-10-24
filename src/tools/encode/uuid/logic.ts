@@ -87,20 +87,30 @@ export function checkAlphabet(alphabet: string): void {
     fail(
       "The alphabet needs at least 2 characters.",
       "L'alphabet doit avoir au moins 2 caractères.",
+      "Das Alphabet braucht mindestens 2 Zeichen.",
     );
   if (chars.length > 256)
-    fail("The alphabet is limited to 256 characters.", "L'alphabet est limité à 256 caractères.");
+    fail(
+      "The alphabet is limited to 256 characters.",
+      "L'alphabet est limité à 256 caractères.",
+      "Das Alphabet ist auf 256 Zeichen begrenzt.",
+    );
   if (new Set(chars).size !== chars.length)
     fail(
       "The alphabet has repeated characters, which would bias the result.",
       "L'alphabet contient des caractères répétés, ce qui fausserait le tirage.",
+      "Das Alphabet enthält doppelte Zeichen, was das Ergebnis verzerren würde.",
     );
 }
 
 export function nanoid(size = 21, alphabet: string = NANOID_URL): string {
   checkAlphabet(alphabet);
   if (!Number.isInteger(size) || size < 1 || size > 1024)
-    fail("The size must be between 1 and 1024.", "La taille doit être entre 1 et 1024.");
+    fail(
+      "The size must be between 1 and 1024.",
+      "La taille doit être entre 1 et 1024.",
+      "Die Größe muss zwischen 1 und 1024 liegen.",
+    );
   return randomString(size, alphabet);
 }
 
@@ -222,6 +232,7 @@ function inspectUlid(text: string): IdInfo {
     fail(
       "This ULID is out of range: it must start with 0 to 7.",
       "Ce ULID dépasse la limite : il doit commencer par 0 à 7.",
+      "Diese ULID liegt außerhalb des Bereichs: Sie muss mit 0 bis 7 beginnen.",
     );
   let n = 0n;
   for (const c of s) n = (n << 5n) | BigInt(CROCKFORD.indexOf(c));
@@ -253,5 +264,6 @@ export function inspectId(text: string): IdInfo | null {
   fail(
     "Not a UUID (32 hex digits, 8-4-4-4-12) or a ULID (26 Crockford Base32 characters).",
     "Ni un UUID (32 chiffres hexa, 8-4-4-4-12) ni un ULID (26 caractères Base32 de Crockford).",
+    "Weder eine UUID (32 Hex-Ziffern, 8-4-4-4-12) noch eine ULID (26 Crockford-Base32-Zeichen).",
   );
 }

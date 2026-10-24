@@ -5,25 +5,26 @@ import { fmt, l, tr } from "../../../i18n";
 import { formatJson, type Indent, jsonInfo, parseJson } from "./logic";
 
 const T = {
-  input: l("JSON", "JSON"),
-  output: l("Result", "Résultat"),
+  input: l("JSON", "JSON", "JSON"),
+  output: l("Result", "Résultat", "Ergebnis"),
   placeholder: l(
     'Paste JSON, e.g. {"name": "toolbelt"}',
     'Colle du JSON, par ex. {"name": "toolbelt"}',
+    'Füge JSON ein, z. B. {"name": "toolbelt"}',
   ),
-  indent: l("Indentation", "Indentation"),
-  spaces2: l("2 spaces", "2 espaces"),
-  spaces4: l("4 spaces", "4 espaces"),
-  tab: l("Tab", "Tabulation"),
-  minify: l("Minify", "Minifier"),
-  sort: l("Sort keys", "Trier les clés"),
-  valid: l("Valid JSON", "JSON valide"),
-  at: l("line {line}, column {col}", "ligne {line}, colonne {col}"),
-  keys: l("Keys", "Clés"),
-  depth: l("Depth", "Profondeur"),
-  objects: l("Objects", "Objets"),
-  arrays: l("Arrays", "Tableaux"),
-  size: l("Size", "Taille"),
+  indent: l("Indentation", "Indentation", "Einrückung"),
+  spaces2: l("2 spaces", "2 espaces", "2 Leerzeichen"),
+  spaces4: l("4 spaces", "4 espaces", "4 Leerzeichen"),
+  tab: l("Tab", "Tabulation", "Tabulator"),
+  minify: l("Minify", "Minifier", "Minifizieren"),
+  sort: l("Sort keys", "Trier les clés", "Schlüssel sortieren"),
+  valid: l("Valid JSON", "JSON valide", "Gültiges JSON"),
+  at: l("line {line}, column {col}", "ligne {line}, colonne {col}", "Zeile {line}, Spalte {col}"),
+  keys: l("Keys", "Clés", "Schlüssel"),
+  depth: l("Depth", "Profondeur", "Tiefe"),
+  objects: l("Objects", "Objets", "Objekte"),
+  arrays: l("Arrays", "Tableaux", "Arrays"),
+  size: l("Size", "Taille", "Größe"),
 };
 
 export default function Json() {

@@ -1,35 +1,51 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { useToolState } from "../../../app/state";
 import { Button, Segmented, Stats } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, type Lang, l, lang, tr } from "../../../i18n";
 import { cryptoInt } from "../_shared";
 import { useKeys, useNow } from "../_ui";
 import { bestKey, compareWord, keystroke, makeWords, score } from "./logic";
-import { EN_WORDS, FR_WORDS } from "./words";
+import { DE_WORDS, EN_WORDS, FR_WORDS } from "./words";
 
 type Mode = "time" | "words";
-type WordLang = "en" | "fr";
+type WordLang = Lang;
+
+const LISTS: Record<WordLang, readonly string[]> = { en: EN_WORDS, fr: FR_WORDS, de: DE_WORDS };
 
 const T = {
-  time: l("Time", "Temps"),
-  words: l("Words", "Mots"),
-  english: l("English", "Anglais"),
-  french: l("French", "Français"),
-  restart: l("Restart", "Recommencer"),
-  start: l("Start typing to begin the test…", "Commence à taper pour lancer le test…"),
-  input: l("Type the words here", "Tape les mots ici"),
-  wpm: l("WPM", "Mots/min"),
-  raw: l("Raw WPM", "Mots/min bruts"),
-  accuracy: l("Accuracy", "Précision"),
-  errors: l("Errors", "Erreurs"),
-  wordsOk: l("Correct words", "Mots justes"),
-  seconds: l("Time", "Durée"),
-  best: l("Personal best: {n} WPM", "Record personnel : {n} mots/min"),
-  newBest: l("New personal best!", "Nouveau record personnel !"),
-  noBest: l("No personal best yet for this test.", "Pas encore de record pour ce test."),
+  time: l("Time", "Temps", "Zeit"),
+  words: l("Words", "Mots", "Wörter"),
+  english: l("English", "Anglais", "Englisch"),
+  french: l("French", "Français", "Französisch"),
+  german: l("German", "Allemand", "Deutsch"),
+  restart: l("Restart", "Recommencer", "Neu starten"),
+  start: l(
+    "Start typing to begin the test…",
+    "Commence à taper pour lancer le test…",
+    "Fang an zu tippen, um den Test zu starten…",
+  ),
+  input: l("Type the words here", "Tape les mots ici", "Tippe die Wörter hier"),
+  wpm: l("WPM", "Mots/min", "Wörter/Min."),
+  raw: l("Raw WPM", "Mots/min bruts", "Wörter/Min. brutto"),
+  accuracy: l("Accuracy", "Précision", "Genauigkeit"),
+  errors: l("Errors", "Erreurs", "Fehler"),
+  wordsOk: l("Correct words", "Mots justes", "Richtige Wörter"),
+  seconds: l("Time", "Durée", "Dauer"),
+  best: l(
+    "Personal best: {n} WPM",
+    "Record personnel : {n} mots/min",
+    "Persönlicher Rekord: {n} Wörter/Min.",
+  ),
+  newBest: l("New personal best!", "Nouveau record personnel !", "Neuer persönlicher Rekord!"),
+  noBest: l(
+    "No personal best yet for this test.",
+    "Pas encore de record pour ce test.",
+    "Noch kein Rekord für diesen Test.",
+  ),
   help: l(
     "Space moves to the next word. Esc restarts. WPM counts correct words (5 characters = 1 word); raw WPM counts everything typed.",
     "Espace passe au mot suivant. Échap recommence. Les mots/min comptent les mots justes (5 caractères = 1 mot) ; les mots/min bruts comptent tout ce qui est tapé.",
+    "Die Leertaste springt zum nächsten Wort. Esc startet neu. Wörter/Min. zählt richtige Wörter (5 Zeichen = 1 Wort); brutto zählt alles Getippte.",
   ),
 };
 
@@ -37,13 +53,13 @@ const TIME_OPTIONS = [15, 30, 60];
 const WORD_OPTIONS = [10, 25, 50];
 
 function newWords(mode: Mode, n: number, wl: WordLang): string[] {
-  return makeWords(cryptoInt, wl === "fr" ? FR_WORDS : EN_WORDS, mode === "time" ? 250 : n);
+  return makeWords(cryptoInt, LISTS[wl] ?? EN_WORDS, mode === "time" ? 250 : n);
 }
 
 export default function TypingTest() {
   const mode = useToolState<Mode>("mode", "time");
   const n = useToolState("n", 30);
-  const wl = useToolState<WordLang>("lang", lang.value === "fr" ? "fr" : "en");
+  const wl = useToolState<WordLang>("lang", lang.value);
   const bests = useToolState<Record<string, number>>("best", {}, { share: false });
 
   const [words, setWords] = useState(() => newWords(mode.value, n.value, wl.value));
@@ -187,6 +203,7 @@ export default function TypingTest() {
           options={[
             { value: "en", label: tr(T.english) },
             { value: "fr", label: tr(T.french) },
+            { value: "de", label: tr(T.german) },
           ]}
         />
         <span class="spacer" />

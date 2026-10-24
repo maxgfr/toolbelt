@@ -1,7 +1,7 @@
 /**
  * Searching the git memo with plain sentences ("I want to undo my last commit", "annuler le
- * dernier commit"): filler words are dropped, a few synonyms are expanded, and tips are ranked
- * by how many of the remaining words they contain.
+ * dernier commit", "letzten Commit rückgängig machen"): filler words are dropped, a few
+ * synonyms are expanded, and tips are ranked by how many of the remaining words they contain.
  */
 import { fold } from "../_shared";
 import { type GitTip, type GroupId, TIPS } from "./data";
@@ -11,42 +11,106 @@ const STOP = new Set(
     "i want wanna need to the a an my me how do does can could would like of on in into it this " +
     "that from with for and or is are be some all just git " +
     "je veux voudrais dois comment faire le la les l un une des du de d mon ma mes au aux en " +
-    "dans sur pour et ou est sont avec ce cette ces tout tous qui que"
+    "dans sur pour et ou est sont avec ce cette ces tout tous qui que " +
+    "ich will mochte muss kann wie den die das der dem des ein eine einen einem einer eines mein " +
+    "meine meinen meinem meiner und oder ist sind mit fur von vom zu zum zur auf im am alle alles " +
+    "es dieser diese diesen dieses machen mache"
   ).split(" "),
 );
 
 /** Words that mean the same thing in a git task. Each word also matches the others. */
 const SYNONYMS: string[][] = [
-  ["undo", "cancel", "revert", "annuler", "defaire", "reset", "restore", "rollback"],
-  ["delete", "remove", "drop", "erase", "supprimer", "effacer", "retirer", "jeter", "throw"],
-  ["discard", "throw", "jeter", "annuler", "perdre"],
-  ["rename", "renommer", "move", "deplacer"],
-  ["branch", "branche"],
-  ["commit", "commits"],
-  ["stash", "aside", "cote", "remise", "shelve"],
-  ["merge", "fusion", "fusionner"],
-  ["squash", "fusionner", "combine", "regrouper"],
-  ["history", "log", "historique"],
-  ["find", "search", "chercher", "trouver", "grep"],
-  ["remote", "distant", "origin", "upstream"],
-  ["push", "pousser", "publish", "publier"],
-  ["pull", "fetch", "update", "sync", "synchroniser", "jour"],
+  [
+    "undo",
+    "cancel",
+    "revert",
+    "annuler",
+    "defaire",
+    "reset",
+    "restore",
+    "rollback",
+    "ruckgangig",
+    "zurucksetzen",
+    "zurucknehmen",
+    "umkehren",
+  ],
+  [
+    "delete",
+    "remove",
+    "drop",
+    "erase",
+    "supprimer",
+    "effacer",
+    "retirer",
+    "jeter",
+    "throw",
+    "loschen",
+    "entfernen",
+    "wegwerfen",
+  ],
+  ["discard", "throw", "jeter", "annuler", "perdre", "verwerfen", "wegwerfen", "verlieren"],
+  ["rename", "renommer", "move", "deplacer", "umbenennen", "verschieben"],
+  ["branch", "branche", "zweig", "zweige"],
+  ["commit", "commits", "committen"],
+  ["stash", "aside", "cote", "remise", "shelve", "beiseite", "beiseitelegen", "parken"],
+  ["merge", "fusion", "fusionner", "mergen", "zusammenfuhren"],
+  ["squash", "fusionner", "combine", "regrouper", "zusammenfassen", "kombinieren"],
+  ["history", "log", "historique", "verlauf", "historie"],
+  ["find", "search", "chercher", "trouver", "grep", "finden", "suchen", "durchsuchen"],
+  ["remote", "distant", "origin", "upstream", "remotes"],
+  ["push", "pousser", "publish", "publier", "pushen", "hochladen", "veroffentlichen"],
+  [
+    "pull",
+    "fetch",
+    "update",
+    "sync",
+    "synchroniser",
+    "jour",
+    "pullen",
+    "fetchen",
+    "aktualisieren",
+    "synchronisieren",
+  ],
   ["tag", "release", "version"],
-  ["bug", "regression", "bisect"],
-  ["clean", "nettoyer", "cleanup", "untracked"],
-  ["conflict", "conflit", "conflits"],
-  ["message", "reword", "amend", "corriger", "fix"],
-  ["file", "fichier", "fichiers"],
-  ["last", "dernier", "derniers", "previous", "precedent"],
-  ["lost", "perdu", "perdus", "reflog"],
-  ["recover", "recuperer", "rescue", "sauver"],
-  ["diff", "changes", "modifications", "changements", "compare", "comparer"],
-  ["worktree", "worktrees", "folder", "dossier"],
+  ["bug", "regression", "bisect", "fehler"],
+  ["clean", "nettoyer", "cleanup", "untracked", "aufraumen", "bereinigen", "unversioniert"],
+  ["conflict", "conflit", "conflits", "konflikt", "konflikte", "konflikten"],
+  ["message", "reword", "amend", "corriger", "fix", "nachricht", "korrigieren", "andern"],
+  ["file", "fichier", "fichiers", "datei", "dateien"],
+  [
+    "last",
+    "dernier",
+    "derniers",
+    "previous",
+    "precedent",
+    "letzte",
+    "letzter",
+    "letzten",
+    "letztes",
+    "vorherige",
+    "vorherigen",
+  ],
+  ["lost", "perdu", "perdus", "reflog", "verloren", "verlorene", "verlorenen"],
+  ["recover", "recuperer", "rescue", "sauver", "wiederherstellen", "retten", "zuruckholen"],
+  [
+    "diff",
+    "changes",
+    "modifications",
+    "changements",
+    "compare",
+    "comparer",
+    "anderungen",
+    "unterschiede",
+    "vergleichen",
+  ],
+  ["worktree", "worktrees", "folder", "dossier", "ordner", "verzeichnis"],
 ];
 
 function stem(w: string): string {
   if (w.length > 5 && w.endsWith("ing")) return w.slice(0, -3);
   if (w.length > 4 && w.endsWith("ed")) return w.slice(0, -2);
+  // German infinitives and plurals: "stashen", "pushen", "dateien".
+  if (w.length > 5 && w.endsWith("en")) return w.slice(0, -2);
   if (w.length > 3 && w.endsWith("s")) return w.slice(0, -1);
   return w;
 }
@@ -67,7 +131,7 @@ export function queryTerms(query: string): string[][] {
 }
 
 function haystack(t: GitTip): string {
-  return fold([t.en, t.fr, t.cmd, t.noteEn, t.noteFr, t.group].join(" "));
+  return fold([t.en, t.fr, t.de, t.cmd, t.noteEn, t.noteFr, t.noteDe, t.group].join(" "));
 }
 
 /**
@@ -88,7 +152,7 @@ export function searchTips(
   return list
     .map((t, i) => {
       const hay = haystack(t);
-      const title = fold(`${t.en} ${t.fr}`);
+      const title = fold(`${t.en} ${t.fr} ${t.de}`);
       let score = 0;
       for (const alts of terms) {
         if (alts.some((a) => title.includes(a))) score += 1.2;

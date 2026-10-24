@@ -1,47 +1,56 @@
 import { useComputed } from "@preact/signals";
 import { useToolState } from "../../../app/state";
 import { Button, Segmented, TextBox, Toggle } from "../../../app/ui";
-import { fmt, l, tr } from "../../../i18n";
+import { fmt, type L10n, l, tr } from "../../../i18n";
 import { decodeEntities, type EncodeMode, encodeEntities } from "./logic";
 
 type Dir = "encode" | "decode";
 
 const T = {
-  encode: l("Encode", "Encoder"),
-  decode: l("Decode", "Décoder"),
-  mode: l("What to encode", "Quoi encoder"),
-  unsafe: l("Only & < > \" '", "Seulement & < > \" '"),
-  named: l("Named (&eacute;)", "Nommées (&eacute;)"),
-  numeric: l("Numeric (&#233;)", "Numériques (&#233;)"),
-  hex: l("Hexadecimal (&#xE9;)", "Hexadécimal (&#xE9;)"),
-  text: l("Text", "Texte"),
-  html: l("HTML", "HTML"),
+  encode: l("Encode", "Encoder", "Kodieren"),
+  decode: l("Decode", "Décoder", "Dekodieren"),
+  mode: l("What to encode", "Quoi encoder", "Was kodieren"),
+  unsafe: l("Only & < > \" '", "Seulement & < > \" '", "Nur & < > \" '"),
+  named: l("Named (&eacute;)", "Nommées (&eacute;)", "Benannt (&eacute;)"),
+  numeric: l("Numeric (&#233;)", "Numériques (&#233;)", "Numerisch (&#233;)"),
+  hex: l("Hexadecimal (&#xE9;)", "Hexadécimal (&#xE9;)", "Hexadezimal (&#xE9;)"),
+  text: l("Text", "Texte", "Text"),
+  html: l("HTML", "HTML", "HTML"),
   phText: l(
     "Type or paste text, e.g. <p>Café & co</p>",
     "Tape ou colle du texte, par ex. <p>Café & co</p>",
+    "Text eingeben oder einfügen, z. B. <p>Café & co</p>",
   ),
   phHtml: l(
     "Paste HTML with entities, e.g. caf&eacute; &amp; co",
     "Colle du HTML avec des entités, par ex. caf&eacute; &amp; co",
+    "HTML mit Entities einfügen, z. B. caf&eacute; &amp; co",
   ),
-  swap: l("Use output as input", "Réutiliser le résultat"),
-  decoded: l("{n} references decoded", "{n} références décodées"),
-  unknown: l("Unknown names, left as is: {list}", "Noms inconnus, laissés tels quels : {list}"),
+  swap: l("Use output as input", "Réutiliser le résultat", "Ergebnis als Eingabe verwenden"),
+  decoded: l("{n} references decoded", "{n} références décodées", "{n} Referenzen dekodiert"),
+  unknown: l(
+    "Unknown names, left as is: {list}",
+    "Noms inconnus, laissés tels quels : {list}",
+    "Unbekannte Namen, unverändert gelassen: {list}",
+  ),
   helpUnsafe: l(
     "Enough to put text safely inside HTML elements and quoted attributes; accents stay as they are (UTF-8 pages).",
     "Suffit pour placer du texte dans des éléments et attributs entre guillemets ; les accents restent tels quels (pages UTF-8).",
+    "Reicht, um Text sicher in HTML-Elemente und Attribute in Anführungszeichen zu setzen; Umlaute und Akzente bleiben, wie sie sind (UTF-8-Seiten).",
   ),
   helpNamed: l(
     "Also turns non-ASCII characters into references: named when HTML has a name, numeric otherwise.",
     "Transforme aussi les caractères non ASCII en références : nommées quand le HTML a un nom, numériques sinon.",
+    "Wandelt auch Nicht-ASCII-Zeichen in Referenzen um: benannt, wenn HTML einen Namen dafür hat, sonst numerisch.",
   ),
   helpNumeric: l(
     "Pure ASCII output: every non-ASCII and unsafe character becomes a numeric reference.",
     "Sortie 100 % ASCII : chaque caractère non ASCII ou dangereux devient une référence numérique.",
+    "Reine ASCII-Ausgabe: Jedes Nicht-ASCII- und unsichere Zeichen wird zu einer numerischen Referenz.",
   ),
 };
 
-const HELP: Record<EncodeMode, { en: string; fr: string }> = {
+const HELP: Record<EncodeMode, L10n> = {
   unsafe: T.helpUnsafe,
   named: T.helpNamed,
   numeric: T.helpNumeric,

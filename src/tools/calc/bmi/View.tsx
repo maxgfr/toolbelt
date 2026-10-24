@@ -22,60 +22,97 @@ import {
 } from "./logic";
 
 const T = {
-  system: l("Units", "Unités"),
-  metric: l("Metric (kg, cm)", "Métrique (kg, cm)"),
-  imperial: l("Imperial (lb, ft)", "Impérial (lb, ft)"),
-  weight: l("Weight", "Poids"),
-  height: l("Height", "Taille"),
-  feet: l("Height (feet)", "Taille (pieds)"),
-  inches: l("and inches", "et pouces"),
-  age: l("Age", "Âge"),
-  sex: l("Sex (for the BMR formula)", "Sexe (pour la formule du métabolisme)"),
-  male: l("Male", "Homme"),
-  female: l("Female", "Femme"),
-  activity: l("Activity", "Activité"),
-  bmi: l("Body mass index (BMI)", "Indice de masse corporelle (IMC)"),
-  range: l("Weight range for a BMI of 18.5–24.9", "Poids pour un IMC de 18,5 à 24,9"),
-  bmr: l("Basal metabolic rate", "Métabolisme de base"),
-  bmrHint: l("energy used at rest", "énergie dépensée au repos"),
-  daily: l("Daily calories to keep your weight", "Calories par jour pour garder ton poids"),
-  perDay: l("kcal/day", "kcal/jour"),
-  bad: l("Type a weight and a height.", "Tape un poids et une taille."),
+  system: l("Units", "Unités", "Einheiten"),
+  metric: l("Metric (kg, cm)", "Métrique (kg, cm)", "Metrisch (kg, cm)"),
+  imperial: l("Imperial (lb, ft)", "Impérial (lb, ft)", "Angloamerikanisch (lb, ft)"),
+  weight: l("Weight", "Poids", "Gewicht"),
+  height: l("Height", "Taille", "Größe"),
+  feet: l("Height (feet)", "Taille (pieds)", "Größe (Fuß)"),
+  inches: l("and inches", "et pouces", "und Zoll"),
+  age: l("Age", "Âge", "Alter"),
+  sex: l(
+    "Sex (for the BMR formula)",
+    "Sexe (pour la formule du métabolisme)",
+    "Geschlecht (für die Grundumsatz-Formel)",
+  ),
+  male: l("Male", "Homme", "Männlich"),
+  female: l("Female", "Femme", "Weiblich"),
+  activity: l("Activity", "Activité", "Aktivität"),
+  bmi: l("Body mass index (BMI)", "Indice de masse corporelle (IMC)", "Body-Mass-Index (BMI)"),
+  range: l(
+    "Weight range for a BMI of 18.5–24.9",
+    "Poids pour un IMC de 18,5 à 24,9",
+    "Gewicht für einen BMI von 18,5 bis 24,9",
+  ),
+  bmr: l("Basal metabolic rate", "Métabolisme de base", "Grundumsatz"),
+  bmrHint: l("energy used at rest", "énergie dépensée au repos", "Energiebedarf in Ruhe"),
+  daily: l(
+    "Daily calories to keep your weight",
+    "Calories par jour pour garder ton poids",
+    "Kalorien pro Tag, um dein Gewicht zu halten",
+  ),
+  perDay: l("kcal/day", "kcal/jour", "kcal/Tag"),
+  bad: l(
+    "Type a weight and a height.",
+    "Tape un poids et une taille.",
+    "Gib Gewicht und Größe ein.",
+  ),
   child: l(
     "Under 18, BMI is read on age- and sex-specific growth charts: these adult categories don't apply.",
     "Avant 18 ans, l'IMC se lit sur des courbes de croissance selon l'âge et le sexe : ces catégories adultes ne s'appliquent pas.",
+    "Unter 18 wird der BMI auf alters- und geschlechtsspezifischen Perzentilkurven abgelesen: Diese Kategorien für Erwachsene gelten nicht.",
   ),
   note: l(
     "BMI is a rough indicator for adults: it doesn't tell muscle from fat, nor where fat is, and doesn't account for age, sex or build. It is not a diagnosis; a health professional can give a fuller picture.",
     "L'IMC est un indicateur approximatif pour les adultes : il ne distingue pas muscle et graisse, ni leur répartition, et ne tient compte ni de l'âge, ni du sexe, ni de la morphologie. Ce n'est pas un diagnostic ; un professionnel de santé peut donner une vue plus complète.",
+    "Der BMI ist ein grober Richtwert für Erwachsene: Er unterscheidet nicht zwischen Muskeln und Fett, sagt nichts über die Fettverteilung und berücksichtigt weder Alter, Geschlecht noch Körperbau. Er ist keine Diagnose; Ärztinnen und Ärzte können ein vollständigeres Bild geben.",
   ),
   f1: l(
     "BMI = weight (kg) ÷ height (m)². Categories: WHO, adults.",
     "IMC = poids (kg) ÷ taille (m)². Catégories : OMS, adultes.",
+    "BMI = Gewicht (kg) ÷ Größe (m)². Kategorien: WHO, Erwachsene.",
   ),
   f2: l(
     "Basal metabolic rate (Mifflin–St Jeor): 10 × kg + 6.25 × cm − 5 × age, + 5 for men or − 161 for women. Daily needs = BMR × activity factor.",
     "Métabolisme de base (Mifflin–St Jeor) : 10 × kg + 6,25 × cm − 5 × âge, + 5 pour un homme ou − 161 pour une femme. Besoins quotidiens = métabolisme × facteur d'activité.",
+    "Grundumsatz (Mifflin-St-Jeor): 10 × kg + 6,25 × cm − 5 × Alter, + 5 bei Männern oder − 161 bei Frauen. Tagesbedarf = Grundumsatz × Aktivitätsfaktor.",
   ),
 };
 
 const CAT: Record<Category, L10n> = {
-  under: l("Underweight", "Insuffisance pondérale"),
-  normal: l("Normal range", "Corpulence normale"),
-  over: l("Overweight", "Surpoids"),
-  obese1: l("Obesity (class I)", "Obésité modérée (classe I)"),
-  obese2: l("Obesity (class II)", "Obésité sévère (classe II)"),
-  obese3: l("Obesity (class III)", "Obésité massive (classe III)"),
+  under: l("Underweight", "Insuffisance pondérale", "Untergewicht"),
+  normal: l("Normal range", "Corpulence normale", "Normalgewicht"),
+  over: l("Overweight", "Surpoids", "Übergewicht"),
+  obese1: l("Obesity (class I)", "Obésité modérée (classe I)", "Adipositas Grad I"),
+  obese2: l("Obesity (class II)", "Obésité sévère (classe II)", "Adipositas Grad II"),
+  obese3: l("Obesity (class III)", "Obésité massive (classe III)", "Adipositas Grad III"),
 };
 
 const ACT: Record<Activity, L10n> = {
-  sedentary: l("Sedentary (little or no exercise)", "Sédentaire (peu ou pas de sport)"),
-  light: l("Light (1–3 days a week)", "Légère (1 à 3 jours par semaine)"),
-  moderate: l("Moderate (3–5 days a week)", "Modérée (3 à 5 jours par semaine)"),
-  active: l("Active (6–7 days a week)", "Active (6 à 7 jours par semaine)"),
+  sedentary: l(
+    "Sedentary (little or no exercise)",
+    "Sédentaire (peu ou pas de sport)",
+    "Sitzend (wenig oder kein Sport)",
+  ),
+  light: l(
+    "Light (1–3 days a week)",
+    "Légère (1 à 3 jours par semaine)",
+    "Leicht (1–3 Tage pro Woche)",
+  ),
+  moderate: l(
+    "Moderate (3–5 days a week)",
+    "Modérée (3 à 5 jours par semaine)",
+    "Mäßig (3–5 Tage pro Woche)",
+  ),
+  active: l(
+    "Active (6–7 days a week)",
+    "Active (6 à 7 jours par semaine)",
+    "Aktiv (6–7 Tage pro Woche)",
+  ),
   very: l(
     "Very active (physical job, twice a day)",
     "Très active (métier physique, 2 fois par jour)",
+    "Sehr aktiv (körperliche Arbeit, zweimal täglich)",
   ),
 };
 

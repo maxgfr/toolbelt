@@ -8,6 +8,7 @@ import {
   fromAscii85,
   fromBase32,
   fromBase58,
+  SEPARATORS,
   toAscii85,
   toBase32,
   toBase58,
@@ -95,5 +96,18 @@ describe("base encodings", () => {
     const samples = [text("héllo 👋 世界"), new Uint8Array([0, 0, 255, 1, 0, 128, 0, 0, 0, 0])];
     for (const bytes of samples)
       for (const enc of ENCODINGS) expect(decode(encode(bytes, enc), enc)).toEqual(bytes);
+  });
+});
+
+describe("SEPARATORS", () => {
+  it("joins per-byte encodings with the named separator", () => {
+    const bytes = new Uint8Array([1, 255]);
+    expect(encode(bytes, "hex", { ...DEFAULT_OPTIONS, separator: SEPARATORS.none })).toBe("01ff");
+    expect(encode(bytes, "hex", { ...DEFAULT_OPTIONS, separator: SEPARATORS.comma })).toBe(
+      "01, ff",
+    );
+    expect(encode(bytes, "decimal", { ...DEFAULT_OPTIONS, separator: SEPARATORS.newline })).toBe(
+      "1\n255",
+    );
   });
 });

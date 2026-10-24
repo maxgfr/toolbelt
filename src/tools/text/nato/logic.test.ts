@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
-import { alphabetTable, spell, spellText } from "./logic";
+import { type Alphabet, alphabetTable, spell, spellText } from "./logic";
 
-const words = (text: string, a: "nato" | "fr", markCase = false) =>
+const words = (text: string, a: Alphabet, markCase = false) =>
   spell(text, a, markCase).map((s) => s.word);
 
 describe("nato", () => {
@@ -42,5 +42,51 @@ describe("nato", () => {
   it("lists 36 entries", () => {
     expect(alphabetTable("fr")).toHaveLength(36);
     expect(alphabetTable("nato")[25]).toEqual({ char: "Z", word: "Zulu" });
+  });
+});
+
+describe("nato, German alphabets", () => {
+  it("spells with DIN 5009:2022 city names", () => {
+    expect(words("Abc 19", "de")).toEqual([
+      "Aachen",
+      "Berlin",
+      "Chemnitz",
+      "Leerzeichen",
+      "Eins",
+      "Neun",
+    ]);
+    expect(words("2", "de")).toEqual(["Zwo"]);
+  });
+
+  it("spells umlauts and ß with their own words", () => {
+    expect(words("Müßig", "de")).toEqual([
+      "München",
+      "Umlaut Unna",
+      "Eszett",
+      "Ingelheim",
+      "Goslar",
+    ]);
+    expect(words("Öl", "deNames")).toEqual(["Ökonom", "Ludwig"]);
+    expect(words("Ärger", "deNames")[0]).toBe("Ärger");
+    // A decomposed ü (u + combining diaeresis) is the same letter.
+    expect(words("u\u0308", "de")).toEqual(["Umlaut Unna"]);
+  });
+
+  it("spells with the classic name table", () => {
+    expect(words("Xaver", "deNames")).toEqual(["Xanthippe", "Anton", "Viktor", "Emil", "Richard"]);
+  });
+
+  it("names other accents, symbols and case in German", () => {
+    expect(words("é", "de")).toEqual(["Essen (Akut)"]);
+    expect(words("a.b@c", "deNames")).toEqual(["Anton", "Punkt", "Berta", "At-Zeichen", "Cäsar"]);
+    expect(words("aÜ", "de", true)).toEqual(["klein Aachen", "groß Umlaut Unna"]);
+    expect(words("ß", "de", true)).toEqual(["Eszett"]);
+  });
+
+  it("lists the umlauts in the table", () => {
+    const table = alphabetTable("de");
+    expect(table).toHaveLength(40);
+    expect(table.find((e) => e.char === "Ü")).toEqual({ char: "Ü", word: "Umlaut Unna" });
+    expect(alphabetTable("deNames").find((e) => e.char === "ß")?.word).toBe("Eszett");
   });
 });

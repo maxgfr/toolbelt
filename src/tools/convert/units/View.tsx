@@ -14,17 +14,25 @@ import {
 } from "./logic";
 
 const T = {
-  category: l("Category", "Catégorie"),
-  value: l("Value", "Valeur"),
-  from: l("From", "De"),
-  to: l("To", "Vers"),
-  swap: l("Swap units", "Inverser les unités"),
-  invalid: l("Type a number, e.g. 12.5", "Tape un nombre, par ex. 12,5"),
-  absolute: l("Below absolute zero.", "Sous le zéro absolu."),
-  unit: l("Unit", "Unité"),
-  result: l("Value", "Valeur"),
-  pick: l("Click a unit to convert to it.", "Clique une unité pour convertir vers elle."),
-  imperial: l("imperial / US", "impérial / US"),
+  category: l("Category", "Catégorie", "Kategorie"),
+  value: l("Value", "Valeur", "Wert"),
+  from: l("From", "De", "Von"),
+  to: l("To", "Vers", "In"),
+  swap: l("Swap units", "Inverser les unités", "Einheiten tauschen"),
+  invalid: l(
+    "Type a number, e.g. 12.5",
+    "Tape un nombre, par ex. 12,5",
+    "Gib eine Zahl ein, z. B. 12,5",
+  ),
+  absolute: l("Below absolute zero.", "Sous le zéro absolu.", "Unter dem absoluten Nullpunkt."),
+  unit: l("Unit", "Unité", "Einheit"),
+  result: l("Value", "Valeur", "Wert"),
+  pick: l(
+    "Click a unit to convert to it.",
+    "Clique une unité pour convertir vers elle.",
+    "Klicke auf eine Einheit, um in sie umzurechnen.",
+  ),
+  imperial: l("imperial / US", "impérial / US", "imperial / US"),
 };
 
 /** The pair shown when a category is first opened. */

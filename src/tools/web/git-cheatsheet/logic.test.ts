@@ -5,10 +5,11 @@ import { groupTips, queryTerms, searchTips } from "./logic";
 const first = (q: string) => searchTips(q)[0]?.cmd ?? "";
 
 describe("git-cheatsheet — data", () => {
-  it("has many tips, every one complete in both languages", () => {
+  it("has many tips, every one complete in all three languages", () => {
     expect(TIPS.length).toBeGreaterThan(70);
     for (const t of TIPS) {
-      expect(t.en && t.fr && t.cmd && t.noteEn && t.noteFr).toBeTruthy();
+      expect(t.en && t.fr && t.de && t.cmd && t.noteEn && t.noteFr && t.noteDe).toBeTruthy();
+      expect(t.de).not.toBe(t.en);
       expect(t.cmd.trim()).toBe(t.cmd);
     }
   });
@@ -32,6 +33,12 @@ describe("git-cheatsheet — search", () => {
     ]);
     expect(queryTerms("")).toEqual([]);
     expect(queryTerms("je veux annuler")[0]).toContain("undo");
+    expect(queryTerms("ich will den letzten Commit rückgängig machen").map((t) => t[0])).toEqual([
+      "letzten",
+      "commit",
+      "ruckgangig",
+    ]);
+    expect(queryTerms("Branch löschen")[1]).toContain("delete");
   });
 
   it("answers plain-language questions in English and French", () => {
@@ -43,6 +50,20 @@ describe("git-cheatsheet — search", () => {
     expect(first("delete remote branch")).toContain("push origin --delete");
     expect(first("recover lost commit")).toContain("git reflog");
     expect(first("stash untracked files")).toContain("stash push");
+  });
+
+  it("answers plain-language questions in German", () => {
+    expect(first("letzten Commit rückgängig machen")).toContain("reset --soft HEAD~1");
+    expect(first("Ich will meinen letzten Commit rückgängig machen")).toContain(
+      "reset --soft HEAD~1",
+    );
+    expect(first("Branch umbenennen")).toContain("git branch -m");
+    expect(first("Branch löschen")).toContain("git branch -d <branch>");
+    expect(first("Remote-Branch löschen")).toContain("push origin --delete");
+    expect(first("Commit finden, der einen Bug eingeführt hat")).toContain("git bisect start");
+    expect(first("verlorenen Commit wiederherstellen")).toContain("git reflog");
+    expect(first("nicht versionierte Dateien stashen")).toContain("stash push");
+    expect(first("Änderungen an einer Datei verwerfen")).toContain("git restore <file>");
   });
 
   it("matches commands and flags too", () => {

@@ -44,6 +44,7 @@ export function decode(input: string): Decoded {
     fail(
       "This data URI is not Base64 (no ;base64, marker).",
       "Cette data URI n'est pas en Base64 (pas de marqueur ;base64,).",
+      "Diese Data-URI ist kein Base64 (keine Markierung ;base64,).",
     );
   }
   const bytes = fromBase64(body);

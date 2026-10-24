@@ -1,7 +1,7 @@
 import { Select } from "../../../app/kit";
 import { useToolState } from "../../../app/state";
 import { Button, ErrorNote, IconButton, Panel, Segmented, Stats } from "../../../app/ui";
-import { l, lang, tr } from "../../../i18n";
+import { l, pick, tr } from "../../../i18n";
 import { parseNumber } from "../_shared";
 import {
   CurrencySelect,
@@ -12,6 +12,7 @@ import {
   pct,
   plain,
   Result,
+  typed,
   useCurrency,
 } from "../_ui";
 import {
@@ -26,53 +27,63 @@ import {
 } from "./logic";
 
 const T = {
-  country: l("Country", "Pays"),
-  rate: l("VAT rate", "Taux de TVA"),
-  custom: l("Custom rate", "Taux personnalisé"),
-  quick: l("Convert a price", "Convertir un prix"),
-  amount: l("Amount", "Montant"),
-  is: l("This amount is", "Ce montant est"),
-  net: l("Before tax (excl. VAT)", "Hors taxes (HT)"),
-  gross: l("With tax (incl. VAT)", "Toutes taxes comprises (TTC)"),
-  vat: l("The VAT itself", "La TVA elle-même"),
-  netShort: l("Excl. VAT", "HT"),
-  grossShort: l("Incl. VAT", "TTC"),
-  vatShort: l("VAT", "TVA"),
-  badAmount: l("Type an amount, e.g. 49.90", "Tape un montant, par ex. 49,90"),
+  country: l("Country", "Pays", "Land"),
+  rate: l("VAT rate", "Taux de TVA", "Steuersatz"),
+  custom: l("Custom rate", "Taux personnalisé", "Eigener Satz"),
+  quick: l("Convert a price", "Convertir un prix", "Preis umrechnen"),
+  amount: l("Amount", "Montant", "Betrag"),
+  is: l("This amount is", "Ce montant est", "Dieser Betrag ist"),
+  net: l("Before tax (excl. VAT)", "Hors taxes (HT)", "Netto (ohne MwSt.)"),
+  gross: l("With tax (incl. VAT)", "Toutes taxes comprises (TTC)", "Brutto (inkl. MwSt.)"),
+  vat: l("The VAT itself", "La TVA elle-même", "Die Mehrwertsteuer selbst"),
+  netShort: l("Excl. VAT", "HT", "Netto"),
+  grossShort: l("Incl. VAT", "TTC", "Brutto"),
+  vatShort: l("VAT", "TVA", "MwSt."),
+  badAmount: l(
+    "Type an amount, e.g. 49.90",
+    "Tape un montant, par ex. 49,90",
+    "Gib einen Betrag ein, z. B. 49,90",
+  ),
   badRate: l(
     "The rate must be a number between 0 and 100.",
     "Le taux doit être un nombre entre 0 et 100.",
+    "Der Steuersatz muss eine Zahl zwischen 0 und 100 sein.",
   ),
-  findRate: l("Find the rate", "Retrouver le taux"),
+  findRate: l("Find the rate", "Retrouver le taux", "Steuersatz ermitteln"),
   findHint: l(
     "Know both prices but not the rate? Type them here.",
     "Tu connais les deux prix mais pas le taux ? Tape-les ici.",
+    "Du kennst beide Preise, aber nicht den Steuersatz? Gib sie hier ein.",
   ),
-  foundRate: l("VAT rate", "Taux de TVA"),
-  lines: l("Several items (invoice)", "Plusieurs articles (facture)"),
-  pricesAre: l("Unit prices are", "Les prix unitaires sont"),
-  item: l("Item", "Article"),
-  qty: l("Qty", "Qté"),
-  unitPrice: l("Unit price", "Prix unitaire"),
-  add: l("Add a line", "Ajouter une ligne"),
-  remove: l("Remove line", "Supprimer la ligne"),
-  total: l("Total", "Total"),
-  byRate: l("VAT by rate", "TVA par taux"),
+  foundRate: l("VAT rate", "Taux de TVA", "Steuersatz"),
+  lines: l("Several items (invoice)", "Plusieurs articles (facture)", "Mehrere Posten (Rechnung)"),
+  pricesAre: l("Unit prices are", "Les prix unitaires sont", "Einzelpreise sind"),
+  item: l("Item", "Article", "Posten"),
+  qty: l("Qty", "Qté", "Menge"),
+  unitPrice: l("Unit price", "Prix unitaire", "Einzelpreis"),
+  add: l("Add a line", "Ajouter une ligne", "Zeile hinzufügen"),
+  remove: l("Remove line", "Supprimer la ligne", "Zeile entfernen"),
+  total: l("Total", "Total", "Summe"),
+  byRate: l("VAT by rate", "TVA par taux", "MwSt. nach Satz"),
   ratesNote: l(
     "Preset rates are those in force in 2025–2026 and may change: check the official source before invoicing.",
     "Les taux proposés sont ceux en vigueur en 2025–2026 et peuvent changer : vérifie la source officielle avant de facturer.",
+    "Die vorgegebenen Sätze gelten 2025–2026 und können sich ändern: Prüf vor dem Rechnungstellen die offizielle Quelle.",
   ),
   f1: l(
     "With tax = before tax × (1 + rate). At 20 %: 100 × 1.20 = 120.",
     "TTC = HT × (1 + taux). À 20 % : 100 × 1,20 = 120.",
+    "Brutto = netto × (1 + Steuersatz). Bei 19 %: 100 × 1,19 = 119.",
   ),
   f2: l(
     "Before tax = with tax ÷ (1 + rate). 120 ÷ 1.20 = 100 — not 120 − 20 % (= 96).",
     "HT = TTC ÷ (1 + taux). 120 ÷ 1,20 = 100 — et non 120 − 20 % (= 96).",
+    "Netto = brutto ÷ (1 + Steuersatz). 119 ÷ 1,19 = 100 – nicht 119 − 19 % (= 96,39).",
   ),
   f3: l(
     "Invoice lines are rounded to the cent one by one, then added up.",
     "Les lignes de facture sont arrondies au centime une par une, puis additionnées.",
+    "Rechnungszeilen werden einzeln auf den Cent gerundet und dann addiert.",
   ),
 };
 
@@ -93,14 +104,14 @@ export default function Vat() {
   const amount = useToolState("amount", "100");
   const kind = useToolState<Kind>("kind", "net");
   const rNet = useToolState("rNet", "100");
-  const rGross = useToolState("rGross", "105.5");
+  const rGross = useToolState("rGross", typed("105.5"));
   const withTax = useToolState("withTax", false);
   const rows = useToolState<Row[]>("rows", [
     { label: "", qty: "1", price: "100", rate: "" },
-    { label: "", qty: "2", price: "12.5", rate: "" },
+    { label: "", qty: "2", price: typed("12.5"), rate: "" },
   ]);
 
-  const country = findCountry(countrySig.value || (lang.value === "fr" ? "fr" : "uk"));
+  const country = findCountry(countrySig.value || pick({ en: "uk", fr: "fr", de: "de" }));
   const std = country.rates[0]?.rate ?? 20;
   const rateText = rate.value === "auto" ? String(std) : rate.value;
   const r = num(rateText);

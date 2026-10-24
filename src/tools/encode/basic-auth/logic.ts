@@ -56,6 +56,7 @@ function splitPair(pair: string): Credentials {
     fail(
       'The decoded value has no ":" between user and password.',
       "La valeur décodée n'a pas de « : » entre utilisateur et mot de passe.",
+      "Der dekodierte Wert hat kein „:“ zwischen Benutzername und Passwort.",
     );
   return { user: pair.slice(0, i), password: pair.slice(i + 1) };
 }
@@ -85,6 +86,7 @@ export function decode(input: string): Decoded {
     fail(
       "Paste a header, a token or a curl command.",
       "Colle un en-tête, un jeton ou une commande curl.",
+      "Füge einen Header, ein Token oder einen curl-Befehl ein.",
     );
 
   const basic = /(?:^|[\s"'])(?:authorization\s*:\s*)?basic\s+([A-Za-z0-9+/=_-]+)/i.exec(text);
@@ -118,6 +120,7 @@ export function decode(input: string): Decoded {
   return fail(
     "No Basic credentials found: paste an Authorization header, a Base64 token, a curl -u command or a URL with user:password@.",
     "Aucun identifiant Basic trouvé : colle un en-tête Authorization, un jeton Base64, une commande curl -u ou une URL avec utilisateur:motdepasse@.",
+    "Keine Basic-Zugangsdaten gefunden: Füge einen Authorization-Header, ein Base64-Token, einen curl -u-Befehl oder eine URL mit benutzer:passwort@ ein.",
   );
 }
 

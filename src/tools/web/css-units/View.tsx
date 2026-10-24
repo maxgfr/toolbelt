@@ -7,25 +7,35 @@ import { NumberField } from "../_ui";
 import { COMMON_PX, convert, convertAll, parseLength, UNITS, type Unit } from "./logic";
 
 const T = {
-  value: l("Length", "Longueur"),
-  placeholder: l("24px, 1.5rem, 12pt, 50vw…", "24px, 1.5rem, 12pt, 50vw…"),
-  unit: l("Unit of a bare number", "Unité d'un nombre seul"),
+  value: l("Length", "Longueur", "Länge"),
+  placeholder: l(
+    "24px, 1.5rem, 12pt, 50vw…",
+    "24px, 1.5rem, 12pt, 50vw…",
+    "24px, 1.5rem, 12pt, 50vw…",
+  ),
+  unit: l("Unit of a bare number", "Unité d'un nombre seul", "Einheit einer reinen Zahl"),
   invalid: l(
     "Not a CSS length. Type a number, optionally followed by a unit: 24px, 1.5rem, 12pt.",
     "Ce n'est pas une longueur CSS. Tape un nombre, éventuellement suivi d'une unité : 24px, 1.5rem, 12pt.",
+    "Keine CSS-Länge. Gib eine Zahl ein, optional gefolgt von einer Einheit: 24px, 1.5rem, 12pt.",
   ),
-  context: l("Context", "Contexte"),
-  root: l("Root font size (1rem)", "Taille de police racine (1rem)"),
-  parent: l("Parent font size (1em, 100%)", "Taille de police parente (1em, 100 %)"),
-  vw: l("Viewport width", "Largeur de la fenêtre"),
-  vh: l("Viewport height", "Hauteur de la fenêtre"),
-  thisWindow: l("This window", "Cette fenêtre"),
-  results: l("In every unit", "Dans toutes les unités"),
+  context: l("Context", "Contexte", "Kontext"),
+  root: l("Root font size (1rem)", "Taille de police racine (1rem)", "Basis-Schriftgröße (1rem)"),
+  parent: l(
+    "Parent font size (1em, 100%)",
+    "Taille de police parente (1em, 100 %)",
+    "Schriftgröße des Elternelements (1em, 100 %)",
+  ),
+  vw: l("Viewport width", "Largeur de la fenêtre", "Viewport-Breite"),
+  vh: l("Viewport height", "Hauteur de la fenêtre", "Viewport-Höhe"),
+  thisWindow: l("This window", "Cette fenêtre", "Dieses Fenster"),
+  results: l("In every unit", "Dans toutes les unités", "In allen Einheiten"),
   absolute: l(
     "Absolute units use the CSS reference: 1in = 96px = 72pt.",
     "Les unités absolues suivent la référence CSS : 1in = 96px = 72pt.",
+    "Absolute Einheiten folgen der CSS-Referenz: 1in = 96px = 72pt.",
   ),
-  table: l("Common sizes", "Tailles courantes"),
+  table: l("Common sizes", "Tailles courantes", "Gängige Größen"),
 };
 
 const VIEWPORTS = [

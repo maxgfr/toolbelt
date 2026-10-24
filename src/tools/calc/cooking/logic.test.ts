@@ -5,6 +5,7 @@ import {
   fToC,
   gasMark,
   gasToF,
+  INGREDIENTS,
   parseQuantity,
   scaleRecipe,
   thermostat,
@@ -108,6 +109,25 @@ describe("recipe scaler", () => {
       (l) => l.text,
     );
     expect(out).toEqual(["0,75 kg de pommes", "1,5 œufs", "10 cl de crème"]);
+  });
+
+  it("scales a German recipe, with ranges written with bis", () => {
+    const out = scaleRecipe(
+      "250 g Mehl\n2 bis 3 EL Zucker\n1/2 TL Vanilleextrakt\n0,5 l Milch\nEine Prise Salz",
+      1.5,
+      true,
+    ).map((l) => l.text);
+    expect(out).toEqual([
+      "375 g Mehl",
+      "3 bis 4,5 EL Zucker",
+      "¾ TL Vanilleextrakt",
+      "0,75 l Milch",
+      "Eine Prise Salz",
+    ]);
+  });
+
+  it("names every ingredient in the three languages", () => {
+    for (const i of INGREDIENTS) expect(i.de).toBeTruthy();
   });
 
   it("keeps lines without a quantity and flags the scaled ones", () => {

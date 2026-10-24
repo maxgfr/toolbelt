@@ -8,6 +8,16 @@ describe("slugify", () => {
     expect(slugify("Straße Œuvre Søren Łódź", DEFAULTS)).toBe("strasse-oeuvre-soren-lodz");
   });
 
+  it("writes German umlauts as two letters on request", () => {
+    expect(slugify("Größe für Übermut", DEFAULTS)).toBe("grosse-fur-ubermut");
+    const de = { ...DEFAULTS, umlauts: true };
+    expect(slugify("Größe für Übermut", de)).toBe("groesse-fuer-uebermut");
+    expect(slugify("Ärger", { ...de, lowercase: false })).toBe("Aerger");
+    // A decomposed ü (u + combining diaeresis) too.
+    expect(slugify("Mu\u0308ller", de)).toBe("mueller");
+    expect(slugify("Crème brûlée", de)).toBe("creme-brulee");
+  });
+
   it("uses the chosen separator and case", () => {
     expect(slugify("My Blog Post", { ...DEFAULTS, separator: "_" })).toBe("my_blog_post");
     expect(slugify("My Blog Post", { ...DEFAULTS, lowercase: false })).toBe("My-Blog-Post");

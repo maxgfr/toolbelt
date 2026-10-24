@@ -95,7 +95,8 @@ export function titleText(timers: Timer[], now: number): string | null {
 
 /**
  * Reads a duration typed by a person: "5" (minutes), "1:30" (m:s), "1:02:03" (h:m:s),
- * "90s", "5m", "1h30", "1h 30m 15s", "2.5 min". Returns ms, or null if it does not parse.
+ * "90s", "5m", "1h30", "1h 30m 15s", "2.5 min", also with French or German units ("2 heures",
+ * "1 Std. 30 Min.", "90 Sek."). Returns ms, or null if it does not parse.
  */
 export function parseDuration(text: string): number | null {
   const s = text.trim().toLowerCase().replace(",", ".");
@@ -108,7 +109,7 @@ export function parseDuration(text: string): number | null {
     ms = parts.reduce((acc, p) => acc * 60 + p, 0) * 1000;
   } else {
     const re =
-      /(\d+(?:\.\d+)?)\s*(hours?|heures?|hrs?|h|minutes?|mins?|mn|m|secondes?|seconds?|secs?|s)?/g;
+      /(\d+(?:\.\d+)?)\s*(hours?|heures?|stunden?|std\.?|hrs?|h|minuten|minutes?|mins?\.?|mn|m|secondes?|seconds?|sekunden?|secs?|sek\.?|s)?/g;
     const rest = s.replace(re, "").replace(/\s+/g, "");
     if (rest) return null;
     ms = 0;
@@ -120,9 +121,10 @@ export function parseDuration(text: string): number | null {
       const n = Number(m[1]);
       let unit = m[2] ?? "";
       // "1h30" means 1 h 30 min; "5m30" means 5 min 30 s.
-      if (!unit) unit = lastUnit.startsWith("h") ? "m" : lastUnit.startsWith("m") ? "s" : "m";
+      if (!unit) unit = lastUnit === "h" ? "m" : lastUnit === "m" ? "s" : "m";
+      else unit = /^(h|st)/.test(unit) ? "h" : unit.startsWith("m") ? "m" : "s";
       lastUnit = unit;
-      ms += n * (unit.startsWith("h") ? 3600_000 : unit.startsWith("s") ? 1000 : 60_000);
+      ms += n * (unit === "h" ? 3600_000 : unit === "s" ? 1000 : 60_000);
     }
     if (!any) return null;
   }

@@ -41,12 +41,20 @@ describe("encode shared helpers", () => {
     expect(fromUtf8(fromBase64(" Zm9v\nYmFy "))).toBe("foobar");
   });
 
-  it("rejects invalid Base64 with a bilingual error", () => {
+  it("rejects invalid Base64 with a translated error", () => {
     expect(() => fromBase64("abc$")).toThrow(EncodeError);
     expect(() => fromBase64("abcde")).toThrow(EncodeError);
     const r = attempt(() => fromBase64("a=b"));
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.error.fr).toContain("Base64");
+    if (!r.ok) {
+      expect(r.error.fr).toContain("Base64");
+      expect(r.error.de).toContain("Base64");
+      expect(r.error.de).not.toBe(r.error.en);
+    }
+    const other = attempt(() => {
+      throw new Error("boom");
+    });
+    if (!other.ok) expect(other.error).toEqual({ en: "boom", fr: "boom", de: "boom" });
   });
 
   it("converts hex both ways, tolerant of separators", () => {
@@ -69,6 +77,7 @@ describe("encode shared helpers", () => {
     expect(formatSize(0)).toBe("0 B");
     expect(formatSize(1536)).toBe("1.5 KB");
     expect(formatSize(5 * 1024 * 1024, "fr-FR")).toBe("5 MB");
+    expect(formatSize(1536, "de-DE")).toBe("1,5 KB");
   });
 
   it("draws random values in range", () => {

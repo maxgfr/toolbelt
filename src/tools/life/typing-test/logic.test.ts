@@ -1,15 +1,36 @@
 import { describe, expect, test } from "bun:test";
 import { seededInt } from "../_shared";
 import { bestKey, compareWord, keystroke, makeWords, score } from "./logic";
-import { EN_WORDS, FR_WORDS } from "./words";
+import { DE_WORDS, EN_WORDS, FR_WORDS } from "./words";
 
 describe("word lists", () => {
   test("about 200 words each, no blanks or duplicates", () => {
-    for (const list of [EN_WORDS, FR_WORDS]) {
+    for (const list of [EN_WORDS, FR_WORDS, DE_WORDS]) {
       expect(list.length).toBeGreaterThanOrEqual(180);
       expect(list.every((w) => w.length > 0 && !/\s/.test(w))).toBe(true);
       expect(new Set(list).size).toBe(list.length);
     }
+  });
+  test("German words: umlauts and ß, nouns capitalized, nothing else", () => {
+    expect(DE_WORDS.some((w) => w.includes("ß"))).toBe(true);
+    for (const c of "äöü") expect(DE_WORDS.some((w) => w.includes(c))).toBe(true);
+    expect(DE_WORDS).toContain("Straße");
+    expect(DE_WORDS).toContain("und");
+    // Only letters; a capital only at the start (German nouns).
+    expect(DE_WORDS.every((w) => /^[A-ZÄÖÜa-zäöüß][a-zäöüß]*$/.test(w))).toBe(true);
+    // No word twice with different case ("Essen" / "essen").
+    const folded = DE_WORDS.map((w) => w.toLowerCase());
+    expect(new Set(folded).size).toBe(folded.length);
+  });
+  test("compareWord tells ß and umlauts apart from their spellings", () => {
+    expect(compareWord("Fuß", "Fuß", true).every((c) => c.state === "correct")).toBe(true);
+    expect(compareWord("Fuß", "Fuss", true).map((c) => c.state)).toEqual([
+      "correct",
+      "correct",
+      "wrong",
+      "extra",
+    ]);
+    expect(compareWord("Tür", "tür", true)[0]?.state).toBe("wrong");
   });
   test("makeWords draws from the list without immediate repeats", () => {
     const w = makeWords(seededInt(1), ["a", "b"], 50);
@@ -81,4 +102,5 @@ test("keystroke and best key", () => {
   expect(keystroke("cat", "cat", "catt")).toBe(false);
   expect(keystroke("cat", "ca", "c")).toBeNull();
   expect(bestKey("time", 30, "fr")).toBe("time-30-fr");
+  expect(bestKey("words", 25, "de")).toBe("words-25-de");
 });

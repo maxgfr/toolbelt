@@ -9,39 +9,64 @@ import { type EnvIssue, parseEnv, toEnv } from "./logic";
 type Mode = "env2json" | "json2env";
 
 const T = {
-  env2json: l(".env → JSON", ".env → JSON"),
-  json2env: l("JSON → .env", "JSON → .env"),
-  env: l(".env", ".env"),
-  json: l("JSON", "JSON"),
+  env2json: l(".env → JSON", ".env → JSON", ".env → JSON"),
+  json2env: l("JSON → .env", "JSON → .env", "JSON → .env"),
+  env: l(".env", ".env", ".env"),
+  json: l("JSON", "JSON", "JSON"),
   phEnv: l(
     'Paste a .env file…\n# comment\nexport API_URL=https://example.com\nGREETING="Hello\\nWorld"',
     'Colle un fichier .env…\n# commentaire\nexport API_URL=https://example.com\nGREETING="Bonjour\\nle monde"',
+    'Füge eine .env-Datei ein…\n# Kommentar\nexport API_URL=https://example.com\nGREETING="Hallo\\nWelt"',
   ),
   phJson: l(
     'Paste a JSON object, e.g. {"PORT": 8080}',
     'Colle un objet JSON, par ex. {"PORT": 8080}',
+    'Füge ein JSON-Objekt ein, z. B. {"PORT": 8080}',
   ),
-  exportPrefix: l("Prefix with export", "Préfixer par export"),
-  sort: l("Sort keys", "Trier les clés"),
-  swap: l("Use the result as input", "Reprendre le résultat en entrée"),
+  exportPrefix: l("Prefix with export", "Préfixer par export", "export voranstellen"),
+  sort: l("Sort keys", "Trier les clés", "Schlüssel sortieren"),
+  swap: l(
+    "Use the result as input",
+    "Reprendre le résultat en entrée",
+    "Ergebnis als Eingabe verwenden",
+  ),
   private: l(
     "Secrets stay private: this input is neither saved nor put in share links.",
     "Les secrets restent privés : cette saisie n'est ni enregistrée ni mise dans les liens de partage.",
+    "Geheimnisse bleiben privat: Diese Eingabe wird weder gespeichert noch in Teilen-Links übernommen.",
   ),
-  "no-equals": l("Line {line}: no “=” sign.", "Ligne {line} : pas de signe « = »."),
-  "bad-key": l("Line {line}: invalid name “{key}”.", "Ligne {line} : nom « {key} » invalide."),
+  "no-equals": l(
+    "Line {line}: no “=” sign.",
+    "Ligne {line} : pas de signe « = ».",
+    "Zeile {line}: kein „=“-Zeichen.",
+  ),
+  "bad-key": l(
+    "Line {line}: invalid name “{key}”.",
+    "Ligne {line} : nom « {key} » invalide.",
+    "Zeile {line}: ungültiger Name „{key}“.",
+  ),
   unterminated: l(
     "Line {line}: the quote of {key} is never closed.",
     "Ligne {line} : le guillemet de {key} n'est jamais fermé.",
+    "Zeile {line}: Das Anführungszeichen von {key} wird nie geschlossen.",
   ),
   duplicate: l(
     "{key} is defined {n} times (lines {lines}); the last one wins.",
     "{key} est défini {n} fois (lignes {lines}) ; la dernière valeur l'emporte.",
+    "{key} ist {n}-mal definiert (Zeilen {lines}); der letzte Wert gilt.",
   ),
-  vars: l("{n} variables", "{n} variables"),
-  notObject: l("Expected a JSON object.", "Attendu : un objet JSON."),
-  badKeys: l("Not valid variable names: {keys}.", "Noms de variables non valides : {keys}."),
-  nested: l("Written as JSON text: {keys}.", "Écrits en texte JSON : {keys}."),
+  vars: l("{n} variables", "{n} variables", "{n} Variablen"),
+  notObject: l("Expected a JSON object.", "Attendu : un objet JSON.", "Erwartet: ein JSON-Objekt."),
+  badKeys: l(
+    "Not valid variable names: {keys}.",
+    "Noms de variables non valides : {keys}.",
+    "Ungültige Variablennamen: {keys}.",
+  ),
+  nested: l(
+    "Written as JSON text: {keys}.",
+    "Écrits en texte JSON : {keys}.",
+    "Als JSON-Text geschrieben: {keys}.",
+  ),
 };
 
 function issueText(i: EnvIssue): string {

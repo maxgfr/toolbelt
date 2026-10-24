@@ -3,9 +3,11 @@ import { seededInt } from "../_shared";
 import {
   centsBetween,
   detectPitch,
+  GUITAR,
   inTune,
   median,
   midiToFreq,
+  NOTES_DE,
   nearestString,
   noteFromFreq,
   noteName,
@@ -76,6 +78,16 @@ describe("notes", () => {
     expect(noteName(noteFromFreq(261.63) as never)).toBe("C4");
     expect(noteName(noteFromFreq(261.63) as never, "fr")).toBe("do4");
     expect(noteName(noteFromFreq(82.41) as never)).toBe("E2");
+  });
+  test("German names: H for B, B for B♭ / A♯", () => {
+    expect(noteName(noteFromFreq(246.94) as never, "de")).toBe("H3");
+    expect(noteName(noteFromFreq(233.08) as never, "de")).toBe("B3");
+    expect(noteName(noteFromFreq(233.08) as never)).toBe("A♯3");
+    expect(noteName(noteFromFreq(440) as never, "de")).toBe("A4");
+    expect(noteName(noteFromFreq(277.18) as never, "de")).toBe("C♯4");
+    // The guitar's B string is H in German.
+    expect(noteName({ pc: (GUITAR[4] as number) % 12, octave: 3 }, "de")).toBe("H3");
+    expect(NOTES_DE).toHaveLength(12);
   });
   test("cents off", () => {
     const n = noteFromFreq(445);

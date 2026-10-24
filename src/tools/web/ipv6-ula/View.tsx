@@ -7,34 +7,46 @@ import { fmt, type L10n, l, tr } from "../../../i18n";
 import { exampleHost, parseUla, randomGlobalId, subnets, ulaInfo } from "./logic";
 
 const T = {
-  prefixIn: l("ULA prefix or Global ID", "Préfixe ULA ou Global ID"),
+  prefixIn: l("ULA prefix or Global ID", "Préfixe ULA ou Global ID", "ULA-Präfix oder Global ID"),
   prefixHint: l(
     "Generated at random, or paste yours (fd12:3456:789a::/48, 12:3456:789a) to list its subnets",
     "Généré au hasard, ou colle le tien (fd12:3456:789a::/48, 12:3456:789a) pour lister ses sous-réseaux",
+    "Zufällig erzeugt, oder füge deins ein (fd12:3456:789a::/48, 12:3456:789a), um seine Subnetze aufzulisten",
   ),
-  again: l("New random prefix", "Nouveau préfixe aléatoire"),
-  prefix: l("Site prefix (/48)", "Préfixe du site (/48)"),
-  globalId: l("Global ID (40 bits)", "Global ID (40 bits)"),
-  first: l("First address", "Première adresse"),
-  last: l("Last address", "Dernière adresse"),
-  subnetCount: l("/64 subnets", "Sous-réseaux /64"),
-  hostsPer: l("Addresses per /64", "Adresses par /64"),
-  example: l("Example host in the first subnet", "Exemple d'hôte dans le premier sous-réseau"),
-  subnets: l("/64 subnets", "Sous-réseaux /64"),
-  start: l("Start at subnet ID", "Commencer au sous-réseau"),
-  count: l("How many", "Combien"),
-  startHint: l("0 to 65535 (shown in hex in the prefix)", "0 à 65535 (en hexa dans le préfixe)"),
+  again: l("New random prefix", "Nouveau préfixe aléatoire", "Neues zufälliges Präfix"),
+  prefix: l("Site prefix (/48)", "Préfixe du site (/48)", "Standortpräfix (/48)"),
+  globalId: l("Global ID (40 bits)", "Global ID (40 bits)", "Global ID (40 Bit)"),
+  first: l("First address", "Première adresse", "Erste Adresse"),
+  last: l("Last address", "Dernière adresse", "Letzte Adresse"),
+  subnetCount: l("/64 subnets", "Sous-réseaux /64", "/64-Subnetze"),
+  hostsPer: l("Addresses per /64", "Adresses par /64", "Adressen pro /64"),
+  example: l(
+    "Example host in the first subnet",
+    "Exemple d'hôte dans le premier sous-réseau",
+    "Beispiel-Host im ersten Subnetz",
+  ),
+  subnets: l("/64 subnets", "Sous-réseaux /64", "/64-Subnetze"),
+  start: l("Start at subnet ID", "Commencer au sous-réseau", "Ab Subnetz-ID"),
+  count: l("How many", "Combien", "Anzahl"),
+  startHint: l(
+    "0 to 65535 (shown in hex in the prefix)",
+    "0 à 65535 (en hexa dans le préfixe)",
+    "0 bis 65535 (im Präfix hexadezimal)",
+  ),
   fc: l(
     "fc00::/8 (L bit = 0) is not defined by RFC 4193: use fd00::/8. The fd version is shown.",
     "fc00::/8 (bit L = 0) n'est pas défini par la RFC 4193 : utilise fd00::/8. La version fd est affichée.",
+    "fc00::/8 (L-Bit = 0) ist in RFC 4193 nicht definiert: Nimm fd00::/8. Angezeigt wird die fd-Variante.",
   ),
   about: l(
     "A ULA prefix is fd00::/8 followed by a random 40-bit Global ID, so two sites that merge are very unlikely to collide. ULAs are routable inside your networks but not on the Internet.",
     "Un préfixe ULA est fd00::/8 suivi d'un Global ID aléatoire de 40 bits : deux sites qui fusionnent ont très peu de risque de collision. Les ULA sont routables dans tes réseaux mais pas sur Internet.",
+    "Ein ULA-Präfix ist fd00::/8, gefolgt von einer zufälligen 40-Bit-Global-ID: Wenn zwei Standorte zusammengelegt werden, ist eine Kollision sehr unwahrscheinlich. ULAs sind in deinen Netzwerken routbar, aber nicht im Internet.",
   ),
   random: l(
     "The Global ID comes from your browser's cryptographic random generator.",
     "Le Global ID vient du générateur aléatoire cryptographique de ton navigateur.",
+    "Die Global ID stammt aus dem kryptografischen Zufallsgenerator deines Browsers.",
   ),
 };
 
@@ -42,10 +54,12 @@ const ERR: Record<"syntax" | "not-ula", L10n> = {
   syntax: l(
     "Not a Global ID (10 hex digits) or an IPv6 address.",
     "Ce n'est ni un Global ID (10 chiffres hexa) ni une adresse IPv6.",
+    "Weder eine Global ID (10 Hex-Ziffern) noch eine IPv6-Adresse.",
   ),
   "not-ula": l(
     "This address is not a unique local address (fc00::/7).",
     "Cette adresse n'est pas une adresse locale unique (fc00::/7).",
+    "Diese Adresse ist keine Unique Local Address (fc00::/7).",
   ),
 };
 

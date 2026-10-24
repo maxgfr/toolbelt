@@ -5,6 +5,7 @@
  * pattern, uniqueItems, allOf/anyOf/oneOf/not, if/then/else, a few formats, and $ref inside the
  * same document); unknown keywords are ignored, like the spec asks.
  */
+import { type L10n, l, tr } from "../../../i18n";
 import { infer, type Shape, stringFormat } from "../_infer";
 import { isPlainObject, type Path } from "../_shared";
 
@@ -331,4 +332,142 @@ export function validate(doc: unknown, schema: unknown, o: ValidateOptions = {})
 /** Whether a parsed value can be a schema (an object or a boolean). */
 export function isSchema(v: unknown): boolean {
   return typeof v === "boolean" || isPlainObject(v);
+}
+
+/* --- Messages ------------------------------------------------------------- */
+
+const ERRORS = {
+  type: l(
+    "Expected {expected}, got {actual}.",
+    "{expected} attendu, {actual} trouvé.",
+    "{expected} erwartet, {actual} erhalten.",
+  ),
+  enum: l(
+    "{actual} is not one of {expected}.",
+    "{actual} ne fait pas partie de {expected}.",
+    "{actual} ist keiner der Werte {expected}.",
+  ),
+  const: l(
+    "Must be {expected}, got {actual}.",
+    "Doit valoir {expected}, vaut {actual}.",
+    "Muss {expected} sein, ist {actual}.",
+  ),
+  required: l(
+    "Missing required key “{expected}”.",
+    "Clé requise « {expected} » manquante.",
+    "Erforderlicher Schlüssel „{expected}“ fehlt.",
+  ),
+  additional: l(
+    "Key “{expected}” is not allowed.",
+    "La clé « {expected} » n'est pas autorisée.",
+    "Schlüssel „{expected}“ ist nicht erlaubt.",
+  ),
+  minimum: l(
+    "{actual} is less than the minimum {expected}.",
+    "{actual} est inférieur au minimum {expected}.",
+    "{actual} ist kleiner als das Minimum {expected}.",
+  ),
+  maximum: l(
+    "{actual} is more than the maximum {expected}.",
+    "{actual} dépasse le maximum {expected}.",
+    "{actual} ist größer als das Maximum {expected}.",
+  ),
+  exclusiveMinimum: l(
+    "{actual} must be more than {expected}.",
+    "{actual} doit être supérieur à {expected}.",
+    "{actual} muss größer als {expected} sein.",
+  ),
+  exclusiveMaximum: l(
+    "{actual} must be less than {expected}.",
+    "{actual} doit être inférieur à {expected}.",
+    "{actual} muss kleiner als {expected} sein.",
+  ),
+  multipleOf: l(
+    "{actual} is not a multiple of {expected}.",
+    "{actual} n'est pas un multiple de {expected}.",
+    "{actual} ist kein Vielfaches von {expected}.",
+  ),
+  minLength: l(
+    "Too short: {actual} characters, at least {expected}.",
+    "Trop court : {actual} caractères, au moins {expected}.",
+    "Zu kurz: {actual} Zeichen, mindestens {expected}.",
+  ),
+  maxLength: l(
+    "Too long: {actual} characters, at most {expected}.",
+    "Trop long : {actual} caractères, au plus {expected}.",
+    "Zu lang: {actual} Zeichen, höchstens {expected}.",
+  ),
+  pattern: l(
+    "Does not match the pattern {expected}.",
+    "Ne correspond pas au motif {expected}.",
+    "Entspricht nicht dem Muster {expected}.",
+  ),
+  format: l("Not a valid {expected}.", "{expected} invalide.", "Ungültiges Format: {expected}."),
+  minItems: l(
+    "{actual} items, at least {expected}.",
+    "{actual} éléments, au moins {expected}.",
+    "{actual} Elemente, mindestens {expected}.",
+  ),
+  maxItems: l(
+    "{actual} items, at most {expected}.",
+    "{actual} éléments, au plus {expected}.",
+    "{actual} Elemente, höchstens {expected}.",
+  ),
+  uniqueItems: l(
+    "Items {actual} are equal.",
+    "Les éléments {actual} sont identiques.",
+    "Die Elemente {actual} sind gleich.",
+  ),
+  minProperties: l(
+    "{actual} keys, at least {expected}.",
+    "{actual} clés, au moins {expected}.",
+    "{actual} Schlüssel, mindestens {expected}.",
+  ),
+  maxProperties: l(
+    "{actual} keys, at most {expected}.",
+    "{actual} clés, au plus {expected}.",
+    "{actual} Schlüssel, höchstens {expected}.",
+  ),
+  anyOf: l(
+    "Matches none of the {expected} anyOf schemas.",
+    "Ne correspond à aucun des {expected} schémas anyOf.",
+    "Entspricht keinem der {expected} anyOf-Schemas.",
+  ),
+  oneOf: l(
+    "Must match exactly one of the {expected} oneOf schemas, matches {actual}.",
+    "Doit correspondre à exactement un des {expected} schémas oneOf, en respecte {actual}.",
+    "Muss genau einem der {expected} oneOf-Schemas entsprechen, entspricht {actual}.",
+  ),
+  not: l(
+    "Must not match the “not” schema.",
+    "Ne doit pas correspondre au schéma « not ».",
+    "Darf dem „not“-Schema nicht entsprechen.",
+  ),
+  false: l(
+    "Not allowed here (schema false).",
+    "Interdit ici (schéma false).",
+    "Hier nicht erlaubt (Schema false).",
+  ),
+  ref: l(
+    "Cannot resolve $ref {expected}.",
+    "Impossible de résoudre le $ref {expected}.",
+    "$ref {expected} kann nicht aufgelöst werden.",
+  ),
+  badPattern: l(
+    "The schema's pattern {expected} is not a valid regex.",
+    "Le motif {expected} du schéma n'est pas une regex valide.",
+    "Das Muster {expected} des Schemas ist keine gültige Regex.",
+  ),
+  depth: l(
+    "Too deeply nested (a $ref loop?).",
+    "Imbrication trop profonde (une boucle de $ref ?).",
+    "Zu tief verschachtelt (eine $ref-Schleife?).",
+  ),
+} satisfies Record<ErrorCode, L10n>;
+
+/** A validation error as a sentence, in the current language (without its path). */
+export function schemaErrorMessage(e: SchemaError): string {
+  return tr(ERRORS[e.code])
+    .replace("{expected}", e.expected ?? "")
+    .replace("{actual}", e.actual ?? "");
 }

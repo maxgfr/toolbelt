@@ -1,6 +1,6 @@
 import { useToolState } from "../../../app/state";
 import { Button, Field, IconButton, Toggle } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, locale, tr } from "../../../i18n";
 import { localDateKey, newId } from "../_shared";
 import { useNow } from "../_ui";
 import {
@@ -14,38 +14,52 @@ import {
 } from "./logic";
 
 const T = {
-  add: l("Add", "Ajouter"),
-  name: l("Event", "Événement"),
-  namePh: l("Holidays, birthday, deadline…", "Vacances, anniversaire, échéance…"),
-  date: l("Date", "Date"),
-  time: l("Time (optional)", "Heure (facultative)"),
-  quick: l("Quick add", "Ajout rapide"),
-  newYear: l("New Year", "Nouvel An"),
-  christmas: l("Christmas", "Noël"),
-  halloween: l("Halloween", "Halloween"),
-  summer: l("Summer", "Été"),
-  days: l("days", "jours"),
-  hours: l("hours", "heures"),
-  minutes: l("min", "min"),
-  seconds: l("s", "s"),
-  ago: l("ago", "écoulé"),
-  today: l("It's today!", "C'est aujourd'hui !"),
-  now: l("It's now!", "C'est maintenant !"),
-  workdays: l("Show working days left", "Afficher les jours ouvrés restants"),
+  add: l("Add", "Ajouter", "Hinzufügen"),
+  name: l("Event", "Événement", "Ereignis"),
+  namePh: l(
+    "Holidays, birthday, deadline…",
+    "Vacances, anniversaire, échéance…",
+    "Urlaub, Geburtstag, Abgabe…",
+  ),
+  date: l("Date", "Date", "Datum"),
+  time: l("Time (optional)", "Heure (facultative)", "Uhrzeit (optional)"),
+  quick: l("Quick add", "Ajout rapide", "Schnell hinzufügen"),
+  newYear: l("New Year", "Nouvel An", "Neujahr"),
+  christmas: l("Christmas", "Noël", "Weihnachten"),
+  halloween: l("Halloween", "Halloween", "Halloween"),
+  summer: l("Summer", "Été", "Sommer"),
+  days: l("days", "jours", "Tage"),
+  hours: l("hours", "heures", "Stunden"),
+  minutes: l("min", "min", "Min."),
+  seconds: l("s", "s", "Sek."),
+  ago: l("ago", "écoulé", "vorbei"),
+  today: l("It's today!", "C'est aujourd'hui !", "Es ist heute!"),
+  now: l("It's now!", "C'est maintenant !", "Es ist so weit!"),
+  workdays: l(
+    "Show working days left",
+    "Afficher les jours ouvrés restants",
+    "Verbleibende Arbeitstage anzeigen",
+  ),
   workHint: l(
     "Monday to Friday, from today (included) to the day (excluded).",
     "Du lundi au vendredi, d'aujourd'hui (inclus) jusqu'au jour J (exclu).",
+    "Montag bis Freitag, von heute (einschließlich) bis zum Tag X (ausschließlich).",
   ),
-  holidays: l("Days off to skip", "Jours fériés / congés à exclure"),
-  holidaysPh: l("2026-11-11, 2026-12-25", "2026-11-11, 2026-12-25"),
-  workLeft: l("{n} working days left", "{n} jours ouvrés restants"),
-  weeks: l("{w} weeks · {h} hours", "{w} semaines · {h} heures"),
-  remove: l("Remove", "Supprimer"),
+  holidays: l(
+    "Days off to skip",
+    "Jours fériés / congés à exclure",
+    "Freie Tage, die nicht zählen",
+  ),
+  holidaysPh: l("2026-11-11, 2026-12-25", "2026-11-11, 2026-12-25", "2026-12-24, 2026-12-25"),
+  workLeft: l("{n} working days left", "{n} jours ouvrés restants", "noch {n} Arbeitstage"),
+  weeks: l("{w} weeks · {h} hours", "{w} semaines · {h} heures", "{w} Wochen · {h} Stunden"),
+  remove: l("Remove", "Supprimer", "Entfernen"),
   none: l(
     "No countdown yet: add an event above.",
     "Aucun compte à rebours : ajoute un événement ci-dessus.",
+    "Noch kein Countdown: Füg oben ein Ereignis hinzu.",
   ),
-  invalid: l("Invalid date", "Date invalide"),
+  invalid: l("Invalid date", "Date invalide", "Ungültiges Datum"),
 };
 
 export default function CountdownTool() {
@@ -205,9 +219,8 @@ function Card({
   const nowDate = new Date(now);
   const parts = target ? breakdown(target.getTime(), now) : null;
   const isToday = target && dateOnly && localDateKey(target) === localDateKey(nowDate);
-  const locale = lang.value === "fr" ? "fr-FR" : "en-US";
   const label = target
-    ? new Intl.DateTimeFormat(locale, {
+    ? new Intl.DateTimeFormat(locale(), {
         weekday: "long",
         day: "numeric",
         month: "long",

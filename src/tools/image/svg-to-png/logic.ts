@@ -69,7 +69,8 @@ export interface SvgInfo {
 /** The size the SVG renders at by default. Throws when there is no <svg> element. */
 export function svgInfo(markup: string): SvgInfo {
   const tag = rootTag(markup);
-  if (!tag) fail("No <svg> element found.", "Aucun élément <svg> trouvé.");
+  if (!tag)
+    fail("No <svg> element found.", "Aucun élément <svg> trouvé.", "Kein <svg>-Element gefunden.");
   const a = attrs(tag);
   const vb = parseViewBox(a.get("viewBox"));
   const w = parseLength(a.get("width"));
@@ -97,7 +98,8 @@ function setAttr(tag: string, name: string, value: string): string {
  */
 export function withSize(markup: string, w: number, h: number): string {
   const tag = rootTag(markup);
-  if (!tag) fail("No <svg> element found.", "Aucun élément <svg> trouvé.");
+  if (!tag)
+    fail("No <svg> element found.", "Aucun élément <svg> trouvé.", "Kein <svg>-Element gefunden.");
   const info = svgInfo(markup);
   let t = tag;
   if (!info.viewBox)
@@ -198,7 +200,8 @@ export interface CleanOptions {
  * keeps its numbers (their flags may be packed together).
  */
 export function cleanSvg(markup: string, o: CleanOptions): string {
-  if (!rootTag(markup)) fail("No <svg> element found.", "Aucun élément <svg> trouvé.");
+  if (!rootTag(markup))
+    fail("No <svg> element found.", "Aucun élément <svg> trouvé.", "Kein <svg>-Element gefunden.");
   // Keep protected blocks aside.
   const kept: string[] = [];
   let s = markup.replace(PROTECTED, (m) => {

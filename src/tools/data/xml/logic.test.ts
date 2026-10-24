@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { decodeEntities, parseXml, writeXml, xmlStats, xmlToJson } from "./logic";
+import { lang } from "../../../i18n";
+import { decodeEntities, parseXml, writeXml, xmlErrorMessage, xmlStats, xmlToJson } from "./logic";
 
 const pretty = { indent: "  ", removeComments: false, collapseEmpty: false };
 const min = { indent: "", removeComments: false, collapseEmpty: false };
@@ -126,5 +127,28 @@ describe("xml", () => {
 describe("xml edge cases", () => {
   it("leaves out-of-range character references alone", () => {
     expect(decodeEntities("&#99999999;&#x110000;&#65;")).toBe("&#99999999;&#x110000;A");
+  });
+});
+
+describe("xmlErrorMessage", () => {
+  it("names the tag concerned, in the current language", () => {
+    const d = parseXml("<a><b></a>");
+    expect(d.ok).toBe(false);
+    if (d.ok) return;
+    expect(xmlErrorMessage(d.error)).toBe("Closing tag </a> does not match the open <b>.");
+    lang.value = "fr";
+    try {
+      expect(xmlErrorMessage(d.error)).toBe(
+        "La balise fermante </a> ne correspond pas à <b> ouverte.",
+      );
+    } finally {
+      lang.value = "en";
+    }
+  });
+
+  it("names the construct of an unterminated comment", () => {
+    const d = parseXml("<a><!-- x</a>");
+    expect(d.ok).toBe(false);
+    if (!d.ok) expect(xmlErrorMessage(d.error)).toBe("“comment” is never closed.");
   });
 });

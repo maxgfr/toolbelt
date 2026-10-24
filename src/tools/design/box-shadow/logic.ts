@@ -72,7 +72,7 @@ export function shadowTailwind(layers: ShadowLayer[]): string {
 
 export interface ShadowPreset {
   id: string;
-  name: { en: string; fr: string };
+  name: { en: string; fr: string; de: string };
   layers: ShadowLayer[];
   /** Suggested page and box colors for the preview. */
   bg?: string;
@@ -84,12 +84,12 @@ const L = newLayer;
 export const PRESETS: ShadowPreset[] = [
   {
     id: "soft",
-    name: { en: "Soft", fr: "Douce" },
+    name: { en: "Soft", fr: "Douce", de: "Weich" },
     layers: [L({ x: 0, y: 1, blur: 2, alpha: 0.06 }), L({ x: 0, y: 8, blur: 24, alpha: 0.1 })],
   },
   {
     id: "elevated",
-    name: { en: "Elevated", fr: "Surélevée" },
+    name: { en: "Elevated", fr: "Surélevée", de: "Erhöht" },
     layers: [
       L({ x: 0, y: 1, blur: 1, alpha: 0.08 }),
       L({ x: 0, y: 2, blur: 2, alpha: 0.08 }),
@@ -100,17 +100,17 @@ export const PRESETS: ShadowPreset[] = [
   },
   {
     id: "floating",
-    name: { en: "Floating", fr: "Flottante" },
+    name: { en: "Floating", fr: "Flottante", de: "Schwebend" },
     layers: [L({ x: 0, y: 24, blur: 48, spread: -12, alpha: 0.3 })],
   },
   {
     id: "sharp",
-    name: { en: "Sharp", fr: "Nette" },
+    name: { en: "Sharp", fr: "Nette", de: "Scharf" },
     layers: [L({ x: 6, y: 6, blur: 0, color: "#111827", alpha: 1 })],
   },
   {
     id: "neumorphism",
-    name: { en: "Neumorphism", fr: "Neumorphisme" },
+    name: { en: "Neumorphism", fr: "Neumorphisme", de: "Neumorphismus" },
     layers: [
       L({ x: 9, y: 9, blur: 16, color: "#a3b1c6", alpha: 0.6 }),
       L({ x: -9, y: -9, blur: 16, color: "#ffffff", alpha: 0.5 }),
@@ -120,7 +120,7 @@ export const PRESETS: ShadowPreset[] = [
   },
   {
     id: "pressed",
-    name: { en: "Pressed", fr: "Enfoncée" },
+    name: { en: "Pressed", fr: "Enfoncée", de: "Eingedrückt" },
     layers: [
       L({ x: 6, y: 6, blur: 12, color: "#a3b1c6", alpha: 0.6, inset: true }),
       L({ x: -6, y: -6, blur: 12, color: "#ffffff", alpha: 0.6, inset: true }),
@@ -130,7 +130,7 @@ export const PRESETS: ShadowPreset[] = [
   },
   {
     id: "glow",
-    name: { en: "Glow", fr: "Halo" },
+    name: { en: "Glow", fr: "Halo", de: "Leuchten" },
     layers: [
       L({ x: 0, y: 0, blur: 8, color: "#8b5cf6", alpha: 0.6 }),
       L({ x: 0, y: 0, blur: 32, color: "#8b5cf6", alpha: 0.4 }),
@@ -140,7 +140,7 @@ export const PRESETS: ShadowPreset[] = [
   },
   {
     id: "ring",
-    name: { en: "Focus ring", fr: "Anneau de focus" },
+    name: { en: "Focus ring", fr: "Anneau de focus", de: "Fokusring" },
     layers: [
       L({ x: 0, y: 0, blur: 0, spread: 2, color: "#ffffff", alpha: 1 }),
       L({ x: 0, y: 0, blur: 0, spread: 4, color: "#0f766e", alpha: 1 }),
@@ -148,7 +148,7 @@ export const PRESETS: ShadowPreset[] = [
   },
   {
     id: "layered",
-    name: { en: "Layered cards", fr: "Cartes empilées" },
+    name: { en: "Layered cards", fr: "Cartes empilées", de: "Gestapelte Karten" },
     layers: [
       L({ x: 8, y: 8, blur: 0, spread: -2, color: "#f59e0b", alpha: 1 }),
       L({ x: 16, y: 16, blur: 0, spread: -4, color: "#ef4444", alpha: 1 }),

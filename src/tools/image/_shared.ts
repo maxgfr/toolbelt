@@ -1,5 +1,5 @@
 /**
- * Pure helpers shared by the image tools: bilingual errors, sizes, output formats, file names,
+ * Pure helpers shared by the image tools: localized errors, sizes, output formats, file names,
  * fitting dimensions, image format sniffing, CRC-32 and a minimal STORE-only ZIP writer.
  * No DOM, no Preact: everything here runs in bun tests.
  */
@@ -16,8 +16,8 @@ export class ImageError extends Error {
   }
 }
 
-export function fail(en: string, fr: string): never {
-  throw new ImageError(l(en, fr));
+export function fail(en: string, fr: string, de: string): never {
+  throw new ImageError(l(en, fr, de));
 }
 
 export type Result<T> = { ok: true; value: T } | { ok: false; error: L10n };
@@ -34,7 +34,7 @@ export function attempt<T>(fn: () => T): Result<T> {
 export function errorL10n(err: unknown): L10n {
   if (err instanceof ImageError) return err.text;
   const msg = err instanceof Error ? err.message : String(err);
-  return { en: msg, fr: msg };
+  return { en: msg, fr: msg, de: msg };
 }
 
 /* --- Sizes ------------------------------------------------------------------ */
@@ -322,12 +322,12 @@ export function readZipStore(zip: Uint8Array): Map<string, Uint8Array> {
   const out = new Map<string, Uint8Array>();
   let eocd = zip.length - 22;
   while (eocd >= 0 && dv.getUint32(eocd, true) !== 0x06054b50) eocd--;
-  if (eocd < 0) fail("Not a ZIP file.", "Ce n'est pas un fichier ZIP.");
+  if (eocd < 0) fail("Not a ZIP file.", "Ce n'est pas un fichier ZIP.", "Keine ZIP-Datei.");
   const count = dv.getUint16(eocd + 10, true);
   let p = dv.getUint32(eocd + 16, true);
   for (let i = 0; i < count; i++) {
     if (dv.getUint32(p, true) !== 0x02014b50)
-      fail("Broken ZIP directory.", "Répertoire ZIP cassé.");
+      fail("Broken ZIP directory.", "Répertoire ZIP cassé.", "Beschädigtes ZIP-Verzeichnis.");
     const crc = dv.getUint32(p + 16, true);
     const size = dv.getUint32(p + 20, true);
     const nlen = dv.getUint16(p + 28, true);
@@ -338,7 +338,8 @@ export function readZipStore(zip: Uint8Array): Map<string, Uint8Array> {
     const lnlen = dv.getUint16(off + 26, true);
     const lelen = dv.getUint16(off + 28, true);
     const data = zip.subarray(off + 30 + lnlen + lelen, off + 30 + lnlen + lelen + size);
-    if (crc32(data) !== crc) fail("ZIP CRC mismatch.", "CRC ZIP incorrect.");
+    if (crc32(data) !== crc)
+      fail("ZIP CRC mismatch.", "CRC ZIP incorrect.", "ZIP-CRC stimmt nicht überein.");
     out.set(name, data);
     p += 46 + nlen + elen + clen;
   }

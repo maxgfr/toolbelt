@@ -10,34 +10,45 @@ type Mode = "plain" | "regex";
 const PREVIEW_MAX = 2000;
 
 const T = {
-  find: l("Find", "Rechercher"),
-  replace: l("Replace with", "Remplacer par"),
-  findPh: l("Text to find", "Texte à chercher"),
+  find: l("Find", "Rechercher", "Suchen"),
+  replace: l("Replace with", "Remplacer par", "Ersetzen durch"),
+  findPh: l("Text to find", "Texte à chercher", "Gesuchter Text"),
   findRePh: l(
     "Regular expression, e.g. (\\d+)-(\\d+)",
     "Expression régulière, par ex. (\\d+)-(\\d+)",
+    "Regulärer Ausdruck, z. B. (\\d+)-(\\d+)",
   ),
-  replacePh: l("Replacement", "Remplacement"),
-  replaceRePh: l("Replacement, e.g. $2-$1", "Remplacement, par ex. $2-$1"),
-  plain: l("Plain text", "Texte simple"),
-  regex: l("Regex", "Regex"),
-  wholeWord: l("Whole words", "Mots entiers"),
-  escapes: l("Read \\n \\t as newline / tab", "Lire \\n \\t comme retour / tabulation"),
+  replacePh: l("Replacement", "Remplacement", "Ersatz"),
+  replaceRePh: l("Replacement, e.g. $2-$1", "Remplacement, par ex. $2-$1", "Ersatz, z. B. $2-$1"),
+  plain: l("Plain text", "Texte simple", "Normaler Text"),
+  regex: l("Regex", "Regex", "Regex"),
+  wholeWord: l("Whole words", "Mots entiers", "Ganze Wörter"),
+  escapes: l(
+    "Read \\n \\t as newline / tab",
+    "Lire \\n \\t comme retour / tabulation",
+    "\\n \\t als Zeilenumbruch / Tabulator lesen",
+  ),
   groupsHint: l(
     "$1, $2… groups · $<name> named group · $& whole match · $$ a dollar sign",
     "$1, $2… groupes · $<nom> groupe nommé · $& correspondance entière · $$ un dollar",
+    "$1, $2… Gruppen · $<name> benannte Gruppe · $& ganzer Treffer · $$ ein Dollarzeichen",
   ),
-  input: l("Text", "Texte"),
-  inputPh: l("Paste the text to search in…", "Colle le texte dans lequel chercher…"),
-  output: l("Result", "Résultat"),
-  matches: l("Matches", "Occurrences"),
-  lines: l("Lines with a match", "Lignes concernées"),
-  preview: l("Preview", "Aperçu"),
+  input: l("Text", "Texte", "Text"),
+  inputPh: l(
+    "Paste the text to search in…",
+    "Colle le texte dans lequel chercher…",
+    "Füge den zu durchsuchenden Text ein…",
+  ),
+  output: l("Result", "Résultat", "Ergebnis"),
+  matches: l("Matches", "Occurrences", "Treffer"),
+  lines: l("Lines with a match", "Lignes concernées", "Zeilen mit Treffer"),
+  preview: l("Preview", "Aperçu", "Vorschau"),
   more: l(
     "Only the first {n} matches are highlighted.",
     "Seules les {n} premières occurrences sont surlignées.",
+    "Nur die ersten {n} Treffer werden hervorgehoben.",
   ),
-  apply: l("Use result as text", "Reprendre le résultat"),
+  apply: l("Use result as text", "Reprendre le résultat", "Ergebnis übernehmen"),
 };
 
 export default function Replace() {

@@ -1,6 +1,7 @@
 /**
  * Screen test helpers: refresh rate from animation frame times, the dead-pixel color cycle,
- * and keyboard layouts (QWERTY ANSI and French AZERTY ISO) keyed by physical key code.
+ * and keyboard layouts (QWERTY ANSI, French AZERTY ISO and German QWERTZ ISO) keyed by physical
+ * key code.
  */
 
 const RATES = [24, 30, 48, 50, 60, 72, 75, 90, 100, 120, 144, 165, 170, 180, 200, 240, 360];
@@ -41,16 +42,16 @@ export function estimateRefresh(
 }
 
 /** Colors of the dead / stuck pixel test, in order. */
-export const TEST_COLORS: { css: string; en: string; fr: string }[] = [
-  { css: "#000000", en: "Black", fr: "Noir" },
-  { css: "#ffffff", en: "White", fr: "Blanc" },
-  { css: "#ff0000", en: "Red", fr: "Rouge" },
-  { css: "#00ff00", en: "Green", fr: "Vert" },
-  { css: "#0000ff", en: "Blue", fr: "Bleu" },
-  { css: "#00ffff", en: "Cyan", fr: "Cyan" },
-  { css: "#ff00ff", en: "Magenta", fr: "Magenta" },
-  { css: "#ffff00", en: "Yellow", fr: "Jaune" },
-  { css: "#808080", en: "Gray", fr: "Gris" },
+export const TEST_COLORS: { css: string; en: string; fr: string; de: string }[] = [
+  { css: "#000000", en: "Black", fr: "Noir", de: "Schwarz" },
+  { css: "#ffffff", en: "White", fr: "Blanc", de: "Weiß" },
+  { css: "#ff0000", en: "Red", fr: "Rouge", de: "Rot" },
+  { css: "#00ff00", en: "Green", fr: "Vert", de: "Grün" },
+  { css: "#0000ff", en: "Blue", fr: "Bleu", de: "Blau" },
+  { css: "#00ffff", en: "Cyan", fr: "Cyan", de: "Cyan" },
+  { css: "#ff00ff", en: "Magenta", fr: "Magenta", de: "Magenta" },
+  { css: "#ffff00", en: "Yellow", fr: "Jaune", de: "Gelb" },
+  { css: "#808080", en: "Gray", fr: "Gris", de: "Grau" },
 ];
 
 /** The next index in a cycle of `n`, going forward (1) or back (−1). */
@@ -66,7 +67,12 @@ export interface Key {
   w: number;
 }
 
-export type Layout = "qwerty" | "azerty";
+export type Layout = "qwerty" | "azerty" | "qwertz";
+
+/** The layout most people typing in a language use: QWERTY, French AZERTY, German QWERTZ. */
+export function defaultLayout(lang: string): Layout {
+  return lang === "fr" ? "azerty" : lang === "de" ? "qwertz" : "qwerty";
+}
 
 const k = (code: string, label: string, w = 1): Key => ({ code, label, w });
 
@@ -76,25 +82,25 @@ const FN_ROW: Key[] = [
   ...Array.from({ length: 12 }, (_, i) => k(`F${i + 1}`, `F${i + 1}`)),
 ];
 
-const BOTTOM = (altGr: string): Key[] => [
-  k("ControlLeft", "Ctrl", 1.25),
+const BOTTOM = (altGr: string, ctrl = "Ctrl"): Key[] => [
+  k("ControlLeft", ctrl, 1.25),
   k("MetaLeft", "⌘ ⊞", 1.25),
   k("AltLeft", "Alt", 1.25),
   k("Space", "", 6.25),
   k("AltRight", altGr, 1.25),
   k("MetaRight", "⌘ ⊞", 1.25),
   k("ContextMenu", "☰", 1.25),
-  k("ControlRight", "Ctrl", 1.25),
+  k("ControlRight", ctrl, 1.25),
 ];
 
-const ARROWS: Key[] = [
+const ARROWS = (ins = "Ins", del = "Del"): Key[] => [
   k("ArrowLeft", "←"),
   k("ArrowUp", "↑"),
   k("ArrowDown", "↓"),
   k("ArrowRight", "→"),
   k("", "", 0.5),
-  k("Insert", "Ins"),
-  k("Delete", "Del"),
+  k("Insert", ins),
+  k("Delete", del),
   k("Home", "⇱"),
   k("End", "⇲"),
   k("PageUp", "⇞"),
@@ -137,7 +143,7 @@ export const LAYOUTS: Record<Layout, Key[][]> = {
       k("ShiftRight", "⇧", 2.75),
     ],
     BOTTOM("Alt"),
-    ARROWS,
+    ARROWS(),
   ],
   azerty: [
     FN_ROW,
@@ -174,7 +180,44 @@ export const LAYOUTS: Record<Layout, Key[][]> = {
       k("ShiftRight", "⇧", 2.75),
     ],
     BOTTOM("AltGr"),
-    ARROWS,
+    ARROWS(),
+  ],
+  // German ISO: Y and Z swapped, umlauts and ß, German key caps (Strg, Einfg, Entf).
+  qwertz: [
+    FN_ROW,
+    [
+      k("Backquote", "^"),
+      ...[..."1234567890"].map((d) => k(`Digit${d}`, d)),
+      k("Minus", "ß"),
+      k("Equal", "´"),
+      k("Backspace", "⌫", 2),
+    ],
+    [
+      k("Tab", "↹", 1.5),
+      ...letters("QWERTYUIOP", "QWERTZUIOP"),
+      k("BracketLeft", "Ü"),
+      k("BracketRight", "+"),
+      k("Enter", "⏎", 1.5),
+    ],
+    [
+      k("CapsLock", "⇪", 1.75),
+      ...letters("ASDFGHJKL", "ASDFGHJKL"),
+      k("Semicolon", "Ö"),
+      k("Quote", "Ä"),
+      k("Backslash", "#"),
+      k("Enter", "", 1.25),
+    ],
+    [
+      k("ShiftLeft", "⇧", 1.25),
+      k("IntlBackslash", "<"),
+      ...letters("ZXCVBNM", "YXCVBNM"),
+      k("Comma", ","),
+      k("Period", "."),
+      k("Slash", "-"),
+      k("ShiftRight", "⇧", 2.75),
+    ],
+    BOTTOM("AltGr", "Strg"),
+    ARROWS("Einfg", "Entf"),
   ],
 };
 

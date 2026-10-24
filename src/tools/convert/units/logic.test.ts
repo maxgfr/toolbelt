@@ -50,11 +50,13 @@ describe("units", () => {
     expect(convertAll(1, "length", "parsec")).toEqual([]);
   });
 
-  it("has unique unit ids and names in both languages", () => {
+  it("has unique unit ids and names in every language", () => {
     for (const c of CATEGORIES) {
       const ids = c.units.map((x) => x.id);
       expect(new Set(ids).size).toBe(ids.length);
-      for (const x of c.units) expect(x.name.en && x.name.fr && x.factor > 0).toBeTruthy();
+      expect(c.name.de).toBeTruthy();
+      for (const x of c.units)
+        expect(x.name.en && x.name.fr && x.name.de && x.factor > 0).toBeTruthy();
     }
   });
 });

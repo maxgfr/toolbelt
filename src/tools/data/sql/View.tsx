@@ -9,26 +9,28 @@ import { DIALECTS, formatSql, type Indent, type KeywordCase, minifySql } from ".
 type Mode = "format" | "minify";
 
 const T = {
-  input: l("SQL", "SQL"),
-  output: l("Result", "Résultat"),
+  input: l("SQL", "SQL", "SQL"),
+  output: l("Result", "Résultat", "Ergebnis"),
   placeholder: l(
     "Paste SQL, e.g. select id, name from users where active = 1 order by name",
     "Colle du SQL, par ex. select id, name from users where active = 1 order by name",
+    "Füge SQL ein, z. B. select id, name from users where active = 1 order by name",
   ),
-  format: l("Format", "Formater"),
-  minify: l("Minify", "Minifier"),
-  dialect: l("Dialect", "Dialecte"),
-  keywords: l("Keywords", "Mots-clés"),
-  upper: l("UPPER", "MAJUSCULES"),
-  lower: l("lower", "minuscules"),
-  preserve: l("As typed", "Tels quels"),
-  indent: l("Indentation", "Indentation"),
-  spaces2: l("2 spaces", "2 espaces"),
-  spaces4: l("4 spaces", "4 espaces"),
-  tab: l("Tab", "Tabulation"),
+  format: l("Format", "Formater", "Formatieren"),
+  minify: l("Minify", "Minifier", "Minifizieren"),
+  dialect: l("Dialect", "Dialecte", "Dialekt"),
+  keywords: l("Keywords", "Mots-clés", "Schlüsselwörter"),
+  upper: l("UPPER", "MAJUSCULES", "GROSS"),
+  lower: l("lower", "minuscules", "klein"),
+  preserve: l("As typed", "Tels quels", "Wie eingegeben"),
+  indent: l("Indentation", "Indentation", "Einrückung"),
+  spaces2: l("2 spaces", "2 espaces", "2 Leerzeichen"),
+  spaces4: l("4 spaces", "4 espaces", "4 Leerzeichen"),
+  tab: l("Tab", "Tabulation", "Tabulator"),
   minifyNote: l(
     "Comments are removed; optimizer hints (/*+ … */) are kept.",
     "Les commentaires sont retirés ; les indications d'optimiseur (/*+ … */) sont conservées.",
+    "Kommentare werden entfernt; Optimizer-Hints (/*+ … */) bleiben erhalten.",
   ),
 };
 

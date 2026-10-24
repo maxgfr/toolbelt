@@ -1,21 +1,69 @@
 /**
- * Spelling alphabets: the international (NATO / ICAO) one, and the French
- * one (Anatole, Berthe, Célestin…). Words come in the alphabet's language,
- * including accents, case and common symbols, so a spelled-out email address
- * or password can be read aloud as is.
+ * Spelling alphabets: the international (NATO / ICAO) one, the French one
+ * (Anatole, Berthe, Célestin…), and two German ones: DIN 5009:2022 (city
+ * names: Aachen, Berlin, Chemnitz…) and the classic name table it replaced
+ * (Anton, Berta, Cäsar…). Words come in the alphabet's language, including
+ * accents, case and common symbols, so a spelled-out email address or
+ * password can be read aloud as is.
  */
 
-export type Alphabet = "nato" | "fr";
+export type Alphabet = "nato" | "fr" | "de" | "deNames";
+
+export const ALPHABETS: Alphabet[] = ["nato", "fr", "de", "deNames"];
 
 interface Spec {
   letters: string[];
   digits: string[];
+  /** Characters with their own word, checked before the accent rules (German Ä, Ö, Ü, ß). */
+  special?: Record<string, string>;
   symbols: Record<string, string>;
   accents: Record<string, string>;
   upper: (w: string) => string;
   lower: (w: string) => string;
+  /** How the accent names follow the letter word. */
+  withAccents: (w: string, accents: string[]) => string;
   space: string;
 }
+
+const inParens = (w: string, accents: string[]) => `${w} (${accents.join(", ")})`;
+
+const GERMAN_SYMBOLS: Record<string, string> = {
+  ".": "Punkt",
+  ",": "Komma",
+  "-": "Bindestrich",
+  _: "Unterstrich",
+  "@": "At-Zeichen",
+  "/": "Schrägstrich",
+  "\\": "Backslash",
+  ":": "Doppelpunkt",
+  ";": "Semikolon",
+  "!": "Ausrufezeichen",
+  "?": "Fragezeichen",
+  "#": "Raute",
+  "&": "Und-Zeichen",
+  "*": "Sternchen",
+  "+": "Plus",
+  "=": "Gleich",
+  "%": "Prozent",
+  $: "Dollar",
+  "€": "Euro",
+  "'": "Apostroph",
+  '"': "Anführungszeichen",
+  "(": "Klammer auf",
+  ")": "Klammer zu",
+};
+
+const GERMAN_ACCENTS: Record<string, string> = {
+  "\u0301": "Akut",
+  "\u0300": "Gravis",
+  "\u0302": "Zirkumflex",
+  "\u0308": "Trema",
+  "\u0327": "Cedille",
+  "\u0303": "Tilde",
+};
+
+/** "Zwo" rather than "Zwei", as DIN 5009 recommends, so it is not heard as "drei". */
+const GERMAN_DIGITS = "Null Eins Zwo Drei Vier Fünf Sechs Sieben Acht Neun".split(" ");
 
 const SPECS: Record<Alphabet, Spec> = {
   nato: {
@@ -59,6 +107,7 @@ const SPECS: Record<Alphabet, Spec> = {
     },
     upper: (w) => `capital ${w}`,
     lower: (w) => `small ${w}`,
+    withAccents: inParens,
     space: "Space",
   },
   fr: {
@@ -102,7 +151,36 @@ const SPECS: Record<Alphabet, Spec> = {
     },
     upper: (w) => `${w} majuscule`,
     lower: (w) => `${w} minuscule`,
+    withAccents: (w, accents) => `${w} ${accents.join(" ")}`,
     space: "espace",
+  },
+  de: {
+    letters:
+      "Aachen Berlin Chemnitz Düsseldorf Essen Frankfurt Goslar Hamburg Ingelheim Jena Köln Leipzig München Nürnberg Offenbach Potsdam Quickborn Rostock Salzwedel Tübingen Unna Völklingen Wuppertal Xanten Ypsilon Zwickau".split(
+        " ",
+      ),
+    digits: GERMAN_DIGITS,
+    special: { ä: "Umlaut Aachen", ö: "Umlaut Offenbach", ü: "Umlaut Unna", ß: "Eszett" },
+    symbols: GERMAN_SYMBOLS,
+    accents: GERMAN_ACCENTS,
+    upper: (w) => `groß ${w}`,
+    lower: (w) => `klein ${w}`,
+    withAccents: inParens,
+    space: "Leerzeichen",
+  },
+  deNames: {
+    letters:
+      "Anton Berta Cäsar Dora Emil Friedrich Gustav Heinrich Ida Julius Kaufmann Ludwig Martha Nordpol Otto Paula Quelle Richard Samuel Theodor Ulrich Viktor Wilhelm Xanthippe Ypsilon Zacharias".split(
+        " ",
+      ),
+    digits: GERMAN_DIGITS,
+    special: { ä: "Ärger", ö: "Ökonom", ü: "Übermut", ß: "Eszett" },
+    symbols: GERMAN_SYMBOLS,
+    accents: GERMAN_ACCENTS,
+    upper: (w) => `groß ${w}`,
+    lower: (w) => `klein ${w}`,
+    withAccents: inParens,
+    space: "Leerzeichen",
   },
 };
 
@@ -131,6 +209,16 @@ export function spell(text: string, alphabet: Alphabet, markCase: boolean): Spel
         out.push(...spell(part, alphabet, markCase));
       continue;
     }
+    const special = spec.special?.[ch.normalize("NFC").toLowerCase()];
+    if (special) {
+      // ß has no capital in everyday text, so its case is never said.
+      const word =
+        markCase && ch !== "ß"
+          ? (ch === ch.toLowerCase() ? spec.lower : spec.upper)(special)
+          : special;
+      out.push({ char: ch, word, known: true, space: false });
+      continue;
+    }
     const nfd = ch.normalize("NFD");
     const base = nfd[0] ?? "";
     const marks = [...nfd.slice(1)];
@@ -139,9 +227,8 @@ export function spell(text: string, alphabet: Alphabet, markCase: boolean): Spel
     if (letter) {
       let word = letter;
       if (markCase) word = base === upper ? spec.upper(word) : spec.lower(word);
-      const accents = marks.map((m) => spec.accents[m]).filter(Boolean);
-      if (accents.length)
-        word += alphabet === "fr" ? ` ${accents.join(" ")}` : ` (${accents.join(", ")})`;
+      const accents = marks.flatMap((m) => spec.accents[m] ?? []);
+      if (accents.length) word = spec.withAccents(word, accents);
       out.push({ char: ch, word, known: true, space: false });
     } else if (/^[0-9]$/.test(ch)) {
       out.push({ char: ch, word: spec.digits[Number(ch)] ?? ch, known: true, space: false });
@@ -170,6 +257,10 @@ export function alphabetTable(alphabet: Alphabet): { char: string; word: string 
   const spec = SPECS[alphabet];
   return [
     ...spec.letters.map((word, i) => ({ char: String.fromCharCode(65 + i), word })),
+    ...Object.entries(spec.special ?? {}).map(([c, word]) => ({
+      char: c === "ß" ? c : c.toUpperCase(),
+      word,
+    })),
     ...spec.digits.map((word, i) => ({ char: String(i), word })),
   ];
 }

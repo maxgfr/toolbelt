@@ -5,36 +5,50 @@ import { l, tr } from "../../../i18n";
 import { componentName, htmlToJsx, type Warning } from "./logic";
 
 const T = {
-  input: l("HTML or SVG", "HTML ou SVG"),
+  input: l("HTML or SVG", "HTML ou SVG", "HTML oder SVG"),
   placeholder: l(
     'Paste HTML or an SVG, e.g. <label for="email" class="label">Email</label>',
     'Colle du HTML ou un SVG, par ex. <label for="email" class="label">E-mail</label>',
+    'Füge HTML oder ein SVG ein, z. B. <label for="email" class="label">E-Mail</label>',
   ),
-  output: l("JSX", "JSX"),
-  component: l("Wrap in a component", "Envelopper dans un composant"),
-  name: l("Component name", "Nom du composant"),
-  typescript: l("TypeScript props", "Props TypeScript"),
-  native: l("React Native (react-native-svg)", "React Native (react-native-svg)"),
+  output: l("JSX", "JSX", "JSX"),
+  component: l(
+    "Wrap in a component",
+    "Envelopper dans un composant",
+    "In eine Komponente einbetten",
+  ),
+  name: l("Component name", "Nom du composant", "Komponentenname"),
+  typescript: l("TypeScript props", "Props TypeScript", "TypeScript-Props"),
+  native: l(
+    "React Native (react-native-svg)",
+    "React Native (react-native-svg)",
+    "React Native (react-native-svg)",
+  ),
   hint: l(
     "class → className, for → htmlFor, style strings → objects, SVG attributes in camelCase, comments → {/* */}.",
     "class → className, for → htmlFor, styles en objets, attributs SVG en camelCase, commentaires → {/* */}.",
+    "class → className, for → htmlFor, Style-Strings → Objekte, SVG-Attribute in camelCase, Kommentare → {/* */}.",
   ),
   w: {
     event: l(
       'Inline event handlers (onclick="…") became arrow functions: check that the code they run exists in your component.',
       'Les gestionnaires d\'événements en ligne (onclick="…") sont devenus des fonctions fléchées : vérifie que le code appelé existe dans ton composant.',
+      'Inline-Event-Handler (onclick="…") wurden zu Pfeilfunktionen: Prüfe, ob der aufgerufene Code in deiner Komponente existiert.',
     ),
     important: l(
       "!important was dropped: React inline styles do not support it.",
       "!important a été retiré : les styles en ligne de React ne le gèrent pas.",
+      "!important wurde entfernt: Inline-Styles in React unterstützen es nicht.",
     ),
     script: l(
       "<script> tags rendered by React do not run; load scripts another way.",
       "Les balises <script> rendues par React ne s'exécutent pas ; charge les scripts autrement.",
+      "Von React gerenderte <script>-Tags werden nicht ausgeführt; lade Skripte auf anderem Weg.",
     ),
     rnClass: l(
       "react-native-svg has no class names: className was dropped.",
       "react-native-svg n'a pas de classes : className a été retiré.",
+      "react-native-svg kennt keine Klassennamen: className wurde entfernt.",
     ),
   } satisfies Record<Warning, unknown>,
 };

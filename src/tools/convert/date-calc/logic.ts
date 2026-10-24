@@ -2,7 +2,7 @@
  * Calendar arithmetic: the gap between two dates and a date plus a duration.
  * Everything is calendar time (no time zone, no DST): a day is always 24 h.
  */
-import { daysInMonth, pad, utcMs } from "../_shared";
+import { daysInMonth, pad, parseIsoDate, parseTime, utcMs } from "../_shared";
 
 export interface DateTime {
   year: number;
@@ -145,4 +145,14 @@ export function formatDateTime(d: DateTime): string {
 /** Milliseconds of a calendar date-time, to format it with Intl in UTC. */
 export function calendarMs(d: DateTime): number {
   return toMs(d);
+}
+
+/** A date ("2024-01-31") and an optional time ("09:30"); "date" or "time" names what is invalid. */
+export function readDateTime(date: string, time: string): DateTime | "date" | "time" {
+  const d = parseIsoDate(date);
+  if (!d) return "date";
+  if (!time.trim()) return { ...d, hour: 0, minute: 0 };
+  const t = parseTime(time);
+  if (!t) return "time";
+  return { ...d, hour: t.hour, minute: t.minute };
 }

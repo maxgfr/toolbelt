@@ -9,24 +9,31 @@ import { renderMarkdown, tableOfContents } from "./logic";
 type Tab = "preview" | "html" | "toc";
 
 const T = {
-  input: l("Markdown", "Markdown"),
+  input: l("Markdown", "Markdown", "Markdown"),
   placeholder: l(
     "# Title\n\nWrite **Markdown** here: lists, links, tables, code…",
     "# Titre\n\nÉcris du **Markdown** ici : listes, liens, tableaux, code…",
+    "# Titel\n\nSchreib hier **Markdown**: Listen, Links, Tabellen, Code…",
   ),
-  preview: l("Preview", "Aperçu"),
-  html: l("HTML", "HTML"),
-  toc: l("Table of contents", "Table des matières"),
+  preview: l("Preview", "Aperçu", "Vorschau"),
+  html: l("HTML", "HTML", "HTML"),
+  toc: l("Table of contents", "Table des matières", "Inhaltsverzeichnis"),
   gfm: l(
     "GitHub-flavored (tables, task lists, ~~strike~~)",
     "Style GitHub (tableaux, cases, ~~barré~~)",
+    "GitHub-Stil (Tabellen, Aufgabenlisten, ~~durchgestrichen~~)",
   ),
-  breaks: l("Line breaks as <br>", "Retours à la ligne en <br>"),
-  empty: l("The preview shows up here.", "L'aperçu s'affiche ici."),
-  noHeadings: l("No headings in this document.", "Aucun titre dans ce document."),
+  breaks: l("Line breaks as <br>", "Retours à la ligne en <br>", "Zeilenumbrüche als <br>"),
+  empty: l("The preview shows up here.", "L'aperçu s'affiche ici.", "Hier erscheint die Vorschau."),
+  noHeadings: l(
+    "No headings in this document.",
+    "Aucun titre dans ce document.",
+    "Keine Überschriften in diesem Dokument.",
+  ),
   sanitized: l(
     "Scripts, event handlers and inline styles are removed (DOMPurify). External images are not loaded.",
     "Les scripts, gestionnaires d'événements et styles en ligne sont retirés (DOMPurify). Les images externes ne sont pas chargées.",
+    "Skripte, Event-Handler und Inline-Styles werden entfernt (DOMPurify). Externe Bilder werden nicht geladen.",
   ),
 };
 

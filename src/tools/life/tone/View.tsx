@@ -22,39 +22,42 @@ import {
 type Source = "tone" | "noise";
 
 const T = {
-  tone: l("Tone", "Son pur"),
-  noise: l("Noise", "Bruit"),
-  play: l("Play", "Lecture"),
-  stop: l("Stop", "Arrêter"),
-  frequency: l("Frequency", "Fréquence"),
-  waveform: l("Waveform", "Forme d'onde"),
-  sine: l("Sine", "Sinus"),
-  square: l("Square", "Carré"),
-  sawtooth: l("Sawtooth", "Dent de scie"),
-  triangle: l("Triangle", "Triangle"),
-  white: l("White", "Blanc"),
-  pink: l("Pink", "Rose"),
-  brown: l("Brown", "Brun"),
+  tone: l("Tone", "Son pur", "Ton"),
+  noise: l("Noise", "Bruit", "Rauschen"),
+  play: l("Play", "Lecture", "Abspielen"),
+  stop: l("Stop", "Arrêter", "Stopp"),
+  frequency: l("Frequency", "Fréquence", "Frequenz"),
+  waveform: l("Waveform", "Forme d'onde", "Wellenform"),
+  sine: l("Sine", "Sinus", "Sinus"),
+  square: l("Square", "Carré", "Rechteck"),
+  sawtooth: l("Sawtooth", "Dent de scie", "Sägezahn"),
+  triangle: l("Triangle", "Triangle", "Dreieck"),
+  white: l("White", "Blanc", "Weiß"),
+  pink: l("Pink", "Rose", "Rosa"),
+  brown: l("Brown", "Brun", "Braun"),
   noiseHint: l(
     "White: hiss, all frequencies. Pink: softer, like rain. Brown: deep, like a waterfall or wind.",
     "Blanc : souffle, toutes les fréquences. Rose : plus doux, comme la pluie. Brun : grave, comme une cascade ou le vent.",
+    "Weiß: Rauschen über alle Frequenzen. Rosa: weicher, wie Regen. Braun: tief, wie ein Wasserfall oder Wind.",
   ),
-  volume: l("Volume", "Volume"),
-  fade: l("Fade in / out", "Fondu d'entrée / sortie"),
-  sleep: l("Sleep timer", "Arrêt automatique"),
-  off: l("Off", "Désactivé"),
-  minutes: l("{n} min", "{n} min"),
-  stopsIn: l("Stops in {t}", "Arrêt dans {t}"),
+  volume: l("Volume", "Volume", "Lautstärke"),
+  fade: l("Fade in / out", "Fondu d'entrée / sortie", "Ein- / Ausblenden"),
+  sleep: l("Sleep timer", "Arrêt automatique", "Schlaftimer"),
+  off: l("Off", "Désactivé", "Aus"),
+  minutes: l("{n} min", "{n} min", "{n} Min."),
+  stopsIn: l("Stops in {t}", "Arrêt dans {t}", "Stoppt in {t}"),
   loud: l(
     "Careful: start low, especially with headphones. Very high and very low tones can be loud without seeming so.",
     "Attention : commence bas, surtout au casque. Les sons très aigus ou très graves peuvent être forts sans en avoir l'air.",
+    "Vorsicht: Fang leise an, besonders mit Kopfhörern. Sehr hohe und sehr tiefe Töne können laut sein, ohne dass es so wirkt.",
   ),
   noAudio: l(
     "Audio is not available in this browser.",
     "L'audio n'est pas disponible dans ce navigateur.",
+    "Audio ist in diesem Browser nicht verfügbar.",
   ),
-  octDown: l("Octave down", "Octave en dessous"),
-  octUp: l("Octave up", "Octave au-dessus"),
+  octDown: l("Octave down", "Octave en dessous", "Eine Oktave tiefer"),
+  octUp: l("Octave up", "Octave au-dessus", "Eine Oktave höher"),
 };
 
 const PRESETS = [100, 261.63, 440, 1000, 4000, 10_000];
@@ -220,7 +223,7 @@ export default function ToneTool() {
               </div>
               {note && (
                 <span class="muted">
-                  ≈ {noteName(note, lang.value === "fr" ? "fr" : "en")}{" "}
+                  ≈ {noteName(note, lang.value)}{" "}
                   {Math.abs(note.cents) >= 1 &&
                     `(${note.cents > 0 ? "+" : ""}${fmt(note.cents, { maximumFractionDigits: 0 })} cents)`}
                 </span>

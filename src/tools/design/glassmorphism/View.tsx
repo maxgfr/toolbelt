@@ -19,27 +19,29 @@ import {
 } from "./logic";
 
 const T = {
-  presets: l("Presets", "Préréglages"),
-  settings: l("Glass", "Verre"),
-  blur: l("Backdrop blur", "Flou de l'arrière-plan"),
-  alpha: l("Fill opacity", "Opacité du fond"),
-  saturation: l("Backdrop saturation", "Saturation de l'arrière-plan"),
-  tint: l("Tint", "Teinte"),
-  border: l("Border opacity", "Opacité de la bordure"),
-  radius: l("Corner radius", "Arrondi"),
-  shadow: l("Shadow opacity", "Opacité de l'ombre"),
-  background: l("Background", "Arrière-plan"),
-  preview: l("Preview", "Aperçu"),
-  cardTitle: l("Glass card", "Carte en verre"),
+  presets: l("Presets", "Préréglages", "Voreinstellungen"),
+  settings: l("Glass", "Verre", "Glas"),
+  blur: l("Backdrop blur", "Flou de l'arrière-plan", "Hintergrund-Weichzeichnung"),
+  alpha: l("Fill opacity", "Opacité du fond", "Deckkraft der Füllung"),
+  saturation: l("Backdrop saturation", "Saturation de l'arrière-plan", "Hintergrund-Sättigung"),
+  tint: l("Tint", "Teinte", "Tönung"),
+  border: l("Border opacity", "Opacité de la bordure", "Deckkraft des Rahmens"),
+  radius: l("Corner radius", "Arrondi", "Eckenradius"),
+  shadow: l("Shadow opacity", "Opacité de l'ombre", "Deckkraft des Schattens"),
+  background: l("Background", "Arrière-plan", "Hintergrund"),
+  preview: l("Preview", "Aperçu", "Vorschau"),
+  cardTitle: l("Glass card", "Carte en verre", "Glaskarte"),
   cardText: l(
     "Translucent, blurred and a little more saturated than what lies behind it.",
     "Translucide, floutée et un peu plus saturée que ce qu'il y a derrière.",
+    "Durchscheinend, weichgezeichnet und etwas satter als das, was dahinter liegt.",
   ),
-  css: l("CSS", "CSS"),
-  tailwind: l("Tailwind", "Tailwind"),
+  css: l("CSS", "CSS", "CSS"),
+  tailwind: l("Tailwind", "Tailwind", "Tailwind"),
   note: l(
     "backdrop-filter only blurs what is behind the element: put the card over an image or a colorful background.",
     "backdrop-filter ne floute que ce qui est derrière l'élément : place la carte sur une image ou un fond coloré.",
+    "backdrop-filter zeichnet nur weich, was hinter dem Element liegt: Leg die Karte über ein Bild oder einen bunten Hintergrund.",
   ),
 };
 

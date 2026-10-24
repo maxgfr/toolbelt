@@ -469,6 +469,10 @@
 }
 
 /* nato */
+.nato-options > :first-child {
+  flex: 1 1 260px;
+  max-width: 360px;
+}
 .nato-cards {
   display: flex;
   flex-wrap: wrap;

@@ -1,39 +1,50 @@
 import { useComputed } from "@preact/signals";
 import { useToolState } from "../../../app/state";
 import { Stats, TextBox, Toggle } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, type L10n, l, locale, tr } from "../../../i18n";
 import { formatDuration, LIMITS, textStats, wordFrequency } from "./logic";
 
 const T = {
-  text: l("Text", "Texte"),
+  text: l("Text", "Texte", "Text"),
   placeholder: l(
     "Type or paste text, or drop a file…",
     "Tape ou colle du texte, ou dépose un fichier…",
+    "Tippe oder füge Text ein, oder lege eine Datei ab…",
   ),
-  characters: l("Characters", "Caractères"),
-  graphemes: l("Visible characters", "Caractères visibles"),
-  noSpaces: l("Without spaces", "Sans espaces"),
-  words: l("Words", "Mots"),
-  lines: l("Lines", "Lignes"),
-  sentences: l("Sentences", "Phrases"),
-  paragraphs: l("Paragraphs", "Paragraphes"),
-  bytes: l("Bytes (UTF-8)", "Octets (UTF-8)"),
-  tokens: l("Tokens (≈)", "Tokens (≈)"),
-  reading: l("Reading time", "Temps de lecture"),
-  speaking: l("Speaking time", "Temps de parole"),
-  limits: l("Limits", "Limites"),
-  frequent: l("Most frequent words", "Mots les plus fréquents"),
-  skipShort: l("Skip words under 4 letters", "Ignorer les mots de moins de 4 lettres"),
-  word: l("Word", "Mot"),
-  count: l("Count", "Nombre"),
-  share: l("Share", "Part"),
+  characters: l("Characters", "Caractères", "Zeichen"),
+  graphemes: l("Visible characters", "Caractères visibles", "Sichtbare Zeichen"),
+  noSpaces: l("Without spaces", "Sans espaces", "Ohne Leerzeichen"),
+  words: l("Words", "Mots", "Wörter"),
+  lines: l("Lines", "Lignes", "Zeilen"),
+  sentences: l("Sentences", "Phrases", "Sätze"),
+  paragraphs: l("Paragraphs", "Paragraphes", "Absätze"),
+  bytes: l("Bytes (UTF-8)", "Octets (UTF-8)", "Bytes (UTF-8)"),
+  tokens: l("Tokens (≈)", "Tokens (≈)", "Tokens (≈)"),
+  reading: l("Reading time", "Temps de lecture", "Lesezeit"),
+  speaking: l("Speaking time", "Temps de parole", "Sprechzeit"),
+  limits: l("Limits", "Limites", "Längengrenzen"),
+  frequent: l("Most frequent words", "Mots les plus fréquents", "Häufigste Wörter"),
+  skipShort: l(
+    "Skip words under 4 letters",
+    "Ignorer les mots de moins de 4 lettres",
+    "Wörter unter 4 Buchstaben ignorieren",
+  ),
+  word: l("Word", "Mot", "Wort"),
+  count: l("Count", "Nombre", "Anzahl"),
+  share: l("Share", "Part", "Anteil"),
+};
+
+/** Names of the limits that are not brand names. */
+const LIMIT_NAMES: Partial<Record<(typeof LIMITS)[number]["id"], L10n>> = {
+  title: l("SEO title", "Titre SEO", "SEO-Titel"),
+  meta: l("Meta description", "Méta-description", "Meta-Beschreibung"),
 };
 
 export default function Counter() {
   const text = useToolState("text", "");
   const skipShort = useToolState("skipShort", true);
-  const stats = useComputed(() => textStats(text.value, lang.value));
-  const top = useComputed(() => wordFrequency(text.value, 12, skipShort.value ? 4 : 1, lang.value));
+  const stats = useComputed(() => textStats(text.value, locale()));
+  const top = useComputed(() => wordFrequency(text.value, 12, skipShort.value ? 4 : 1, locale()));
   const s = stats.value;
 
   return (
@@ -73,7 +84,7 @@ export default function Counter() {
               const over = s.graphemes > lim.max;
               return (
                 <li key={lim.id}>
-                  <span>{lim.label}</span>
+                  <span>{LIMIT_NAMES[lim.id] ? tr(LIMIT_NAMES[lim.id] as L10n) : lim.label}</span>
                   <meter min={0} max={lim.max} value={Math.min(s.graphemes, lim.max)} />
                   <span class={`mono small ${over ? "error" : "muted"}`}>
                     {fmt(s.graphemes)} / {fmt(lim.max)}

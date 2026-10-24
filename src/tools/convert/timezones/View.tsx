@@ -1,38 +1,52 @@
 import { useComputed } from "@preact/signals";
 import { useToolState } from "../../../app/state";
 import { Button, ErrorNote, Field, IconButton, Panel } from "../../../app/ui";
-import { l, tr } from "../../../i18n";
+import { l, locale, tr } from "../../../i18n";
 import { formatOffset, localZone, zoneCity } from "../_shared";
-import { attempt, locale, ZonePicker } from "../_ui";
+import { attempt, ZonePicker } from "../_ui";
 import { convertZones, isWorkingHour, nowIn, splitDiff, type ZoneRow } from "./logic";
 
 const T = {
-  from: l("From", "Depuis"),
-  zone: l("Time zone", "Fuseau horaire"),
-  date: l("Date", "Date"),
-  time: l("Time", "Heure"),
-  now: l("Now", "Maintenant"),
-  targets: l("In other time zones", "Dans d'autres fuseaux"),
-  add: l("Add a time zone…", "Ajouter un fuseau…"),
-  remove: l("Remove", "Retirer"),
-  makeSource: l("Convert from this zone", "Convertir depuis ce fuseau"),
-  nextDay: l("next day", "lendemain"),
-  prevDay: l("previous day", "veille"),
-  days: l("{n} days", "{n} jours"),
-  same: l("same time", "même heure"),
-  working: l("Working hours (Mon–Fri, 9:00–18:00)", "Heures de bureau (lun–ven, 9 h–18 h)"),
+  from: l("From", "Depuis", "Von"),
+  zone: l("Time zone", "Fuseau horaire", "Zeitzone"),
+  date: l("Date", "Date", "Datum"),
+  time: l("Time", "Heure", "Uhrzeit"),
+  now: l("Now", "Maintenant", "Jetzt"),
+  targets: l("In other time zones", "Dans d'autres fuseaux", "In anderen Zeitzonen"),
+  add: l("Add a time zone…", "Ajouter un fuseau…", "Zeitzone hinzufügen…"),
+  remove: l("Remove", "Retirer", "Entfernen"),
+  makeSource: l(
+    "Convert from this zone",
+    "Convertir depuis ce fuseau",
+    "Von dieser Zeitzone aus umrechnen",
+  ),
+  nextDay: l("next day", "lendemain", "nächster Tag"),
+  prevDay: l("previous day", "veille", "Vortag"),
+  days: l("{n} days", "{n} jours", "{n} Tage"),
+  same: l("same time", "même heure", "gleiche Uhrzeit"),
+  working: l(
+    "Working hours (Mon–Fri, 9:00–18:00)",
+    "Heures de bureau (lun–ven, 9 h–18 h)",
+    "Arbeitszeit (Mo–Fr, 9–18 Uhr)",
+  ),
   noTargets: l(
     "Add time zones to compare, e.g. Tokyo, New York or UTC.",
     "Ajoute des fuseaux à comparer, par ex. Tokyo, New York ou UTC.",
+    "Füge Zeitzonen zum Vergleichen hinzu, z. B. Tokio, New York oder UTC.",
   ),
-  badDate: l("Pick a valid date.", "Choisis une date valide."),
-  badTime: l("Pick a valid time.", "Choisis une heure valide."),
-  badZone: l("Pick a time zone from the list.", "Choisis un fuseau dans la liste."),
+  badDate: l("Pick a valid date.", "Choisis une date valide.", "Wähle ein gültiges Datum."),
+  badTime: l("Pick a valid time.", "Choisis une heure valide.", "Wähle eine gültige Uhrzeit."),
+  badZone: l(
+    "Pick a time zone from the list.",
+    "Choisis un fuseau dans la liste.",
+    "Wähle eine Zeitzone aus der Liste.",
+  ),
   shifted: l(
     "This time does not exist in that zone (clocks jump forward): shown as {t}.",
     "Cette heure n'existe pas dans ce fuseau (passage à l'heure d'été) : affichée comme {t}.",
+    "Diese Uhrzeit gibt es in dieser Zeitzone nicht (Umstellung auf Sommerzeit): angezeigt als {t}.",
   ),
-  utc: l("UTC instant:", "Instant UTC :"),
+  utc: l("UTC instant:", "Instant UTC :", "UTC-Zeitpunkt:"),
 };
 
 const DEFAULT_TARGETS = ["UTC", "America/New_York", "Europe/London", "Asia/Tokyo"];

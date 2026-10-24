@@ -70,6 +70,7 @@ describe("calculator: arithmetic", () => {
     expect(calc("2.5 * 2", { decimalComma: true })).toBe(5);
     expect(calc("max(1; 2,5)", { decimalComma: true })).toBe(2.5);
     expect(calc("max(1, 2)", { decimalComma: true })).toBe(2);
+    expect(calc("19,99 * 3", { decimalComma: true })).toBeCloseTo(59.97, 10);
     expect(calc("2e3")).toBe(2000);
     expect(calc(".5 + .25")).toBe(0.75);
   });
@@ -103,6 +104,15 @@ describe("calculator: sheets", () => {
     expect(r[2]).toMatchObject({ kind: "value", value: 1100 });
     expect(r[5]).toMatchObject({ kind: "value", value: 5 });
     expect(r[0]).toMatchObject({ label: "Rent", value: 800 });
+  });
+
+  it("understands German names", () => {
+    const de = { angle: "deg", decimalComma: true } as const;
+    const r = evaluateSheet("Miete: 850\nEssen: 12,5 × 2\nsumme\nwurzel(16)\nrunden(2,345; 2)", de);
+    expect(r[2]).toMatchObject({ kind: "value", value: 875 });
+    expect(r[3]).toMatchObject({ kind: "value", value: 4 });
+    expect(r[4]).toMatchObject({ kind: "value", value: 2.35 });
+    expect(calc("mittel(1; 2; 6)")).toBe(3);
   });
 
   it("keeps going after an error", () => {

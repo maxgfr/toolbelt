@@ -139,6 +139,16 @@ export function toggleFavorite(id: string): void {
   writeList("toolbelt:favorites", favorites.value);
 }
 
+export function removeRecent(id: string): void {
+  recents.value = recents.value.filter((x) => x !== id);
+  writeList("toolbelt:recents", recents.value);
+}
+
+export function clearRecents(): void {
+  recents.value = [];
+  writeList("toolbelt:recents", recents.value);
+}
+
 export function markRecent(id: string): void {
   recents.value = [id, ...recents.value.filter((x) => x !== id)].slice(0, 8);
   writeList("toolbelt:recents", recents.value);

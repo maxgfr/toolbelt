@@ -5,7 +5,7 @@ import { route } from "./app/router";
 import { ToolPage } from "./app/ToolPage";
 import { theme, toggleTheme } from "./app/theme";
 import { Icon, IconButton, Toasts } from "./app/ui";
-import { lang, setLang, tr } from "./i18n";
+import { LANGS, type Lang, lang, setLang, tr } from "./i18n";
 import { S } from "./i18n/strings";
 
 function Brand() {
@@ -33,36 +33,47 @@ function App() {
   return (
     <>
       <header class="topbar">
-        <Brand />
-        <button type="button" class="topbar-search" onClick={() => (paletteOpen.value = true)}>
-          <Icon name="search" size={16} />
-          <span>{tr(S.search)}</span>
-          <kbd>⌘K</kbd>
-        </button>
-        <div class="topbar-actions">
-          <button
-            type="button"
-            class="lang-btn"
-            title={tr(S.language)}
-            onClick={() => setLang(lang.value === "fr" ? "en" : "fr")}
-          >
-            {lang.value === "fr" ? "EN" : "FR"}
+        <div class="topbar-inner">
+          <Brand />
+          <button type="button" class="topbar-search" onClick={() => (paletteOpen.value = true)}>
+            <Icon name="search" size={16} />
+            <span>{tr(S.search)}</span>
+            <kbd>⌘K</kbd>
           </button>
-          <IconButton
-            icon={theme.value === "dark" ? "sun" : "moon"}
-            label={tr(S.theme)}
-            onClick={toggleTheme}
-          />
-          <a
-            class="icon-btn"
-            href="https://github.com/maxgfr/toolbelt"
-            target="_blank"
-            rel="noopener"
-            aria-label={tr(S.source)}
-            title={tr(S.source)}
-          >
-            <Icon name="github" />
-          </a>
+          <div class="topbar-actions">
+            <label class="lang-select" title={tr(S.language)}>
+              <Icon name="globe" size={16} />
+              <span class="sr-only">{tr(S.language)}</span>
+              <span class="lang-code" aria-hidden="true">
+                {lang.value.toUpperCase()}
+              </span>
+              <select
+                value={lang.value}
+                onChange={(e) => setLang((e.currentTarget as HTMLSelectElement).value as Lang)}
+              >
+                {LANGS.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {x.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <IconButton
+              icon={theme.value === "dark" ? "sun" : "moon"}
+              label={tr(S.theme)}
+              onClick={toggleTheme}
+            />
+            <a
+              class="icon-btn"
+              href="https://github.com/maxgfr/toolbelt"
+              target="_blank"
+              rel="noopener"
+              aria-label={tr(S.source)}
+              title={tr(S.source)}
+            >
+              <Icon name="github" />
+            </a>
+          </div>
         </div>
       </header>
       {r.name === "home" ? <Home /> : <ToolPage id={r.id} shared={r.shared} />}

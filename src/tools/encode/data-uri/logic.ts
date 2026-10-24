@@ -24,6 +24,7 @@ export function percentToBytes(s: string): Uint8Array {
         fail(
           `Malformed percent sequence at character ${i + 1}.`,
           `Séquence pourcent malformée au caractère ${i + 1}.`,
+          `Fehlerhafte Prozentsequenz bei Zeichen ${i + 1}.`,
         );
       out.push(Number.parseInt(hex, 16));
       i += 2;
@@ -40,12 +41,17 @@ export function percentToBytes(s: string): Uint8Array {
 export function parseDataUri(input: string): DataUri {
   const s = input.trim();
   if (!/^data:/i.test(s))
-    fail("A data URI starts with “data:”.", "Une data URI commence par « data: ».");
+    fail(
+      "A data URI starts with “data:”.",
+      "Une data URI commence par « data: ».",
+      "Eine Data-URI beginnt mit „data:“.",
+    );
   const comma = s.indexOf(",");
   if (comma < 0)
     fail(
       "Missing the comma between the header and the data.",
       "Il manque la virgule entre l'en-tête et les données.",
+      "Das Komma zwischen Header und Daten fehlt.",
     );
   const params = s
     .slice(5, comma)
@@ -55,7 +61,11 @@ export function parseDataUri(input: string): DataUri {
   if (base64) params.pop();
   const mime = (params[0] ?? "").toLowerCase() || "text/plain";
   if (!/^[\w.+-]+\/[\w.+-]+$/.test(mime))
-    fail(`“${params[0]}” is not a MIME type.`, `« ${params[0]} » n'est pas un type MIME.`);
+    fail(
+      `“${params[0]}” is not a MIME type.`,
+      `« ${params[0]} » n'est pas un type MIME.`,
+      `„${params[0]}“ ist kein MIME-Typ.`,
+    );
   let charset: string | null = null;
   for (const p of params.slice(1)) {
     const m = /^charset=(.+)$/i.exec(p);
@@ -100,6 +110,7 @@ export function buildDataUri(bytes: Uint8Array, mime: string, encoding: DataEnco
       fail(
         "Percent encoding needs UTF-8 text; use Base64 for this file.",
         "L'encodage pourcent demande du texte UTF-8 ; utilise Base64 pour ce fichier.",
+        "Prozentkodierung braucht UTF-8-Text; nimm Base64 für diese Datei.",
       );
     const text = new TextDecoder().decode(bytes);
     const body = encodeURIComponent(text).replace(/%(2F|3A|3D|3B|2C|40|21|24|2A|2B|3F|26)/g, (e) =>

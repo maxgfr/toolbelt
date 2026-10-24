@@ -20,7 +20,7 @@ export async function hmac(
   message: Uint8Array,
 ): Promise<Uint8Array> {
   // WebCrypto refuses an empty HMAC key.
-  if (!key.length) fail("Enter a key.", "Saisis une clé.");
+  if (!key.length) fail("Enter a key.", "Saisis une clé.", "Gib einen Schlüssel ein.");
   // Copies give WebCrypto buffers backed by a plain ArrayBuffer.
   const k = await crypto.subtle.importKey(
     "raw",

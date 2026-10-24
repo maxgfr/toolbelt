@@ -1,9 +1,10 @@
 /**
- * Readability scores for English (Flesch, Flesch–Kincaid, Gunning fog, SMOG, Coleman–Liau, ARI)
- * and French (Kandel–Moles, LIX), with heuristic syllable counting per language.
+ * Readability scores for English (Flesch, Flesch–Kincaid, Gunning fog, SMOG, Coleman–Liau, ARI),
+ * French (Kandel–Moles) and German (Flesch–Amstad, Wiener Sachtextformel), plus LIX for all,
+ * with heuristic syllable counting per language.
  */
 
-export type Lang = "en" | "fr";
+export type Lang = "en" | "fr" | "de";
 
 /** Vowel groups of an English word, with the usual silent-e and diphthong corrections. */
 export function syllablesEn(word: string): number {
@@ -36,8 +37,35 @@ export function syllablesFr(word: string): number {
   return Math.max(1, n);
 }
 
+/** Vowel pairs that German reads as one sound: diphthongs, long double vowels, "ie". */
+const DE_NUCLEI = /^(?:ei|ai|ey|ay|au|eu|äu|ie|aa|ee|oo)/;
+
+/**
+ * Syllables of a German word: one per vowel, except that diphthongs and long vowels (ei, au,
+ * eu, äu, ie, aa, ee, oo) count once and the "u" of "qu" is not a vowel. So "Theater" (e-a) and
+ * "Nation" (i-o) get their hiatus, "Feuer" splits as eu-e. Misses: "Museum", "Familie".
+ */
+export function syllablesDe(word: string): number {
+  const w = word
+    .toLowerCase()
+    .replace(/[^a-zäöüß]/g, "")
+    .replace(/qu/g, "q");
+  if (!w) return 0;
+  let n = 0;
+  for (const group of w.match(/[aeiouyäöü]+/g) ?? []) {
+    let i = 0;
+    while (i < group.length) {
+      i += DE_NUCLEI.test(group.slice(i)) ? 2 : 1;
+      n++;
+    }
+  }
+  return Math.max(1, n);
+}
+
 export function syllables(word: string, lang: Lang): number {
-  return lang === "fr" ? syllablesFr(word) : syllablesEn(word);
+  if (lang === "fr") return syllablesFr(word);
+  if (lang === "de") return syllablesDe(word);
+  return syllablesEn(word);
 }
 
 export interface Sentence {
@@ -65,6 +93,16 @@ export function words(text: string, lang: Lang): string[] {
   return out;
 }
 
+const DE_ABBR =
+  /(?:^|[^\p{L}])(?:z\.\s?B|d\.\s?h|u\.\s?a|bzw|vgl|ca|evtl|ggf|inkl|sog|Nr|Hr|Fr|Str|Abb|Kap|Jh|geb)\.$/u;
+const DE_AFTER_ORDINAL =
+  /^(?:Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|Jahrhundert|Klasse|Mal|Platz|Stock)\b/u;
+
+/** A German abbreviation, or an ordinal before a month, does not end the sentence. */
+function germanGlue(before: string, next: string): boolean {
+  return DE_ABBR.test(before) || (/\d\.$/.test(before) && DE_AFTER_ORDINAL.test(next));
+}
+
 /** Sentences (end punctuation or blank lines), with their position and word count. */
 export function sentences(text: string, lang: Lang): Sentence[] {
   const out: Sentence[] = [];
@@ -81,10 +119,14 @@ export function sentences(text: string, lang: Lang): Sentence[] {
     const next = text.slice(start, end);
     const between = prev ? text.slice(prev.end, start) : "";
     // Titles and initials are followed by a name; other abbreviations and decimals by lowercase.
+    // German capitalizes nouns, so its abbreviations ("z. B.", "bzw.", "Nr.") glue whatever
+    // follows, and so does an ordinal before a month ("am 3. Oktober").
     const glue =
       !between.includes("\n") &&
       (/(?:^|[^\p{L}])(?:Mr|Mrs|Ms|Dr|Prof|St|Jr|Sr|M|Mme|Mlle|Me|Pr|\p{Lu})\.$/u.test(before) ||
-        (/(?:(?:^|[^\p{L}])(?:vs|etc|e\.g|i\.e|cf|p|ex|av|apr|J\.-C|\p{Ll})\.|\d\.)$/u.test(
+        (/(?:^|[^\p{L}])\p{L}\.$/u.test(before) && /^\p{L}\./u.test(next)) ||
+        (lang === "de" && germanGlue(before, next)) ||
+        (/(?:(?:^|[^\p{L}])(?:vs|etc|usw|e\.g|i\.e|cf|p|ex|av|apr|J\.-C|\p{Ll})\.|\d\.)$/u.test(
           before,
         ) &&
           /^[\p{Ll}\d]/u.test(next)));
@@ -104,12 +146,38 @@ export interface Analysis {
   syllables: number;
   /** Words of 3 syllables or more. */
   complex: number;
+  /** Words of one syllable (Wiener Sachtextformel). */
+  mono: number;
   /** Words of more than 6 letters (LIX). */
   long: number;
   scores: Score[];
 }
 
-export type ScoreId = "flesch" | "fk" | "fog" | "smog" | "cli" | "ari" | "kandel" | "lix";
+export type ScoreId =
+  | "flesch"
+  | "fk"
+  | "fog"
+  | "smog"
+  | "cli"
+  | "ari"
+  | "kandel"
+  | "amstad"
+  | "wstf"
+  | "lix";
+
+/** The usual name of each score. */
+export const SCORE_NAMES: Record<ScoreId, string> = {
+  flesch: "Flesch Reading Ease",
+  fk: "Flesch–Kincaid Grade",
+  fog: "Gunning Fog",
+  smog: "SMOG",
+  cli: "Coleman–Liau",
+  ari: "Automated Readability Index",
+  kandel: "Kandel & Moles",
+  amstad: "Flesch–Amstad",
+  wstf: "Wiener Sachtextformel",
+  lix: "LIX",
+};
 
 export interface Score {
   id: ScoreId;
@@ -122,7 +190,7 @@ export interface Score {
   shaky: boolean;
 }
 
-/** Guesses English or French from common function words. */
+/** Guesses English, French or German from common function words. */
 export function detectLang(text: string): Lang {
   const w = text.toLowerCase().match(/[\p{L}'’]+/gu) ?? [];
   const FR = new Set(
@@ -135,12 +203,20 @@ export function detectLang(text: string): Lang {
       " ",
     ),
   );
+  const DE = new Set(
+    "der die das und ist nicht ein eine einen dem den des zu von mit sich auf für im auch es ich sie er wir ihr wird sind war als nach wie aus bei oder aber noch über dass".split(
+      " ",
+    ),
+  );
   let fr = 0;
   let en = 0;
+  let de = 0;
   for (const x of w) {
     if (FR.has(x) || /^(?:l|d|qu|c|n|s|j)['’]/.test(x) || /[éèêàçù]/.test(x)) fr++;
     if (EN.has(x)) en++;
+    if (DE.has(x) || /[äöüß]/.test(x)) de++;
   }
+  if (de > en && de > fr) return "de";
   return fr > en ? "fr" : "en";
 }
 
@@ -158,17 +234,19 @@ export function analyze(text: string, lang: Lang): Analysis {
   const W = ws.length;
   let syl = 0;
   let complex = 0;
+  let mono = 0;
   let long = 0;
   let letters = 0;
   for (const w of ws) {
     const n = syllables(w, lang);
     syl += n;
     if (n >= 3) complex++;
+    if (n === 1) mono++;
     const len = [...w.replace(/['’]/g, "")].length;
     letters += len;
     if (len > 6) long++;
   }
-  const base = { lang, sentences: sents, words: W, letters, syllables: syl, complex, long };
+  const base = { lang, sentences: sents, words: W, letters, syllables: syl, complex, mono, long };
   if (W === 0) return { ...base, scores: [] };
 
   const wps = W / S;
@@ -226,6 +304,27 @@ export function analyze(text: string, lang: Lang): Analysis {
       value: grade(ari),
       grade: grade(ari),
       level: gradeLevel(ari),
+      shaky: false,
+    });
+  } else if (lang === "de") {
+    // Amstad (1978): Flesch's reading ease recalibrated for German's longer words.
+    const amstad = 180 - wps - 58.5 * spw;
+    scores.push({
+      id: "amstad",
+      value: round(amstad),
+      grade: null,
+      level: level(amstad, [80, 60, 50, 30], true),
+      shaky: false,
+    });
+    // Bamberger & Vanecek (1984), first Wiener Sachtextformel: roughly the school year (4–15).
+    const pct = (n: number) => (100 * n) / W;
+    const wstf =
+      0.1935 * pct(complex) + 0.1672 * wps + 0.1297 * pct(long) - 0.0327 * pct(mono) - 0.875;
+    scores.push({
+      id: "wstf",
+      value: grade(wstf),
+      grade: null,
+      level: level(wstf, [6, 8, 10, 12], false),
       shaky: false,
     });
   } else {

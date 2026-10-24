@@ -6,15 +6,19 @@ import { NumberInput } from "../_ui";
 import { lorem, MAX, type Unit } from "./logic";
 
 const T = {
-  count: l("How many", "Combien"),
-  paragraphs: l("Paragraphs", "Paragraphes"),
-  sentences: l("Sentences", "Phrases"),
-  words: l("Words", "Mots"),
-  start: l("Start with “Lorem ipsum…”", "Commencer par « Lorem ipsum… »"),
-  html: l("HTML <p> tags", "Balises HTML <p>"),
-  regenerate: l("Regenerate", "Régénérer"),
-  output: l("Placeholder text", "Faux texte"),
-  stats: l("{w} words · {c} characters", "{w} mots · {c} caractères"),
+  count: l("How many", "Combien", "Wie viele"),
+  paragraphs: l("Paragraphs", "Paragraphes", "Absätze"),
+  sentences: l("Sentences", "Phrases", "Sätze"),
+  words: l("Words", "Mots", "Wörter"),
+  start: l(
+    "Start with “Lorem ipsum…”",
+    "Commencer par « Lorem ipsum… »",
+    "Mit „Lorem ipsum…“ beginnen",
+  ),
+  html: l("HTML <p> tags", "Balises HTML <p>", "HTML-<p>-Tags"),
+  regenerate: l("Regenerate", "Régénérer", "Neu erzeugen"),
+  output: l("Placeholder text", "Faux texte", "Blindtext"),
+  stats: l("{w} words · {c} characters", "{w} mots · {c} caractères", "{w} Wörter · {c} Zeichen"),
 };
 
 export default function Lorem() {

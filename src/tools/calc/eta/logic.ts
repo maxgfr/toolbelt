@@ -63,6 +63,11 @@ export function eta(p: Progress): EtaResult | EtaError {
   };
 }
 
+export type PaceUnit = "minute" | "hour" | "day";
+
+/** Items per hour for one item per `unit` of a pace typed per minute, hour or day. */
+export const PER_HOUR: Record<PaceUnit, number> = { minute: 60, hour: 1, day: 1 / 24 };
+
 /** Time to do `remaining` items at `perHour`; null when the pace is 0. */
 export function timeAtPace(remaining: number, perHour: number): number | null {
   if (!(remaining >= 0) || !(perHour > 0)) return null;

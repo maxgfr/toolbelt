@@ -544,14 +544,18 @@ kbd {
   position: sticky;
   top: 0;
   z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  height: 56px;
-  padding: 0 max(16px, env(safe-area-inset-left));
   border-bottom: 1px solid var(--line);
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(10px);
+}
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 1180px;
+  height: 56px;
+  margin: 0 auto;
+  padding: 0 max(16px, env(safe-area-inset-left));
 }
 .brand {
   display: inline-flex;
@@ -588,20 +592,55 @@ kbd {
   align-items: center;
   gap: 2px;
 }
-.lang-btn {
+.lang-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
   height: 34px;
-  min-width: 38px;
-  border: 0;
+  padding-left: 9px;
   border-radius: 8px;
-  background: transparent;
   color: var(--ink-2);
+}
+.lang-select:hover,
+.lang-select:focus-within {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.lang-select select {
+  appearance: none;
+  height: 34px;
+  padding: 0 10px 0 6px;
+  border: 0;
+  background: transparent;
+  color: inherit;
   font: inherit;
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 600;
   cursor: pointer;
 }
-.lang-btn:hover {
-  background: var(--surface-2);
+.lang-select select:focus-visible {
+  outline: none;
+}
+.lang-select:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.lang-code {
+  display: none;
+  padding: 0 9px 0 6px;
+  font-size: 13px;
+  font-weight: 650;
+}
+@media (max-width: 560px) {
+  .lang-code {
+    display: inline;
+  }
+  .lang-select select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    opacity: 0;
+  }
 }
 @media (max-width: 560px) {
   .topbar-search kbd,
@@ -981,4 +1020,46 @@ fieldset.segmented {
 }
 .home-section {
   scroll-margin-top: 72px;
+}
+
+/* Recent tools: a cross to forget one, the star moves left of it. */
+.card.removable .card-link {
+  padding-right: 64px;
+}
+.card.removable .card-fav {
+  right: 36px;
+}
+.card-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.card-remove:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.section-clear {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 560;
+  text-transform: none;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+.section-clear:hover {
+  color: var(--ink);
+  text-decoration: underline;
 }

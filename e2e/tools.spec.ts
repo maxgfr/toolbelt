@@ -19,7 +19,7 @@ function watch(page: Page, origin: string) {
   return problems;
 }
 
-async function openTool(page: Page, id: string, lang: "en" | "fr") {
+async function openTool(page: Page, id: string, lang: "en" | "fr" | "de") {
   await page.addInitScript((l) => localStorage.setItem("toolbelt:lang", l), lang);
   await page.goto(`./#/${id}`);
   await expect(page.locator(".tool-head h1")).toBeVisible();
@@ -31,13 +31,13 @@ async function openTool(page: Page, id: string, lang: "en" | "fr") {
   );
 }
 
-for (const lang of ["en", "fr"] as const) {
+for (const lang of ["en", "fr", "de"] as const) {
   test.describe(`every tool opens (${lang})`, () => {
     for (const tool of TOOLS) {
       test(tool.id, async ({ page, baseURL }) => {
         const problems = watch(page, new URL(baseURL ?? "").origin);
         await openTool(page, tool.id, lang);
-        await expect(page.locator(".tool-head h1")).toHaveText(tool.title[lang]);
+        await expect(page.locator(".tool-head h1")).toHaveText(tool.title[lang] ?? tool.title.en);
         await expect(page.locator("html")).toHaveAttribute("lang", lang);
         await page.waitForTimeout(150);
         expect(problems).toEqual([]);
@@ -111,10 +111,32 @@ test("a share link carries the input", async ({ page, context, baseURL }) => {
   await expect(other).toHaveURL(/#\/json$/);
 });
 
-test("the language switch translates the page", async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem("toolbelt:lang", "en"));
+test("the language list translates the page, and the choice stays", async ({ page }) => {
+  const counter = TOOLS.find((t) => t.id === "counter");
   await page.goto("./#/counter");
-  await expect(page.locator(".tool-head h1")).toHaveText("Character & word counter");
-  await page.getByRole("button", { name: "FR", exact: true }).click();
-  await expect(page.locator(".tool-head h1")).toHaveText("Compteur de caractères et de mots");
+  await page.evaluate(() => localStorage.removeItem("toolbelt:lang"));
+  await page.reload();
+  await expect(page.locator(".tool-head h1")).toHaveText(counter?.title.en ?? "");
+  await page.locator(".lang-select select").selectOption("de");
+  await expect(page.locator(".tool-head h1")).toHaveText(counter?.title.de ?? "");
+  await expect(page.locator("html")).toHaveAttribute("lang", "de");
+  await page.reload();
+  await expect(page.locator(".tool-head h1")).toHaveText(counter?.title.de ?? "");
+  await page.locator(".lang-select select").selectOption("fr");
+  await expect(page.locator(".tool-head h1")).toHaveText(counter?.title.fr ?? "");
 });
+
+for (const [browser, expected] of [
+  ["de-DE", "de"],
+  ["fr-CA", "fr"],
+  ["es-ES", "en"],
+] as const) {
+  test.describe(`a ${browser} browser`, () => {
+    test.use({ locale: browser });
+    test(`starts in ${expected}`, async ({ page }) => {
+      await page.goto("./");
+      await expect(page.locator("html")).toHaveAttribute("lang", expected);
+      await expect(page.locator(".lang-select select")).toHaveValue(expected);
+    });
+  });
+}
