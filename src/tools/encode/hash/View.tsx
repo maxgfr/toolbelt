@@ -11,7 +11,7 @@ import {
   TextBox,
   Toggle,
 } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, locale, tr } from "../../../i18n";
 import { formatSize } from "../_shared";
 import { errMsg, useAsync } from "../_ui";
 import {
@@ -29,34 +29,49 @@ import {
 type Source = "text" | "file";
 
 const T = {
-  source: l("Source", "Source"),
-  text: l("Text", "Texte"),
-  file: l("File", "Fichier"),
-  input: l("Text to hash", "Texte à hacher"),
-  placeholder: l("Type or paste text…", "Tape ou colle du texte…"),
+  source: l("Source", "Source", "Quelle"),
+  text: l("Text", "Texte", "Text"),
+  file: l("File", "Fichier", "Datei"),
+  input: l("Text to hash", "Texte à hacher", "Zu hashender Text"),
+  placeholder: l("Type or paste text…", "Tape ou colle du texte…", "Text eingeben oder einfügen…"),
   drop: l(
     "Drop a file here, or click to choose (any size, read in chunks)",
     "Dépose un fichier ici, ou clique pour choisir (toute taille, lu par morceaux)",
+    "Datei hier ablegen oder klicken, um eine auszuwählen (beliebige Größe, wird stückweise gelesen)",
   ),
-  other: l("Choose another file", "Choisir un autre fichier"),
-  cancel: l("Cancel", "Annuler"),
-  cancelled: l("Cancelled.", "Annulé."),
-  format: l("Output", "Sortie"),
-  hex: l("Hex", "Hexa"),
-  base64: l("Base64", "Base64"),
-  upper: l("Uppercase", "Majuscules"),
-  expected: l("Compare with an expected checksum", "Comparer avec une empreinte attendue"),
+  other: l("Choose another file", "Choisir un autre fichier", "Andere Datei wählen"),
+  cancel: l("Cancel", "Annuler", "Abbrechen"),
+  cancelled: l("Cancelled.", "Annulé.", "Abgebrochen."),
+  format: l("Output", "Sortie", "Ausgabe"),
+  hex: l("Hex", "Hexa", "Hex"),
+  base64: l("Base64", "Base64", "Base64"),
+  upper: l("Uppercase", "Majuscules", "Großbuchstaben"),
+  expected: l(
+    "Compare with an expected checksum",
+    "Comparer avec une empreinte attendue",
+    "Mit erwarteter Prüfsumme vergleichen",
+  ),
   expectedPh: l(
     "Paste the checksum from the download page (hex or Base64)",
     "Colle l'empreinte de la page de téléchargement (hexa ou Base64)",
+    "Prüfsumme von der Download-Seite einfügen (hex oder Base64)",
   ),
-  matches: l("Matches {algo}", "Correspond à {algo}"),
-  noMatch: l("No algorithm gives this checksum.", "Aucun algorithme ne donne cette empreinte."),
-  notChecksum: l("This is neither hex nor Base64.", "Ce n'est ni de l'hexa ni du Base64."),
-  hashing: l("Hashing… {pct}", "Calcul… {pct}"),
+  matches: l("Matches {algo}", "Correspond à {algo}", "Stimmt mit {algo} überein"),
+  noMatch: l(
+    "No algorithm gives this checksum.",
+    "Aucun algorithme ne donne cette empreinte.",
+    "Kein Algorithmus ergibt diese Prüfsumme.",
+  ),
+  notChecksum: l(
+    "This is neither hex nor Base64.",
+    "Ce n'est ni de l'hexa ni du Base64.",
+    "Das ist weder hex noch Base64.",
+  ),
+  hashing: l("Hashing… {pct}", "Calcul… {pct}", "Hash wird berechnet… {pct}"),
   weak: l(
     "MD5, SHA-1 and CRC32 only detect accidental corruption: do not rely on them for security.",
     "MD5, SHA-1 et CRC32 ne détectent que les corruptions accidentelles : pas de sécurité avec eux.",
+    "MD5, SHA-1 und CRC32 erkennen nur versehentliche Beschädigungen: Verlass dich für Sicherheit nicht auf sie.",
   ),
 };
 
@@ -169,9 +184,7 @@ export default function Hash() {
             <div class="hash-file">
               <div class="row">
                 <strong class="hash-file-name">{f.name}</strong>
-                <span class="muted small">
-                  {formatSize(f.size, lang.value === "fr" ? "fr-FR" : "en-US")}
-                </span>
+                <span class="muted small">{formatSize(f.size, locale())}</span>
                 <span class="spacer" />
                 {busy.value && (
                   <Button

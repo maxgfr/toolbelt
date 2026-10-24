@@ -3,7 +3,7 @@ import type { ComponentChildren } from "preact";
 import { Badge } from "../../../app/kit";
 import { useToolState } from "../../../app/state";
 import { Button, CopyButton, ErrorNote, Output, Panel, pickFiles, TextBox } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, locale, tr } from "../../../i18n";
 import { useAsync } from "../_ui";
 import {
   type Decoded,
@@ -22,63 +22,85 @@ import {
 } from "./logic";
 
 const T = {
-  input: l("Certificate (PEM)", "Certificat (PEM)"),
+  input: l("Certificate (PEM)", "Certificat (PEM)", "Zertifikat (PEM)"),
   placeholder: l(
     "Paste one or more PEM blocks (-----BEGIN CERTIFICATE-----…), a whole chain, or a certificate request (CSR)…",
     "Colle un ou plusieurs blocs PEM (-----BEGIN CERTIFICATE-----…), une chaîne entière, ou une demande de certificat (CSR)…",
+    "Einen oder mehrere PEM-Blöcke (-----BEGIN CERTIFICATE-----…), eine ganze Kette oder eine Zertifikatsanforderung (CSR) einfügen…",
   ),
-  open: l("Open a file", "Ouvrir un fichier"),
-  found: l("{n} item(s) found", "{n} élément(s) trouvé(s)"),
-  certificate: l("Certificate", "Certificat"),
-  csr: l("Certificate request (CSR)", "Demande de certificat (CSR)"),
-  root: l("Self-signed", "Auto-signé"),
-  ca: l("CA", "AC"),
-  subject: l("Subject", "Sujet"),
-  issuer: l("Issuer", "Émetteur"),
-  issuedBy: l("issued by #{n} above", "émis par le n°{n} ci-dessus"),
-  serial: l("Serial number", "Numéro de série"),
-  version: l("Version", "Version"),
-  notBefore: l("Valid from", "Valide à partir du"),
-  notAfter: l("Valid until", "Valide jusqu'au"),
-  status: l("Status", "État"),
-  validFor: l("Valid · expires in {n} days", "Valide · expire dans {n} jours"),
-  validToday: l("Valid · expires within a day", "Valide · expire dans moins d'un jour"),
-  expired: l("Expired {n} days ago", "Expiré depuis {n} jours"),
-  expiredToday: l("Expired less than a day ago", "Expiré depuis moins d'un jour"),
-  notYet: l("Not valid yet (starts in {n} days)", "Pas encore valide (commence dans {n} jours)"),
-  lifetime: l("Lifetime", "Durée de validité"),
-  days: l("{n} days", "{n} jours"),
-  key: l("Public key", "Clé publique"),
-  bits: l("bits", "bits"),
-  exponent: l("exponent", "exposant"),
-  sigAlg: l("Signature algorithm", "Algorithme de signature"),
-  san: l("Alternative names (SAN)", "Noms alternatifs (SAN)"),
-  ku: l("Key usage", "Utilisation de la clé"),
-  eku: l("Extended key usage", "Utilisation étendue"),
-  bc: l("Basic constraints", "Contraintes de base"),
-  isCa: l("CA: yes", "AC : oui"),
-  notCa: l("CA: no (end entity)", "AC : non (entité finale)"),
-  pathLen: l("path length ≤ {n}", "longueur de chaîne ≤ {n}"),
-  ski: l("Subject key ID", "ID de clé du sujet"),
-  aki: l("Authority key ID", "ID de clé de l'autorité"),
-  ocsp: l("OCSP", "OCSP"),
-  caIssuers: l("CA issuers", "Émetteurs de l'AC"),
-  crl: l("CRL", "CRL"),
-  policies: l("Policies", "Politiques"),
-  extensions: l("Extensions", "Extensions"),
-  critical: l("critical", "critique"),
-  none: l("none", "aucune"),
-  fingerprints: l("Fingerprints", "Empreintes"),
-  copyPem: l("Copy PEM", "Copier le PEM"),
+  open: l("Open a file", "Ouvrir un fichier", "Datei öffnen"),
+  found: l("{n} item(s) found", "{n} élément(s) trouvé(s)", "{n} Element(e) gefunden"),
+  certificate: l("Certificate", "Certificat", "Zertifikat"),
+  csr: l(
+    "Certificate request (CSR)",
+    "Demande de certificat (CSR)",
+    "Zertifikatsanforderung (CSR)",
+  ),
+  root: l("Self-signed", "Auto-signé", "Selbstsigniert"),
+  ca: l("CA", "AC", "CA"),
+  subject: l("Subject", "Sujet", "Inhaber"),
+  issuer: l("Issuer", "Émetteur", "Aussteller"),
+  issuedBy: l(
+    "issued by #{n} above",
+    "émis par le n°{n} ci-dessus",
+    "ausgestellt von Nr. {n} oben",
+  ),
+  serial: l("Serial number", "Numéro de série", "Seriennummer"),
+  version: l("Version", "Version", "Version"),
+  notBefore: l("Valid from", "Valide à partir du", "Gültig ab"),
+  notAfter: l("Valid until", "Valide jusqu'au", "Gültig bis"),
+  status: l("Status", "État", "Status"),
+  validFor: l(
+    "Valid · expires in {n} days",
+    "Valide · expire dans {n} jours",
+    "Gültig · läuft in {n} Tagen ab",
+  ),
+  validToday: l(
+    "Valid · expires within a day",
+    "Valide · expire dans moins d'un jour",
+    "Gültig · läuft innerhalb eines Tages ab",
+  ),
+  expired: l("Expired {n} days ago", "Expiré depuis {n} jours", "Seit {n} Tagen abgelaufen"),
+  expiredToday: l(
+    "Expired less than a day ago",
+    "Expiré depuis moins d'un jour",
+    "Vor weniger als einem Tag abgelaufen",
+  ),
+  notYet: l(
+    "Not valid yet (starts in {n} days)",
+    "Pas encore valide (commence dans {n} jours)",
+    "Noch nicht gültig (beginnt in {n} Tagen)",
+  ),
+  lifetime: l("Lifetime", "Durée de validité", "Gültigkeitsdauer"),
+  days: l("{n} days", "{n} jours", "{n} Tage"),
+  key: l("Public key", "Clé publique", "Öffentlicher Schlüssel"),
+  bits: l("bits", "bits", "Bit"),
+  exponent: l("exponent", "exposant", "Exponent"),
+  sigAlg: l("Signature algorithm", "Algorithme de signature", "Signaturalgorithmus"),
+  san: l("Alternative names (SAN)", "Noms alternatifs (SAN)", "Alternative Namen (SAN)"),
+  ku: l("Key usage", "Utilisation de la clé", "Schlüsselverwendung"),
+  eku: l("Extended key usage", "Utilisation étendue", "Erweiterte Schlüsselverwendung"),
+  bc: l("Basic constraints", "Contraintes de base", "Basiseinschränkungen"),
+  isCa: l("CA: yes", "AC : oui", "CA: ja"),
+  notCa: l("CA: no (end entity)", "AC : non (entité finale)", "CA: nein (Endentität)"),
+  pathLen: l("path length ≤ {n}", "longueur de chaîne ≤ {n}", "Pfadlänge ≤ {n}"),
+  ski: l("Subject key ID", "ID de clé du sujet", "Schlüsselkennung des Inhabers"),
+  aki: l("Authority key ID", "ID de clé de l'autorité", "Schlüsselkennung der CA"),
+  ocsp: l("OCSP", "OCSP", "OCSP"),
+  caIssuers: l("CA issuers", "Émetteurs de l'AC", "CA-Aussteller"),
+  crl: l("CRL", "CRL", "CRL"),
+  policies: l("Policies", "Politiques", "Richtlinien"),
+  extensions: l("Extensions", "Extensions", "Erweiterungen"),
+  critical: l("critical", "critique", "kritisch"),
+  none: l("none", "aucune", "keine"),
+  fingerprints: l("Fingerprints", "Empreintes", "Fingerabdrücke"),
+  copyPem: l("Copy PEM", "Copier le PEM", "PEM kopieren"),
   empty: l(
     "Paste a certificate or open a .pem / .crt / .cer / .der / .csr file. Nothing leaves your device.",
     "Colle un certificat ou ouvre un fichier .pem / .crt / .cer / .der / .csr. Rien ne quitte ton appareil.",
+    "Füge ein Zertifikat ein oder öffne eine .pem-/.crt-/.cer-/.der-/.csr-Datei. Nichts verlässt dein Gerät.",
   ),
 };
-
-function locale(): string {
-  return lang.value === "fr" ? "fr-FR" : "en-US";
-}
 
 function utc(d: Date): string {
   return `${new Intl.DateTimeFormat(locale(), { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" }).format(d)} UTC`;

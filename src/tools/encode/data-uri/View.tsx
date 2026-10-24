@@ -12,7 +12,7 @@ import {
   Stats,
   TextBox,
 } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, locale, tr } from "../../../i18n";
 import { attempt, formatSize, isUtf8 } from "../_shared";
 import {
   buildDataUri,
@@ -32,43 +32,55 @@ type Mode = "encode" | "decode";
 const SHOW_MAX = 500_000;
 
 const T = {
-  encode: l("File → data URI", "Fichier → data URI"),
-  decode: l("Data URI → file", "Data URI → fichier"),
-  drop: l("Drop a file here, or click to choose", "Dépose un fichier ici, ou clique pour choisir"),
-  mime: l("MIME type", "Type MIME"),
-  encoding: l("Encoding", "Encodage"),
-  percent: l("Percent (text, smaller for SVG)", "Pourcent (texte, plus court pour le SVG)"),
-  uri: l("Data URI", "Data URI"),
-  file: l("File", "Fichier"),
-  fileSize: l("File size", "Taille du fichier"),
-  uriLength: l("URI length", "Longueur de l'URI"),
-  overhead: l("Overhead", "Surcoût"),
-  chars: l("chars", "car."),
-  copyCss: l("Copy as CSS url()", "Copier en url() CSS"),
-  copyImg: l("Copy as HTML img tag", "Copier en balise HTML img"),
-  copyUri: l("Copy the URI", "Copier l'URI"),
-  downloadTxt: l("Download as .txt", "Télécharger en .txt"),
+  encode: l("File → data URI", "Fichier → data URI", "Datei → Data-URI"),
+  decode: l("Data URI → file", "Data URI → fichier", "Data-URI → Datei"),
+  drop: l(
+    "Drop a file here, or click to choose",
+    "Dépose un fichier ici, ou clique pour choisir",
+    "Datei hier ablegen oder klicken, um eine auszuwählen",
+  ),
+  mime: l("MIME type", "Type MIME", "MIME-Typ"),
+  encoding: l("Encoding", "Encodage", "Kodierung"),
+  percent: l(
+    "Percent (text, smaller for SVG)",
+    "Pourcent (texte, plus court pour le SVG)",
+    "Prozent (Text, kürzer bei SVG)",
+  ),
+  uri: l("Data URI", "Data URI", "Data-URI"),
+  file: l("File", "Fichier", "Datei"),
+  fileSize: l("File size", "Taille du fichier", "Dateigröße"),
+  uriLength: l("URI length", "Longueur de l'URI", "URI-Länge"),
+  overhead: l("Overhead", "Surcoût", "Mehraufwand"),
+  chars: l("chars", "car.", "Zeichen"),
+  copyCss: l("Copy as CSS url()", "Copier en url() CSS", "Als CSS-url() kopieren"),
+  copyImg: l("Copy as HTML img tag", "Copier en balise HTML img", "Als HTML-img-Tag kopieren"),
+  copyUri: l("Copy the URI", "Copier l'URI", "URI kopieren"),
+  downloadTxt: l("Download as .txt", "Télécharger en .txt", "Als .txt herunterladen"),
   tooBig: l(
     "This URI is too long to display; copy or download it.",
     "Cette URI est trop longue pour être affichée ; copie-la ou télécharge-la.",
+    "Diese URI ist zu lang für die Anzeige; kopiere sie oder lade sie herunter.",
   ),
   bigWarn: l(
     "Data URIs over a few hundred KB slow pages down and are not cached: prefer a separate file.",
     "Les data URI de plus de quelques centaines de Ko ralentissent les pages et ne sont pas mises en cache : préfère un fichier séparé.",
+    "Data-URIs über einigen hundert KB bremsen Seiten aus und werden nicht gecacht: Nimm lieber eine eigene Datei.",
   ),
-  preview: l("Preview", "Aperçu"),
+  preview: l("Preview", "Aperçu", "Vorschau"),
   inputPh: l(
     "Paste a data URI, e.g. data:image/png;base64,iVBORw0…",
     "Colle une data URI, par ex. data:image/png;base64,iVBORw0…",
+    "Data-URI einfügen, z. B. data:image/png;base64,iVBORw0…",
   ),
-  charset: l("Charset", "Jeu de caractères"),
-  size: l("Size", "Taille"),
-  fileName: l("File name", "Nom du fichier"),
-  download: l("Download the file", "Télécharger le fichier"),
-  content: l("Content", "Contenu"),
+  charset: l("Charset", "Jeu de caractères", "Zeichensatz"),
+  size: l("Size", "Taille", "Größe"),
+  fileName: l("File name", "Nom du fichier", "Dateiname"),
+  download: l("Download the file", "Télécharger le fichier", "Datei herunterladen"),
+  content: l("Content", "Contenu", "Inhalt"),
   emptyEncode: l(
     "Choose a file to turn it into a data URI. It stays on your device.",
     "Choisis un fichier pour le transformer en data URI. Il reste sur ton appareil.",
+    "Wähle eine Datei, um sie in eine Data-URI umzuwandeln. Sie bleibt auf deinem Gerät.",
   ),
 };
 
@@ -92,13 +104,12 @@ function Encoder() {
   const f = file.value;
   const r = result.value;
   const uri = r?.ok ? r.value : "";
-  const locale = lang.value === "fr" ? "fr-FR" : "en-US";
   const textOk = f ? isUtf8(f.bytes) && isTextMime(mime.value) : false;
 
   return (
     <>
       <FileDrop
-        label={f ? `${f.name} · ${formatSize(f.bytes.length, locale)}` : tr(T.drop)}
+        label={f ? `${f.name} · ${formatSize(f.bytes.length, locale())}` : tr(T.drop)}
         onFiles={async (list) => {
           const x = list[0];
           if (!x) return;
@@ -139,7 +150,7 @@ function Encoder() {
             <>
               <Stats
                 items={[
-                  { label: tr(T.fileSize), value: formatSize(f.bytes.length, locale) },
+                  { label: tr(T.fileSize), value: formatSize(f.bytes.length, locale()) },
                   { label: tr(T.uriLength), value: `${fmt(uri.length)} ${tr(T.chars)}` },
                   {
                     label: tr(T.overhead),
@@ -187,7 +198,6 @@ function Decoder() {
   );
   const p = parsed.value;
   const d = p?.ok ? p.value : null;
-  const locale = lang.value === "fr" ? "fr-FR" : "en-US";
   const ext = d ? extFromMime(d.mime) : "bin";
   const stem = name.value.trim().replace(/\.[^.]*$/, "") || "file";
   const textContent =
@@ -217,7 +227,7 @@ function Decoder() {
               { label: tr(T.mime), value: d.mime },
               { label: tr(T.encoding), value: d.base64 ? "Base64" : "Percent" },
               { label: tr(T.charset), value: d.charset ?? "—" },
-              { label: tr(T.size), value: formatSize(d.bytes.length, locale) },
+              { label: tr(T.size), value: formatSize(d.bytes.length, locale()) },
             ]}
           />
           <div class="row">

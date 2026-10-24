@@ -20,12 +20,13 @@ const B32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 /** Base32 to bytes. Case-insensitive; ignores spaces, dashes and `=` padding. */
 export function base32Decode(text: string): Uint8Array<ArrayBuffer> {
   const s = text.toUpperCase().replace(/[\s-]/g, "").replace(/=+$/, "");
-  if (!s) fail("The secret is empty.", "Le secret est vide.");
+  if (!s) fail("The secret is empty.", "Le secret est vide.", "Das Secret ist leer.");
   const bad = [...s].find((c) => !B32.includes(c));
   if (bad)
     fail(
       `"${bad}" is not a Base32 character (A–Z, 2–7).`,
       `« ${bad} » n'est pas un caractère Base32 (A–Z, 2–7).`,
+      `„${bad}“ ist kein Base32-Zeichen (A–Z, 2–7).`,
     );
   const out = new Uint8Array(Math.floor((s.length * 5) / 8));
   let bits = 0;
@@ -117,9 +118,17 @@ export interface OtpAuth extends TotpParams {
 
 function checkParams(p: TotpParams): void {
   if (p.digits < 6 || p.digits > 10)
-    fail("Codes have 6 to 10 digits.", "Les codes ont de 6 à 10 chiffres.");
+    fail(
+      "Codes have 6 to 10 digits.",
+      "Les codes ont de 6 à 10 chiffres.",
+      "Codes haben 6 bis 10 Ziffern.",
+    );
   if (!Number.isInteger(p.period) || p.period < 1 || p.period > 3600)
-    fail("The period must be 1 to 3600 seconds.", "La période doit être de 1 à 3600 secondes.");
+    fail(
+      "The period must be 1 to 3600 seconds.",
+      "La période doit être de 1 à 3600 secondes.",
+      "Die Periode muss 1 bis 3600 Sekunden betragen.",
+    );
 }
 
 /** Reads `otpauth://totp/Issuer:account?secret=…&issuer=…&algorithm=…&digits=…&period=…`. */
@@ -128,10 +137,18 @@ export function parseOtpauth(uri: string): OtpAuth {
   try {
     url = new URL(uri.trim());
   } catch {
-    fail("This otpauth link is not a valid URL.", "Ce lien otpauth n'est pas une URL valide.");
+    fail(
+      "This otpauth link is not a valid URL.",
+      "Ce lien otpauth n'est pas une URL valide.",
+      "Dieser otpauth-Link ist keine gültige URL.",
+    );
   }
   if (url.protocol !== "otpauth:")
-    fail("The link must start with otpauth://.", "Le lien doit commencer par otpauth://.");
+    fail(
+      "The link must start with otpauth://.",
+      "Le lien doit commencer par otpauth://.",
+      "Der Link muss mit otpauth:// beginnen.",
+    );
   const type = (
     url.hostname ||
     url.pathname.replace(/^\/\//, "").split("/")[0] ||
@@ -141,11 +158,22 @@ export function parseOtpauth(uri: string): OtpAuth {
     fail(
       "HOTP (counter-based) links are not supported, only TOTP.",
       "Les liens HOTP (à compteur) ne sont pas gérés, seulement TOTP.",
+      "HOTP-Links (zählerbasiert) werden nicht unterstützt, nur TOTP.",
     );
-  if (type !== "totp") fail("Unknown OTP type: expected totp.", "Type OTP inconnu : totp attendu.");
+  if (type !== "totp")
+    fail(
+      "Unknown OTP type: expected totp.",
+      "Type OTP inconnu : totp attendu.",
+      "Unbekannter OTP-Typ: totp erwartet.",
+    );
   const q = url.searchParams;
   const secret = (q.get("secret") ?? "").replace(/\s/g, "").toUpperCase();
-  if (!secret) fail("The link has no secret= parameter.", "Le lien n'a pas de paramètre secret=.");
+  if (!secret)
+    fail(
+      "The link has no secret= parameter.",
+      "Le lien n'a pas de paramètre secret=.",
+      "Der Link hat keinen Parameter secret=.",
+    );
   base32Decode(secret);
   const rawLabel = url.hostname ? url.pathname.slice(1) : url.pathname.replace(/^\/\/[^/]*\/?/, "");
   let label = rawLabel;
@@ -157,7 +185,11 @@ export function parseOtpauth(uri: string): OtpAuth {
   const account = (colon >= 0 ? label.slice(colon + 1) : label).trim();
   const algo = (q.get("algorithm") ?? "SHA1").toUpperCase().replace("-", "") as Algorithm;
   if (!ALGORITHMS.includes(algo))
-    fail(`Unsupported algorithm: ${algo}.`, `Algorithme non géré : ${algo}.`);
+    fail(
+      `Unsupported algorithm: ${algo}.`,
+      `Algorithme non géré : ${algo}.`,
+      `Nicht unterstützter Algorithmus: ${algo}.`,
+    );
   const params: TotpParams = {
     algorithm: algo,
     digits: Number(q.get("digits") ?? 6),

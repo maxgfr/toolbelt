@@ -1,7 +1,7 @@
 import { useComputed } from "@preact/signals";
 import { useToolState } from "../../../app/state";
 import { Button, downloadBlob, Output, Panel, Segmented, TextBox, Toggle } from "../../../app/ui";
-import { fmt, l, tr } from "../../../i18n";
+import { fmt, type L10n, l, tr } from "../../../i18n";
 import { attempt, isUtf8, utf8 } from "../_shared";
 import { decode, ENCODINGS, type EncodeOptions, type Encoding, encode, PER_BYTE } from "./logic";
 
@@ -10,14 +10,14 @@ type Sep = "space" | "none" | "comma" | "newline";
 
 const SEPARATORS: Record<Sep, string> = { space: " ", none: "", comma: ", ", newline: "\n" };
 
-const NAMES: Record<Encoding, { en: string; fr: string }> = {
-  hex: l("Hex", "Hexa"),
-  binary: l("Binary", "Binaire"),
-  octal: l("Octal", "Octal"),
-  decimal: l("Decimal", "Décimal"),
-  base32: l("Base32", "Base32"),
-  base58: l("Base58", "Base58"),
-  ascii85: l("Ascii85", "Ascii85"),
+const NAMES: Record<Encoding, L10n> = {
+  hex: l("Hex", "Hexa", "Hex"),
+  binary: l("Binary", "Binaire", "Binär"),
+  octal: l("Octal", "Octal", "Oktal"),
+  decimal: l("Decimal", "Décimal", "Dezimal"),
+  base32: l("Base32", "Base32", "Base32"),
+  base58: l("Base58", "Base58", "Base58"),
+  ascii85: l("Ascii85", "Ascii85", "Ascii85"),
 };
 
 const PLACEHOLDERS: Record<Encoding, string> = {
@@ -31,28 +31,29 @@ const PLACEHOLDERS: Record<Encoding, string> = {
 };
 
 const T = {
-  encoding: l("Encoding", "Encodage"),
-  toEnc: l("Text → {enc}", "Texte → {enc}"),
-  fromEnc: l("{enc} → text", "{enc} → texte"),
-  separator: l("Separator", "Séparateur"),
-  space: l("Space", "Espace"),
-  none: l("None", "Aucun"),
-  comma: l("Comma", "Virgule"),
-  newline: l("New line", "Retour à la ligne"),
-  upper: l("Uppercase", "Majuscules"),
-  padding: l("Padding (=)", "Remplissage (=)"),
-  delimiters: l("<~ ~> delimiters", "Délimiteurs <~ ~>"),
-  text: l("Text", "Texte"),
-  phText: l("Type or paste text…", "Tape ou colle du texte…"),
-  phEnc: l("Paste {enc}, e.g. {ex}", "Colle du {enc}, par ex. {ex}"),
-  swap: l("Use output as input", "Réutiliser le résultat"),
-  bytes: l("{n} bytes", "{n} octets"),
+  encoding: l("Encoding", "Encodage", "Kodierung"),
+  toEnc: l("Text → {enc}", "Texte → {enc}", "Text → {enc}"),
+  fromEnc: l("{enc} → text", "{enc} → texte", "{enc} → Text"),
+  separator: l("Separator", "Séparateur", "Trennzeichen"),
+  space: l("Space", "Espace", "Leerzeichen"),
+  none: l("None", "Aucun", "Keines"),
+  comma: l("Comma", "Virgule", "Komma"),
+  newline: l("New line", "Retour à la ligne", "Zeilenumbruch"),
+  upper: l("Uppercase", "Majuscules", "Großbuchstaben"),
+  padding: l("Padding (=)", "Remplissage (=)", "Auffüllung (=)"),
+  delimiters: l("<~ ~> delimiters", "Délimiteurs <~ ~>", "Begrenzer <~ ~>"),
+  text: l("Text", "Texte", "Text"),
+  phText: l("Type or paste text…", "Tape ou colle du texte…", "Text eingeben oder einfügen…"),
+  phEnc: l("Paste {enc}, e.g. {ex}", "Colle du {enc}, par ex. {ex}", "{enc} einfügen, z. B. {ex}"),
+  swap: l("Use output as input", "Réutiliser le résultat", "Ergebnis als Eingabe verwenden"),
+  bytes: l("{n} bytes", "{n} octets", "{n} Bytes"),
   notUtf8: l(
     "These bytes are not valid UTF-8 text: invalid sequences show as �.",
     "Ces octets ne sont pas du texte UTF-8 valide : les séquences invalides s'affichent en �.",
+    "Diese Bytes sind kein gültiger UTF-8-Text: Ungültige Sequenzen erscheinen als �.",
   ),
-  downloadBytes: l("Download the bytes", "Télécharger les octets"),
-  all: l("In every encoding", "Dans tous les encodages"),
+  downloadBytes: l("Download the bytes", "Télécharger les octets", "Bytes herunterladen"),
+  all: l("In every encoding", "Dans tous les encodages", "In allen Kodierungen"),
 };
 
 export default function BaseEncodings() {

@@ -1,45 +1,61 @@
 import { useComputed } from "@preact/signals";
 import { useToolState } from "../../../app/state";
 import { Button, Segmented, TextBox, Toggle } from "../../../app/ui";
-import { l, tr } from "../../../i18n";
+import { type L10n, l, tr } from "../../../i18n";
 import { attempt } from "../_shared";
 import { decodeUrl, encodeUrl, looksEncoded, type UrlMode } from "./logic";
 
 type Dir = "encode" | "decode";
 
 const T = {
-  mode: l("Mode", "Mode"),
-  component: l("Component", "Composant"),
-  uri: l("Full URL", "URL complète"),
-  form: l("Form (+ for spaces)", "Formulaire (+ pour les espaces)"),
-  encode: l("Encode", "Encoder"),
-  decode: l("Decode", "Décoder"),
-  strict: l("Also encode !'()* (RFC 3986)", "Encoder aussi !'()* (RFC 3986)"),
-  input: l("Input", "Entrée"),
-  output: l("Result", "Résultat"),
-  phEncode: l("Type or paste text, e.g. a b&c=é", "Tape ou colle du texte, par ex. a b&c=é"),
-  phDecode: l("Paste encoded text, e.g. a%20b%26c", "Colle du texte encodé, par ex. a%20b%26c"),
-  swap: l("Use output as input", "Réutiliser le résultat"),
+  mode: l("Mode", "Mode", "Modus"),
+  component: l("Component", "Composant", "Bestandteil"),
+  uri: l("Full URL", "URL complète", "Vollständige URL"),
+  form: l("Form (+ for spaces)", "Formulaire (+ pour les espaces)", "Formular (+ für Leerzeichen)"),
+  encode: l("Encode", "Encoder", "Kodieren"),
+  decode: l("Decode", "Décoder", "Dekodieren"),
+  strict: l(
+    "Also encode !'()* (RFC 3986)",
+    "Encoder aussi !'()* (RFC 3986)",
+    "Auch !'()* kodieren (RFC 3986)",
+  ),
+  input: l("Input", "Entrée", "Eingabe"),
+  output: l("Result", "Résultat", "Ergebnis"),
+  phEncode: l(
+    "Type or paste text, e.g. a b&c=é",
+    "Tape ou colle du texte, par ex. a b&c=é",
+    "Text eingeben oder einfügen, z. B. a b&c=é",
+  ),
+  phDecode: l(
+    "Paste encoded text, e.g. a%20b%26c",
+    "Colle du texte encodé, par ex. a%20b%26c",
+    "Kodierten Text einfügen, z. B. a%20b%26c",
+  ),
+  swap: l("Use output as input", "Réutiliser le résultat", "Ergebnis als Eingabe verwenden"),
   twice: l(
     "The result still contains escapes: the text was probably encoded twice.",
     "Le résultat contient encore des échappements : le texte a sans doute été encodé deux fois.",
+    "Das Ergebnis enthält noch Escape-Sequenzen: Der Text wurde wohl doppelt kodiert.",
   ),
-  again: l("Decode again", "Décoder encore"),
+  again: l("Decode again", "Décoder encore", "Nochmals dekodieren"),
   helpComponent: l(
     "For one query value or path segment: everything except A–Z a–z 0–9 - _ . ! ~ * ' ( ) is escaped.",
     "Pour une valeur de paramètre ou un segment de chemin : tout est échappé sauf A–Z a–z 0–9 - _ . ! ~ * ' ( ).",
+    "Für einen Parameterwert oder ein Pfadsegment: Alles außer A–Z a–z 0–9 - _ . ! ~ * ' ( ) wird maskiert.",
   ),
   helpUri: l(
     "For a whole URL: keeps : / ? # [ ] @ & = + $ , ; so the structure survives.",
     "Pour une URL entière : garde : / ? # [ ] @ & = + $ , ; pour que la structure reste intacte.",
+    "Für eine ganze URL: Behält : / ? # [ ] @ & = + $ , ; bei, damit die Struktur erhalten bleibt.",
   ),
   helpForm: l(
     "As browsers send HTML forms (application/x-www-form-urlencoded): spaces become +.",
     "Comme les navigateurs envoient les formulaires (application/x-www-form-urlencoded) : les espaces deviennent +.",
+    "Wie Browser HTML-Formulare senden (application/x-www-form-urlencoded): Leerzeichen werden zu +.",
   ),
 };
 
-const HELP: Record<UrlMode, { en: string; fr: string }> = {
+const HELP: Record<UrlMode, L10n> = {
   component: T.helpComponent,
   uri: T.helpUri,
   form: T.helpForm,

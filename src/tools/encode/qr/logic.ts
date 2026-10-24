@@ -11,7 +11,7 @@ export type Ecc = "L" | "M" | "Q" | "H";
 export type Matrix = boolean[][];
 
 export function qrMatrix(text: string, ecc: Ecc): Matrix {
-  if (!text) fail("Nothing to encode.", "Rien à encoder.");
+  if (!text) fail("Nothing to encode.", "Rien à encoder.", "Nichts zu kodieren.");
   const qr = qrcode(0, ecc);
   // The library's default turns each UTF-16 unit into one byte: give it UTF-8 bytes instead.
   qr.addData(bytesToLatin1(utf8(text)), "Byte");
@@ -21,6 +21,7 @@ export function qrMatrix(text: string, ecc: Ecc): Matrix {
     fail(
       "Too much data for a QR code at this error correction level.",
       "Trop de données pour un QR code avec ce niveau de correction.",
+      "Zu viele Daten für einen QR-Code mit dieser Fehlerkorrekturstufe.",
     );
   }
   const n = qr.getModuleCount();

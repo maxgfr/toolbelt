@@ -85,57 +85,131 @@ export interface Decoded {
 /* --- Names of things ----------------------------------------------------------------------- */
 
 export const KEY_USAGES: { id: string; name: L10n }[] = [
-  { id: "digitalSignature", name: l("Digital signature", "Signature numérique") },
-  { id: "nonRepudiation", name: l("Non-repudiation", "Non-répudiation") },
-  { id: "keyEncipherment", name: l("Key encipherment", "Chiffrement de clé") },
-  { id: "dataEncipherment", name: l("Data encipherment", "Chiffrement de données") },
-  { id: "keyAgreement", name: l("Key agreement", "Accord de clé") },
-  { id: "keyCertSign", name: l("Certificate signing", "Signature de certificats") },
-  { id: "cRLSign", name: l("CRL signing", "Signature de CRL") },
-  { id: "encipherOnly", name: l("Encipher only", "Chiffrement seul") },
-  { id: "decipherOnly", name: l("Decipher only", "Déchiffrement seul") },
+  {
+    id: "digitalSignature",
+    name: l("Digital signature", "Signature numérique", "Digitale Signatur"),
+  },
+  { id: "nonRepudiation", name: l("Non-repudiation", "Non-répudiation", "Nichtabstreitbarkeit") },
+  {
+    id: "keyEncipherment",
+    name: l("Key encipherment", "Chiffrement de clé", "Schlüsselverschlüsselung"),
+  },
+  {
+    id: "dataEncipherment",
+    name: l("Data encipherment", "Chiffrement de données", "Datenverschlüsselung"),
+  },
+  { id: "keyAgreement", name: l("Key agreement", "Accord de clé", "Schlüsselvereinbarung") },
+  {
+    id: "keyCertSign",
+    name: l("Certificate signing", "Signature de certificats", "Zertifikatsignatur"),
+  },
+  { id: "cRLSign", name: l("CRL signing", "Signature de CRL", "CRL-Signatur") },
+  { id: "encipherOnly", name: l("Encipher only", "Chiffrement seul", "Nur verschlüsseln") },
+  { id: "decipherOnly", name: l("Decipher only", "Déchiffrement seul", "Nur entschlüsseln") },
 ];
 
 export const EKUS: Record<string, L10n> = {
-  "1.3.6.1.5.5.7.3.1": l("TLS server authentication", "Authentification de serveur TLS"),
-  "1.3.6.1.5.5.7.3.2": l("TLS client authentication", "Authentification de client TLS"),
-  "1.3.6.1.5.5.7.3.3": l("Code signing", "Signature de code"),
-  "1.3.6.1.5.5.7.3.4": l("Email protection (S/MIME)", "Protection des e-mails (S/MIME)"),
-  "1.3.6.1.5.5.7.3.5": l("IPsec end system", "Système d'extrémité IPsec"),
-  "1.3.6.1.5.5.7.3.6": l("IPsec tunnel", "Tunnel IPsec"),
-  "1.3.6.1.5.5.7.3.7": l("IPsec user", "Utilisateur IPsec"),
-  "1.3.6.1.5.5.7.3.8": l("Time stamping", "Horodatage"),
-  "1.3.6.1.5.5.7.3.9": l("OCSP signing", "Signature OCSP"),
-  "1.3.6.1.5.5.7.3.17": l("IPsec IKE", "IPsec IKE"),
-  "2.5.29.37.0": l("Any extended key usage", "Toute utilisation étendue"),
-  "1.3.6.1.4.1.311.10.3.12": l("Microsoft document signing", "Signature de documents Microsoft"),
-  "1.3.6.1.4.1.311.20.2.2": l("Smart card logon", "Connexion par carte à puce"),
-  "1.3.6.1.5.2.3.5": l("Kerberos KDC", "KDC Kerberos"),
+  "1.3.6.1.5.5.7.3.1": l(
+    "TLS server authentication",
+    "Authentification de serveur TLS",
+    "TLS-Serverauthentifizierung",
+  ),
+  "1.3.6.1.5.5.7.3.2": l(
+    "TLS client authentication",
+    "Authentification de client TLS",
+    "TLS-Clientauthentifizierung",
+  ),
+  "1.3.6.1.5.5.7.3.3": l("Code signing", "Signature de code", "Codesignatur"),
+  "1.3.6.1.5.5.7.3.4": l(
+    "Email protection (S/MIME)",
+    "Protection des e-mails (S/MIME)",
+    "E-Mail-Schutz (S/MIME)",
+  ),
+  "1.3.6.1.5.5.7.3.5": l("IPsec end system", "Système d'extrémité IPsec", "IPsec-Endsystem"),
+  "1.3.6.1.5.5.7.3.6": l("IPsec tunnel", "Tunnel IPsec", "IPsec-Tunnel"),
+  "1.3.6.1.5.5.7.3.7": l("IPsec user", "Utilisateur IPsec", "IPsec-Benutzer"),
+  "1.3.6.1.5.5.7.3.8": l("Time stamping", "Horodatage", "Zeitstempel"),
+  "1.3.6.1.5.5.7.3.9": l("OCSP signing", "Signature OCSP", "OCSP-Signatur"),
+  "1.3.6.1.5.5.7.3.17": l("IPsec IKE", "IPsec IKE", "IPsec IKE"),
+  "2.5.29.37.0": l(
+    "Any extended key usage",
+    "Toute utilisation étendue",
+    "Beliebige erweiterte Schlüsselverwendung",
+  ),
+  "1.3.6.1.4.1.311.10.3.12": l(
+    "Microsoft document signing",
+    "Signature de documents Microsoft",
+    "Microsoft-Dokumentsignatur",
+  ),
+  "1.3.6.1.4.1.311.20.2.2": l(
+    "Smart card logon",
+    "Connexion par carte à puce",
+    "Smartcard-Anmeldung",
+  ),
+  "1.3.6.1.5.2.3.5": l("Kerberos KDC", "KDC Kerberos", "Kerberos-KDC"),
 };
 
 export const EXTENSIONS: Record<string, L10n> = {
-  "2.5.29.9": l("Subject directory attributes", "Attributs d'annuaire du sujet"),
-  "2.5.29.14": l("Subject key identifier", "Identifiant de clé du sujet"),
-  "2.5.29.15": l("Key usage", "Utilisation de la clé"),
-  "2.5.29.17": l("Subject alternative names", "Noms alternatifs du sujet"),
-  "2.5.29.18": l("Issuer alternative names", "Noms alternatifs de l'émetteur"),
-  "2.5.29.19": l("Basic constraints", "Contraintes de base"),
-  "2.5.29.30": l("Name constraints", "Contraintes de nom"),
-  "2.5.29.31": l("CRL distribution points", "Points de distribution des CRL"),
-  "2.5.29.32": l("Certificate policies", "Politiques de certification"),
-  "2.5.29.35": l("Authority key identifier", "Identifiant de clé de l'autorité"),
-  "2.5.29.36": l("Policy constraints", "Contraintes de politique"),
-  "2.5.29.37": l("Extended key usage", "Utilisation étendue de la clé"),
-  "2.5.29.54": l("Inhibit any policy", "Interdiction de anyPolicy"),
-  "1.3.6.1.5.5.7.1.1": l("Authority information access", "Accès aux informations de l'autorité"),
-  "1.3.6.1.5.5.7.1.24": l("TLS feature (OCSP must-staple)", "Fonction TLS (OCSP must-staple)"),
+  "2.5.29.9": l(
+    "Subject directory attributes",
+    "Attributs d'annuaire du sujet",
+    "Verzeichnisattribute des Inhabers",
+  ),
+  "2.5.29.14": l(
+    "Subject key identifier",
+    "Identifiant de clé du sujet",
+    "Schlüsselkennung des Inhabers",
+  ),
+  "2.5.29.15": l("Key usage", "Utilisation de la clé", "Schlüsselverwendung"),
+  "2.5.29.17": l(
+    "Subject alternative names",
+    "Noms alternatifs du sujet",
+    "Alternative Namen des Inhabers",
+  ),
+  "2.5.29.18": l(
+    "Issuer alternative names",
+    "Noms alternatifs de l'émetteur",
+    "Alternative Namen des Ausstellers",
+  ),
+  "2.5.29.19": l("Basic constraints", "Contraintes de base", "Basiseinschränkungen"),
+  "2.5.29.30": l("Name constraints", "Contraintes de nom", "Namenseinschränkungen"),
+  "2.5.29.31": l(
+    "CRL distribution points",
+    "Points de distribution des CRL",
+    "CRL-Verteilungspunkte",
+  ),
+  "2.5.29.32": l("Certificate policies", "Politiques de certification", "Zertifikatsrichtlinien"),
+  "2.5.29.35": l(
+    "Authority key identifier",
+    "Identifiant de clé de l'autorité",
+    "Schlüsselkennung der Zertifizierungsstelle",
+  ),
+  "2.5.29.36": l("Policy constraints", "Contraintes de politique", "Richtlinieneinschränkungen"),
+  "2.5.29.37": l(
+    "Extended key usage",
+    "Utilisation étendue de la clé",
+    "Erweiterte Schlüsselverwendung",
+  ),
+  "2.5.29.54": l("Inhibit any policy", "Interdiction de anyPolicy", "anyPolicy unterbinden"),
+  "1.3.6.1.5.5.7.1.1": l(
+    "Authority information access",
+    "Accès aux informations de l'autorité",
+    "Zugriff auf Informationen der Zertifizierungsstelle",
+  ),
+  "1.3.6.1.5.5.7.1.24": l(
+    "TLS feature (OCSP must-staple)",
+    "Fonction TLS (OCSP must-staple)",
+    "TLS-Feature (OCSP must-staple)",
+  ),
   "1.3.6.1.4.1.11129.2.4.2": l(
     "Certificate Transparency timestamps (SCT)",
     "Horodatages Certificate Transparency (SCT)",
+    "Certificate-Transparency-Zeitstempel (SCT)",
   ),
   "1.3.6.1.4.1.11129.2.4.3": l(
     "Certificate Transparency precertificate poison",
     "Marque de précertificat Certificate Transparency",
+    "Certificate-Transparency-Vorzertifikatsmarkierung",
   ),
 };
 
@@ -471,6 +545,7 @@ export function decodeDer(bytes: Uint8Array, hint?: "certificate" | "csr"): Deco
     fail(
       "This is DER, but not a certificate nor a certificate request.",
       "C'est du DER, mais ni un certificat ni une demande de certificat.",
+      "Das ist DER, aber weder ein Zertifikat noch eine Zertifikatsanforderung.",
     );
   const der = bytes.slice(0, root.length);
   const inner = root.children[0];
@@ -513,6 +588,7 @@ export function parseText(text: string): Entry[] {
           error: l(
             `A "${label}" block is not a certificate: it was skipped.`,
             `Un bloc « ${label} » n'est pas un certificat : il est ignoré.`,
+            `Ein „${label}“-Block ist kein Zertifikat: Er wurde übersprungen.`,
           ),
         },
       });
@@ -538,6 +614,7 @@ export function parseText(text: string): Entry[] {
         error: l(
           "No certificate found: paste a PEM block (-----BEGIN CERTIFICATE-----…) or open a .pem / .crt / .cer / .der file.",
           "Aucun certificat trouvé : colle un bloc PEM (-----BEGIN CERTIFICATE-----…) ou ouvre un fichier .pem / .crt / .cer / .der.",
+          "Kein Zertifikat gefunden: Füge einen PEM-Block ein (-----BEGIN CERTIFICATE-----…) oder öffne eine .pem-/.crt-/.cer-/.der-Datei.",
         ),
       },
     },

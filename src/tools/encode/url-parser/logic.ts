@@ -39,7 +39,7 @@ function safeDecode(s: string): string {
 
 function toUrl(text: string): { url: URL; assumedScheme: boolean; relative: boolean } {
   const t = text.trim();
-  if (!t) fail("Enter a URL.", "Saisis une URL.");
+  if (!t) fail("Enter a URL.", "Saisis une URL.", "Gib eine URL ein.");
   if (/^[/?#]/.test(t)) return { url: new URL(t, BASE), assumedScheme: false, relative: true };
   // "localhost:3000/x" would otherwise parse with "localhost:" as its scheme.
   const hostPort = /^[^\s/:?#]+:\d+(?:[/?#]|$)/.test(t);
@@ -52,6 +52,7 @@ function toUrl(text: string): { url: URL; assumedScheme: boolean; relative: bool
   fail(
     "This is not a valid URL (e.g. https://example.com/path?q=1).",
     "Ce n'est pas une URL valide (par ex. https://example.com/chemin?q=1).",
+    "Das ist keine gültige URL (z. B. https://example.com/pfad?q=1).",
   );
 }
 
@@ -142,12 +143,14 @@ export function jsonToQuery(json: string): string {
     fail(
       `Invalid JSON: ${err instanceof Error ? err.message : err}`,
       `JSON invalide : ${err instanceof Error ? err.message : err}`,
+      `Ungültiges JSON: ${err instanceof Error ? err.message : err}`,
     );
   }
   if (!value || typeof value !== "object" || Array.isArray(value))
     fail(
       'The JSON must be an object, e.g. {"q": "search", "page": 2}.',
       'Le JSON doit être un objet, par ex. {"q": "recherche", "page": 2}.',
+      'Das JSON muss ein Objekt sein, z. B. {"q": "suche", "page": 2}.',
     );
   const sp = new URLSearchParams();
   const walk = (prefix: string, v: unknown) => {

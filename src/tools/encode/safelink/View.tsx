@@ -6,29 +6,44 @@ import { fmt, l, tr } from "../../../i18n";
 import { cleanText } from "./logic";
 
 const T = {
-  input: l("Links or text", "Liens ou texte"),
+  input: l("Links or text", "Liens ou texte", "Links oder Text"),
   inputPh: l(
     "Paste a link, or a whole email or message: every link in it is cleaned.\nhttps://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fexample.com…",
     "Colle un lien, ou tout un e-mail ou message : chaque lien est nettoyé.\nhttps://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fexample.com…",
+    "Füge einen Link ein, oder eine ganze E-Mail oder Nachricht: Jeder Link darin wird bereinigt.\nhttps://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fexample.com…",
   ),
-  unwrap: l("Unwrap redirects and safe links", "Déballer redirections et liens protégés"),
-  strip: l("Remove tracking parameters", "Retirer les paramètres de suivi"),
-  output: l("Cleaned", "Nettoyé"),
-  links: l("Links found", "Liens trouvés"),
-  changed: l("Changed", "Modifiés"),
-  params: l("Parameters removed", "Paramètres retirés"),
-  details: l("Details", "Détails"),
-  via: l("unwrapped: {list}", "déballé : {list}"),
-  removed: l("removed: {list}", "retiré : {list}"),
-  unchanged: l("unchanged", "inchangé"),
+  unwrap: l(
+    "Unwrap redirects and safe links",
+    "Déballer redirections et liens protégés",
+    "Weiterleitungen und Safe Links auspacken",
+  ),
+  strip: l(
+    "Remove tracking parameters",
+    "Retirer les paramètres de suivi",
+    "Tracking-Parameter entfernen",
+  ),
+  output: l("Cleaned", "Nettoyé", "Bereinigt"),
+  links: l("Links found", "Liens trouvés", "Gefundene Links"),
+  changed: l("Changed", "Modifiés", "Geändert"),
+  params: l("Parameters removed", "Paramètres retirés", "Entfernte Parameter"),
+  details: l("Details", "Détails", "Details"),
+  via: l("unwrapped: {list}", "déballé : {list}", "ausgepackt: {list}"),
+  removed: l("removed: {list}", "retiré : {list}", "entfernt: {list}"),
+  unchanged: l("unchanged", "inchangé", "unverändert"),
   opaque: l(
     "{name} link: its target is stored on the service and cannot be read offline.",
     "Lien {name} : sa cible est stockée chez le service et ne peut pas être lue hors ligne.",
+    "{name}-Link: Sein Ziel ist beim Dienst gespeichert und kann offline nicht gelesen werden.",
   ),
-  none: l("No http(s) link found in the text.", "Aucun lien http(s) trouvé dans le texte."),
+  none: l(
+    "No http(s) link found in the text.",
+    "Aucun lien http(s) trouvé dans le texte.",
+    "Kein http(s)-Link im Text gefunden.",
+  ),
   about: l(
     "Decodes Microsoft Safe Links (Outlook, Teams), Google, Facebook / Instagram, Proofpoint URL Defense, Slack, LinkedIn, YouTube, Bing, DuckDuckGo, Yahoo, Steam, Reddit, VK and similar redirects, then strips utm_*, fbclid, gclid, mc_eid and other trackers. Nothing is fetched: links are decoded, not visited.",
     "Décode les Safe Links Microsoft (Outlook, Teams), les redirections Google, Facebook / Instagram, Proofpoint URL Defense, Slack, LinkedIn, YouTube, Bing, DuckDuckGo, Yahoo, Steam, Reddit, VK et similaires, puis retire utm_*, fbclid, gclid, mc_eid et autres traceurs. Rien n'est chargé : les liens sont décodés, pas visités.",
+    "Dekodiert Microsoft Safe Links (Outlook, Teams) sowie Weiterleitungen von Google, Facebook / Instagram, Proofpoint URL Defense, Slack, LinkedIn, YouTube, Bing, DuckDuckGo, Yahoo, Steam, Reddit, VK und ähnlichen, und entfernt dann utm_*, fbclid, gclid, mc_eid und andere Tracker. Nichts wird abgerufen: Links werden dekodiert, nicht besucht.",
   ),
 };
 

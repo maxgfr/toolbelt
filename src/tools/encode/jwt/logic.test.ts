@@ -85,6 +85,7 @@ describe("jwt", () => {
     expect(humanDuration(3725)).toBe("1 h 2 min");
     expect(humanDuration(90061)).toBe("1 d 1 h");
     expect(humanDuration(90061, "fr")).toBe("1 j 1 h");
+    expect(humanDuration(90061, "de")).toBe("1 T 1 h");
     expect(humanDuration(3600)).toBe("1 h");
   });
 

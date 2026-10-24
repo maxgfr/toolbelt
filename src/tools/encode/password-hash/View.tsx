@@ -2,7 +2,7 @@ import { useSignal } from "@preact/signals";
 import { useRef } from "preact/hooks";
 import { useToolState } from "../../../app/state";
 import { Button, ErrorNote, Field, Output, Segmented, Toggle } from "../../../app/ui";
-import { fmt, l, tr } from "../../../i18n";
+import { fmt, type L10n, l, tr } from "../../../i18n";
 import { errMsg, NumberField } from "../_ui";
 import {
   ARGON2_DEFAULTS,
@@ -17,60 +17,82 @@ type Mode = "hash" | "verify";
 type Algo = "bcrypt" | "argon2id";
 
 const T = {
-  mode: l("Mode", "Mode"),
-  hash: l("Hash a password", "Hacher un mot de passe"),
-  verify: l("Verify a password", "Vérifier un mot de passe"),
-  algo: l("Algorithm", "Algorithme"),
-  password: l("Password", "Mot de passe"),
-  passwordPh: l("The password to hash", "Le mot de passe à hacher"),
-  show: l("Show", "Afficher"),
+  mode: l("Mode", "Mode", "Modus"),
+  hash: l("Hash a password", "Hacher un mot de passe", "Passwort hashen"),
+  verify: l("Verify a password", "Vérifier un mot de passe", "Passwort prüfen"),
+  algo: l("Algorithm", "Algorithme", "Algorithmus"),
+  password: l("Password", "Mot de passe", "Passwort"),
+  passwordPh: l("The password to hash", "Le mot de passe à hacher", "Das zu hashende Passwort"),
+  show: l("Show", "Afficher", "Anzeigen"),
   notSaved: l(
     "Passwords and hashes here are never saved nor put in share links.",
     "Les mots de passe et hashes saisis ici ne sont jamais enregistrés ni partagés.",
+    "Passwörter und Hashes hier werden nie gespeichert oder in Teilen-Links übernommen.",
   ),
-  cost: l("Cost: {c} (2^{c} = {r} rounds)", "Coût : {c} (2^{c} = {r} tours)"),
+  cost: l(
+    "Cost: {c} (2^{c} = {r} rounds)",
+    "Coût : {c} (2^{c} = {r} tours)",
+    "Kosten: {c} (2^{c} = {r} Runden)",
+  ),
   slow: l(
     "Above 12, hashing can take several seconds in a browser.",
     "Au-delà de 12, le calcul peut prendre plusieurs secondes dans un navigateur.",
+    "Über 12 kann das Hashen im Browser mehrere Sekunden dauern.",
   ),
   truncated: l(
     "This password is longer than 72 bytes: bcrypt ignores everything after that.",
     "Ce mot de passe dépasse 72 octets : bcrypt ignore tout ce qui suit.",
+    "Dieses Passwort ist länger als 72 Bytes: bcrypt ignoriert alles danach.",
   ),
-  memory: l("Memory (MiB)", "Mémoire (Mio)"),
-  iterations: l("Iterations", "Itérations"),
-  parallelism: l("Parallelism", "Parallélisme"),
+  memory: l("Memory (MiB)", "Mémoire (Mio)", "Speicher (MiB)"),
+  iterations: l("Iterations", "Itérations", "Iterationen"),
+  parallelism: l("Parallelism", "Parallélisme", "Parallelität"),
   parallelHint: l(
     "Changes the hash; the browser still computes on one thread.",
     "Change le hash ; le navigateur calcule quand même sur un seul fil.",
+    "Ändert den Hash; der Browser rechnet trotzdem auf einem Thread.",
   ),
-  presets: l("Presets", "Préréglages"),
-  owasp: l("OWASP minimum", "Minimum OWASP"),
-  rfc: l("RFC 9106 (64 MiB)", "RFC 9106 (64 Mio)"),
-  run: l("Hash", "Hacher"),
-  running: l("Hashing…", "Calcul…"),
-  result: l("Hash", "Hash"),
-  took: l("Computed in {t}", "Calculé en {t}"),
-  useToVerify: l("Verify against this hash", "Vérifier avec ce hash"),
-  hashInput: l("Hash", "Hash"),
-  hashPh: l("$2b$10$… or $argon2id$v=19$…", "$2b$10$… ou $argon2id$v=19$…"),
-  verifyPh: l("The password to check", "Le mot de passe à vérifier"),
-  check: l("Verify", "Vérifier"),
-  checking: l("Verifying…", "Vérification…"),
-  match: l("The password matches this hash.", "Le mot de passe correspond à ce hash."),
-  noMatch: l("The password does not match.", "Le mot de passe ne correspond pas."),
+  presets: l("Presets", "Préréglages", "Voreinstellungen"),
+  owasp: l("OWASP minimum", "Minimum OWASP", "OWASP-Minimum"),
+  rfc: l("RFC 9106 (64 MiB)", "RFC 9106 (64 Mio)", "RFC 9106 (64 MiB)"),
+  run: l("Hash", "Hacher", "Hashen"),
+  running: l("Hashing…", "Calcul…", "Wird gehasht…"),
+  result: l("Hash", "Hash", "Hash"),
+  took: l("Computed in {t}", "Calculé en {t}", "Berechnet in {t}"),
+  useToVerify: l("Verify against this hash", "Vérifier avec ce hash", "Gegen diesen Hash prüfen"),
+  hashInput: l("Hash", "Hash", "Hash"),
+  hashPh: l(
+    "$2b$10$… or $argon2id$v=19$…",
+    "$2b$10$… ou $argon2id$v=19$…",
+    "$2b$10$… oder $argon2id$v=19$…",
+  ),
+  verifyPh: l("The password to check", "Le mot de passe à vérifier", "Das zu prüfende Passwort"),
+  check: l("Verify", "Vérifier", "Prüfen"),
+  checking: l("Verifying…", "Vérification…", "Wird geprüft…"),
+  match: l(
+    "The password matches this hash.",
+    "Le mot de passe correspond à ce hash.",
+    "Das Passwort passt zu diesem Hash.",
+  ),
+  noMatch: l(
+    "The password does not match.",
+    "Le mot de passe ne correspond pas.",
+    "Das Passwort passt nicht.",
+  ),
   unknown: l(
     "Not a bcrypt ($2b$…) or Argon2 ($argon2id$…) hash.",
     "Ce n'est pas un hash bcrypt ($2b$…) ni Argon2 ($argon2id$…).",
+    "Kein bcrypt- ($2b$…) oder Argon2-Hash ($argon2id$…).",
   ),
-  bcryptInfo: l("bcrypt {v}, cost {c}", "bcrypt {v}, coût {c}"),
+  bcryptInfo: l("bcrypt {v}, cost {c}", "bcrypt {v}, coût {c}", "bcrypt {v}, Kosten {c}"),
   argonInfo: l(
     "{v}, version {ver}, {m} memory, {t} iterations, parallelism {p}",
     "{v}, version {ver}, mémoire {m}, {t} itérations, parallélisme {p}",
+    "{v}, Version {ver}, {m} Speicher, {t} Iterationen, Parallelität {p}",
   ),
 };
 
-function fill(s: { en: string; fr: string }, vars: Record<string, string | number>): string {
+function fill(s: L10n, vars: Record<string, string | number>): string {
   let out = tr(s);
   for (const [k, v] of Object.entries(vars)) out = out.replaceAll(`{${k}}`, String(v));
   return out;

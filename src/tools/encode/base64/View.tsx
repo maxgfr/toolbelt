@@ -12,7 +12,7 @@ import {
   TextBox,
   Toggle,
 } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, locale, tr } from "../../../i18n";
 import { attempt, formatSize } from "../_shared";
 import { decode, encodeBytes, encodeText, fileNameFor } from "./logic";
 
@@ -20,39 +20,49 @@ type Mode = "text" | "file";
 type Dir = "encode" | "decode";
 
 const T = {
-  text: l("Text", "Texte"),
-  file: l("File", "Fichier"),
-  encode: l("Encode", "Encoder"),
-  decode: l("Decode", "Décoder"),
-  urlSafe: l("URL-safe (- _ no padding)", "Compatible URL (- _ sans =)"),
-  wrap: l("Wrap lines at 76", "Retour à la ligne à 76"),
-  swap: l("Use output as input", "Réutiliser le résultat"),
-  plain: l("Text", "Texte"),
-  base64: l("Base64", "Base64"),
-  phText: l("Type or paste text…", "Tape ou colle du texte…"),
-  phB64: l("Paste Base64, e.g. SGVsbG8=", "Colle du Base64, par ex. SGVsbG8="),
+  text: l("Text", "Texte", "Text"),
+  file: l("File", "Fichier", "Datei"),
+  encode: l("Encode", "Encoder", "Kodieren"),
+  decode: l("Decode", "Décoder", "Dekodieren"),
+  urlSafe: l(
+    "URL-safe (- _ no padding)",
+    "Compatible URL (- _ sans =)",
+    "URL-sicher (- _ ohne Auffüllung)",
+  ),
+  wrap: l("Wrap lines at 76", "Retour à la ligne à 76", "Zeilenumbruch bei 76"),
+  swap: l("Use output as input", "Réutiliser le résultat", "Ergebnis als Eingabe verwenden"),
+  plain: l("Text", "Texte", "Text"),
+  base64: l("Base64", "Base64", "Base64"),
+  phText: l("Type or paste text…", "Tape ou colle du texte…", "Text eingeben oder einfügen…"),
+  phB64: l(
+    "Paste Base64, e.g. SGVsbG8=",
+    "Colle du Base64, par ex. SGVsbG8=",
+    "Base64 einfügen, z. B. SGVsbG8=",
+  ),
   binary: l(
     "These bytes are not text ({size}, {type}). Download them as a file.",
     "Ces octets ne sont pas du texte ({size}, {type}). Télécharge-les en fichier.",
+    "Diese Bytes sind kein Text ({size}, {type}). Lade sie als Datei herunter.",
   ),
-  unknownType: l("unknown type", "type inconnu"),
-  downloadFile: l("Download file", "Télécharger le fichier"),
-  fileToB64: l("File → Base64", "Fichier → Base64"),
-  b64ToFile: l("Base64 → file", "Base64 → fichier"),
+  unknownType: l("unknown type", "type inconnu", "unbekannter Typ"),
+  downloadFile: l("Download file", "Télécharger le fichier", "Datei herunterladen"),
+  fileToB64: l("File → Base64", "Fichier → Base64", "Datei → Base64"),
+  b64ToFile: l("Base64 → file", "Base64 → fichier", "Base64 → Datei"),
   dropFile: l(
     "Drop a file to encode, or click to choose",
     "Dépose un fichier à encoder, ou clique",
+    "Datei zum Kodieren hier ablegen oder klicken, um eine auszuwählen",
   ),
-  copyDataUri: l("Copy as data URI", "Copier en data URI"),
-  fileName: l("File name", "Nom du fichier"),
-  detected: l("Detected:", "Détecté :"),
-  bytes: l("{n} bytes → {m} characters", "{n} octets → {m} caractères"),
-  chars: l("{n} characters → {m} bytes", "{n} caractères → {m} octets"),
-  reading: l("Reading the file…", "Lecture du fichier…"),
+  copyDataUri: l("Copy as data URI", "Copier en data URI", "Als Data-URI kopieren"),
+  fileName: l("File name", "Nom du fichier", "Dateiname"),
+  detected: l("Detected:", "Détecté :", "Erkannt:"),
+  bytes: l("{n} bytes → {m} characters", "{n} octets → {m} caractères", "{n} Bytes → {m} Zeichen"),
+  chars: l("{n} characters → {m} bytes", "{n} caractères → {m} octets", "{n} Zeichen → {m} Bytes"),
+  reading: l("Reading the file…", "Lecture du fichier…", "Datei wird gelesen…"),
 };
 
 function sizeText(n: number): string {
-  return formatSize(n, lang.value === "fr" ? "fr-FR" : "en-US");
+  return formatSize(n, locale());
 }
 
 interface Loaded {

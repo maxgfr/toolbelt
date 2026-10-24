@@ -12,7 +12,7 @@ import {
   TextBox,
   Toggle,
 } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, lang, locale, tr } from "../../../i18n";
 import { formatSize, fromUtf8, isUtf8 } from "../_shared";
 import { errMsg } from "../_ui";
 import {
@@ -37,62 +37,97 @@ type KdfKind = Kdf["kind"];
 const SHOW_MAX = 1_000_000;
 
 const T = {
-  encrypt: l("Encrypt", "Chiffrer"),
-  decrypt: l("Decrypt", "Déchiffrer"),
-  mode: l("Mode", "Mode"),
-  source: l("Source", "Source"),
-  text: l("Text", "Texte"),
-  file: l("File", "Fichier"),
-  plain: l("Text to encrypt", "Texte à chiffrer"),
-  plainPh: l("Type or paste the secret text…", "Tape ou colle le texte secret…"),
-  cipher: l("Encrypted text (Base64)", "Texte chiffré (Base64)"),
+  encrypt: l("Encrypt", "Chiffrer", "Verschlüsseln"),
+  decrypt: l("Decrypt", "Déchiffrer", "Entschlüsseln"),
+  mode: l("Mode", "Mode", "Modus"),
+  source: l("Source", "Source", "Quelle"),
+  text: l("Text", "Texte", "Text"),
+  file: l("File", "Fichier", "Datei"),
+  plain: l("Text to encrypt", "Texte à chiffrer", "Zu verschlüsselnder Text"),
+  plainPh: l(
+    "Type or paste the secret text…",
+    "Tape ou colle le texte secret…",
+    "Geheimen Text eingeben oder einfügen…",
+  ),
+  cipher: l("Encrypted text (Base64)", "Texte chiffré (Base64)", "Verschlüsselter Text (Base64)"),
   cipherPh: l(
     "Paste text encrypted by this tool (it starts with VEJFTg…)",
     "Colle un texte chiffré par cet outil (il commence par VEJFTg…)",
+    "Mit diesem Werkzeug verschlüsselten Text einfügen (beginnt mit VEJFTg…)",
   ),
   dropEnc: l(
     "Drop a file to encrypt, or click to choose",
     "Dépose un fichier à chiffrer, ou clique pour choisir",
+    "Datei zum Verschlüsseln hier ablegen oder klicken, um eine auszuwählen",
   ),
   dropDec: l(
     "Drop an .enc file (or a text file with the Base64), or click to choose",
     "Dépose un fichier .enc (ou un fichier texte avec le Base64), ou clique pour choisir",
+    ".enc-Datei (oder Textdatei mit dem Base64) hier ablegen oder klicken, um eine auszuwählen",
   ),
-  password: l("Password", "Mot de passe"),
+  password: l("Password", "Mot de passe", "Passwort"),
   passwordNote: l(
     "Never saved nor shared. Lost password = lost data: there is no recovery.",
     "Jamais enregistré ni partagé. Mot de passe perdu = données perdues : aucune récupération.",
+    "Wird nie gespeichert oder geteilt. Passwort verloren = Daten verloren: Es gibt keine Wiederherstellung.",
   ),
-  show: l("Show", "Afficher"),
-  kdf: l("Key derivation", "Dérivation de clé"),
-  pbkdf2: l("PBKDF2-SHA256 (WebCrypto)", "PBKDF2-SHA256 (WebCrypto)"),
-  argon2: l("Argon2id (memory-hard, slower)", "Argon2id (gourmand en mémoire, plus lent)"),
-  iterations: l("PBKDF2 iterations", "Itérations PBKDF2"),
+  show: l("Show", "Afficher", "Anzeigen"),
+  kdf: l("Key derivation", "Dérivation de clé", "Schlüsselableitung"),
+  pbkdf2: l("PBKDF2-SHA256 (WebCrypto)", "PBKDF2-SHA256 (WebCrypto)", "PBKDF2-SHA256 (WebCrypto)"),
+  argon2: l(
+    "Argon2id (memory-hard, slower)",
+    "Argon2id (gourmand en mémoire, plus lent)",
+    "Argon2id (speicherintensiv, langsamer)",
+  ),
+  iterations: l("PBKDF2 iterations", "Itérations PBKDF2", "PBKDF2-Iterationen"),
   iterHint: l(
     "600,000 is OWASP's recommendation; more is slower for you and for an attacker.",
     "600 000 est la recommandation de l'OWASP ; plus, c'est plus lent pour toi comme pour un attaquant.",
+    "600.000 empfiehlt die OWASP; mehr ist langsamer, für dich wie für Angreifer.",
   ),
-  argonInfo: l("Argon2id parameters", "Paramètres Argon2id"),
-  busyEnc: l("Deriving the key and encrypting…", "Dérivation de la clé et chiffrement…"),
-  busyDec: l("Deriving the key and decrypting…", "Dérivation de la clé et déchiffrement…"),
-  result: l("Encrypted (Base64)", "Chiffré (Base64)"),
-  decrypted: l("Decrypted text", "Texte déchiffré"),
-  downloadEnc: l("Download {name}", "Télécharger {name}"),
-  downloadBin: l("Download as .enc file", "Télécharger en fichier .enc"),
-  usedKdf: l("Key derivation used", "Dérivation de clé utilisée"),
-  original: l("Original", "Original"),
-  encrypted: l("Encrypted", "Chiffré"),
-  size: l("Size", "Taille"),
-  algo: l("Cipher", "Chiffrement"),
+  argonInfo: l("Argon2id parameters", "Paramètres Argon2id", "Argon2id-Parameter"),
+  busyEnc: l(
+    "Deriving the key and encrypting…",
+    "Dérivation de la clé et chiffrement…",
+    "Schlüssel wird abgeleitet und verschlüsselt…",
+  ),
+  busyDec: l(
+    "Deriving the key and decrypting…",
+    "Dérivation de la clé et déchiffrement…",
+    "Schlüssel wird abgeleitet und entschlüsselt…",
+  ),
+  result: l("Encrypted (Base64)", "Chiffré (Base64)", "Verschlüsselt (Base64)"),
+  decrypted: l("Decrypted text", "Texte déchiffré", "Entschlüsselter Text"),
+  downloadEnc: l("Download {name}", "Télécharger {name}", "{name} herunterladen"),
+  downloadBin: l(
+    "Download as .enc file",
+    "Télécharger en fichier .enc",
+    "Als .enc-Datei herunterladen",
+  ),
+  usedKdf: l("Key derivation used", "Dérivation de clé utilisée", "Verwendete Schlüsselableitung"),
+  original: l("Original", "Original", "Original"),
+  encrypted: l("Encrypted", "Chiffré", "Verschlüsselt"),
+  size: l("Size", "Taille", "Größe"),
+  algo: l("Cipher", "Chiffrement", "Verschlüsselung"),
   tooBig: l(
     "The decrypted text is large: download it instead.",
     "Le texte déchiffré est volumineux : télécharge-le plutôt.",
+    "Der entschlüsselte Text ist groß: Lade ihn lieber herunter.",
   ),
-  fileInText: l("This contains the file {name}.", "Cela contient le fichier {name}."),
-  needPassword: l("Enter a password first.", "Saisis d'abord un mot de passe."),
+  fileInText: l(
+    "This contains the file {name}.",
+    "Cela contient le fichier {name}.",
+    "Enthält die Datei {name}.",
+  ),
+  needPassword: l(
+    "Enter a password first.",
+    "Saisis d'abord un mot de passe.",
+    "Gib zuerst ein Passwort ein.",
+  ),
   about: l(
     "AES-256-GCM with a random salt and IV, in a versioned format that records the key derivation settings. Everything happens in this tab.",
     "AES-256-GCM avec sel et IV aléatoires, dans un format versionné qui garde les réglages de dérivation de clé. Tout se passe dans cet onglet.",
+    "AES-256-GCM mit zufälligem Salt und IV, in einem versionierten Format, das die Einstellungen der Schlüsselableitung festhält. Alles passiert in diesem Tab.",
   ),
 };
 
@@ -104,10 +139,6 @@ interface Loaded {
 type Done =
   | { mode: "encrypt"; bytes: Uint8Array; name: string; inSize: number }
   | { mode: "decrypt"; payload: Payload; header: Header };
-
-function locale(): string {
-  return lang.value === "fr" ? "fr-FR" : "en-US";
-}
 
 export default function Encrypt() {
   const mode = useToolState<Mode>("mode", "encrypt");
@@ -134,7 +165,6 @@ export default function Encrypt() {
 
   const kdf: Kdf =
     kdfKind.value === "pbkdf2" ? { kind: "pbkdf2", iterations: iterations.value } : ARGON2_DEFAULT;
-  const fr = lang.value === "fr";
   const nf = (n: number) => fmt(n);
 
   async function run() {
@@ -296,7 +326,9 @@ export default function Encrypt() {
             />
           ) : (
             <Field label={tr(T.argonInfo)}>
-              <span class="encrypt-params mono small">{kdfLabel(ARGON2_DEFAULT, nf, fr)}</span>
+              <span class="encrypt-params mono small">
+                {kdfLabel(ARGON2_DEFAULT, nf, lang.value)}
+              </span>
             </Field>
           )}
         </div>
@@ -311,7 +343,7 @@ export default function Encrypt() {
         >
           {busy.value ? tr(isEnc ? T.busyEnc : T.busyDec) : tr(isEnc ? T.encrypt : T.decrypt)}
         </Button>
-        {isEnc && <span class="muted small">{kdfLabel(kdf, nf, fr)} · AES-256-GCM</span>}
+        {isEnc && <span class="muted small">{kdfLabel(kdf, nf, lang.value)} · AES-256-GCM</span>}
       </div>
 
       <ErrorNote error={error.value} />
@@ -372,7 +404,7 @@ function DecryptResult({ d }: { d: Extract<Done, { mode: "decrypt" }> }) {
       <Stats
         items={[
           { label: tr(T.algo), value: "AES-256-GCM" },
-          { label: tr(T.usedKdf), value: kdfLabel(d.header.kdf, nf, lang.value === "fr") },
+          { label: tr(T.usedKdf), value: kdfLabel(d.header.kdf, nf, lang.value) },
           {
             label: tr(T.size),
             value: formatSize(

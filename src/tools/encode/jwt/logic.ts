@@ -1,4 +1,5 @@
 /** JSON Web Tokens: decode the three parts, read the time claims, verify an HMAC signature. */
+import type { L10n, Lang } from "../../../i18n";
 import { fail, fromBase64, fromUtf8, utf8 } from "../_shared";
 
 export interface DecodedJwt {
@@ -16,9 +17,13 @@ function isObject(v: unknown): v is Record<string, unknown> {
   return !!v && typeof v === "object" && !Array.isArray(v);
 }
 
-function part(segment: string, en: string, fr: string): Uint8Array {
+function part(segment: string, en: string, fr: string, de: string): Uint8Array {
   if (!/^[A-Za-z0-9_-]*$/.test(segment))
-    fail(`The ${en} is not Base64URL.`, `${fr} n'est pas du Base64URL.`);
+    fail(
+      `The ${en} is not Base64URL.`,
+      `${fr} n'est pas du Base64URL.`,
+      `${de} ist kein Base64URL.`,
+    );
   return fromBase64(segment);
 }
 
@@ -33,28 +38,42 @@ export function decodeJwt(token: string): DecodedJwt {
     fail(
       "This is an encrypted token (JWE): its content cannot be read without the key.",
       "C'est un jeton chiffré (JWE) : son contenu ne se lit pas sans la clé.",
+      "Das ist ein verschlüsseltes Token (JWE): Sein Inhalt ist ohne den Schlüssel nicht lesbar.",
     );
   if (parts.length !== 3)
     fail(
       "A JWT has three parts separated by dots: header.payload.signature.",
       "Un JWT a trois parties séparées par des points : en-tête.contenu.signature.",
+      "Ein JWT hat drei durch Punkte getrennte Teile: header.payload.signature.",
     );
   const [h, p, s] = parts as [string, string, string];
   let header: unknown;
   try {
-    header = JSON.parse(fromUtf8(part(h, "header", "L'en-tête"), true));
+    header = JSON.parse(fromUtf8(part(h, "header", "L'en-tête", "Der Header"), true));
   } catch {
-    fail("The header is not valid JSON.", "L'en-tête n'est pas du JSON valide.");
+    fail(
+      "The header is not valid JSON.",
+      "L'en-tête n'est pas du JSON valide.",
+      "Der Header ist kein gültiges JSON.",
+    );
   }
   if (!isObject(header))
-    fail("The header must be a JSON object.", "L'en-tête doit être un objet JSON.");
-  const payloadText = fromUtf8(part(p, "payload", "Le contenu"));
+    fail(
+      "The header must be a JSON object.",
+      "L'en-tête doit être un objet JSON.",
+      "Der Header muss ein JSON-Objekt sein.",
+    );
+  const payloadText = fromUtf8(part(p, "payload", "Le contenu", "Die Payload"));
   let payload: unknown = null;
   try {
     payload = JSON.parse(payloadText);
   } catch {}
   if (!/^[A-Za-z0-9_-]*$/.test(s))
-    fail("The signature is not Base64URL.", "La signature n'est pas du Base64URL.");
+    fail(
+      "The signature is not Base64URL.",
+      "La signature n'est pas du Base64URL.",
+      "Die Signatur ist kein Base64URL.",
+    );
   return {
     header,
     payload,
@@ -102,11 +121,14 @@ export function validity(payload: unknown, now: number): Validity {
   return { state: "valid", left: exp === null ? null : exp - now };
 }
 
-/** "2 d 3 h", "5 min 10 s", "3 s" (French uses "j" for days). Two largest units at most. */
-export function humanDuration(seconds: number, lang: "en" | "fr" = "en"): string {
+/** Abbreviation of "day" per language (the other units are the same everywhere). */
+const DAY: Record<Lang, string> = { en: "d", fr: "j", de: "T" };
+
+/** "2 d 3 h", "5 min 10 s", "3 s" ("j" in French, "T" in German for days). Two largest units at most. */
+export function humanDuration(seconds: number, lang: Lang = "en"): string {
   let s = Math.max(0, Math.round(seconds));
   const units: [number, string][] = [
-    [86400, lang === "fr" ? "j" : "d"],
+    [86400, DAY[lang]],
     [3600, "h"],
     [60, "min"],
     [1, "s"],
@@ -141,9 +163,10 @@ export async function verifyHmac(
     fail(
       `Only HS256, HS384 and HS512 can be checked with a secret (this token uses ${jwt.alg || "no algorithm"}).`,
       `Seuls HS256, HS384 et HS512 se vérifient avec un secret (ce jeton utilise ${jwt.alg || "aucun algorithme"}).`,
+      `Nur HS256, HS384 und HS512 lassen sich mit einem Secret prüfen (dieses Token nutzt ${jwt.alg || "keinen Algorithmus"}).`,
     );
   const key = encoding === "base64" ? fromBase64(secret) : utf8(secret);
-  if (!key.length) fail("Enter the secret.", "Saisis le secret.");
+  if (!key.length) fail("Enter the secret.", "Saisis le secret.", "Gib das Secret ein.");
   // WebCrypto wants buffers backed by a plain ArrayBuffer: copy into one.
   const k = await crypto.subtle.importKey(
     "raw",
@@ -157,15 +180,15 @@ export async function verifyHmac(
 }
 
 /** Names of the registered claims, to label them in the payload. */
-export const CLAIM_NAMES: Record<string, { en: string; fr: string }> = {
-  iss: { en: "Issuer", fr: "Émetteur" },
-  sub: { en: "Subject", fr: "Sujet" },
-  aud: { en: "Audience", fr: "Audience" },
-  exp: { en: "Expires", fr: "Expire" },
-  nbf: { en: "Not before", fr: "Pas avant" },
-  iat: { en: "Issued at", fr: "Émis le" },
-  jti: { en: "Token ID", fr: "ID du jeton" },
-  auth_time: { en: "Authenticated at", fr: "Authentifié le" },
+export const CLAIM_NAMES: Record<string, L10n> = {
+  iss: { en: "Issuer", fr: "Émetteur", de: "Aussteller" },
+  sub: { en: "Subject", fr: "Sujet", de: "Subjekt" },
+  aud: { en: "Audience", fr: "Audience", de: "Empfänger" },
+  exp: { en: "Expires", fr: "Expire", de: "Läuft ab" },
+  nbf: { en: "Not before", fr: "Pas avant", de: "Nicht vor" },
+  iat: { en: "Issued at", fr: "Émis le", de: "Ausgestellt am" },
+  jti: { en: "Token ID", fr: "ID du jeton", de: "Token-ID" },
+  auth_time: { en: "Authenticated at", fr: "Authentifié le", de: "Authentifiziert am" },
 };
 
 /** What a JWS `alg` stands for (an empty string when unknown). */

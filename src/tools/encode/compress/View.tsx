@@ -10,7 +10,7 @@ import {
   Stats,
   TextBox,
 } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, locale, tr } from "../../../i18n";
 import { formatSize, utf8 } from "../_shared";
 import { useAsync } from "../_ui";
 import {
@@ -38,49 +38,61 @@ type FormatChoice = Format | "auto";
 const SHOW_MAX = 1_000_000;
 
 const T = {
-  mode: l("Mode", "Mode"),
-  compress: l("Compress", "Compresser"),
-  decompress: l("Decompress", "Décompresser"),
-  source: l("Source", "Source"),
-  text: l("Text", "Texte"),
-  file: l("File", "Fichier"),
-  format: l("Format", "Format"),
-  auto: l("Detect automatically", "Détecter automatiquement"),
-  gzip: l("gzip (.gz)", "gzip (.gz)"),
-  deflate: l("zlib / deflate (.zz)", "zlib / deflate (.zz)"),
-  raw: l("Raw deflate (no header)", "Deflate brut (sans en-tête)"),
-  outEnc: l("Output as", "Sortie en"),
-  hex: l("Hex", "Hexa"),
-  input: l("Text to compress", "Texte à compresser"),
-  inputPh: l("Type or paste text…", "Tape ou colle du texte…"),
-  packed: l("Compressed data (Base64 or hex)", "Données compressées (Base64 ou hexa)"),
+  mode: l("Mode", "Mode", "Modus"),
+  compress: l("Compress", "Compresser", "Komprimieren"),
+  decompress: l("Decompress", "Décompresser", "Dekomprimieren"),
+  source: l("Source", "Source", "Quelle"),
+  text: l("Text", "Texte", "Text"),
+  file: l("File", "Fichier", "Datei"),
+  format: l("Format", "Format", "Format"),
+  auto: l("Detect automatically", "Détecter automatiquement", "Automatisch erkennen"),
+  gzip: l("gzip (.gz)", "gzip (.gz)", "gzip (.gz)"),
+  deflate: l("zlib / deflate (.zz)", "zlib / deflate (.zz)", "zlib / deflate (.zz)"),
+  raw: l("Raw deflate (no header)", "Deflate brut (sans en-tête)", "Rohes Deflate (ohne Header)"),
+  outEnc: l("Output as", "Sortie en", "Ausgabe als"),
+  hex: l("Hex", "Hexa", "Hex"),
+  input: l("Text to compress", "Texte à compresser", "Zu komprimierender Text"),
+  inputPh: l("Type or paste text…", "Tape ou colle du texte…", "Text eingeben oder einfügen…"),
+  packed: l(
+    "Compressed data (Base64 or hex)",
+    "Données compressées (Base64 ou hexa)",
+    "Komprimierte Daten (Base64 oder hex)",
+  ),
   packedPh: l(
     "Paste gzip, zlib or deflate data as Base64 or hex, e.g. H4sIAAAAAAAA…",
     "Colle des données gzip, zlib ou deflate en Base64 ou hexa, par ex. H4sIAAAAAAAA…",
+    "gzip-, zlib- oder deflate-Daten als Base64 oder hex einfügen, z. B. H4sIAAAAAAAA…",
   ),
-  output: l("Compressed", "Compressé"),
-  result: l("Decompressed text", "Texte décompressé"),
-  drop: l("Drop a file here, or click to choose", "Dépose un fichier ici, ou clique pour choisir"),
-  inSize: l("Input", "Entrée"),
-  outSize: l("Output", "Sortie"),
-  ratio: l("Output / input", "Sortie / entrée"),
-  saved: l("Saved", "Gain"),
-  detected: l("Format", "Format"),
-  storedName: l("Stored name", "Nom stocké"),
-  modified: l("Modified", "Modifié"),
-  download: l("Download {name}", "Télécharger {name}"),
+  output: l("Compressed", "Compressé", "Komprimiert"),
+  result: l("Decompressed text", "Texte décompressé", "Dekomprimierter Text"),
+  drop: l(
+    "Drop a file here, or click to choose",
+    "Dépose un fichier ici, ou clique pour choisir",
+    "Datei hier ablegen oder klicken, um eine auszuwählen",
+  ),
+  inSize: l("Input", "Entrée", "Eingabe"),
+  outSize: l("Output", "Sortie", "Ausgabe"),
+  ratio: l("Output / input", "Sortie / entrée", "Ausgabe / Eingabe"),
+  saved: l("Saved", "Gain", "Ersparnis"),
+  detected: l("Format", "Format", "Format"),
+  storedName: l("Stored name", "Nom stocké", "Gespeicherter Name"),
+  modified: l("Modified", "Modifié", "Geändert"),
+  download: l("Download {name}", "Télécharger {name}", "{name} herunterladen"),
   binary: l(
     "The result is not UTF-8 text ({size}): download it as a file.",
     "Le résultat n'est pas du texte UTF-8 ({size}) : télécharge-le comme fichier.",
+    "Das Ergebnis ist kein UTF-8-Text ({size}): Lade es als Datei herunter.",
   ),
   tooBig: l(
     "The result is too large to display: download it.",
     "Le résultat est trop gros pour être affiché : télécharge-le.",
+    "Das Ergebnis ist zu groß für die Anzeige: Lade es herunter.",
   ),
-  busy: l("Working…", "En cours…"),
+  busy: l("Working…", "En cours…", "Wird verarbeitet…"),
   note: l(
     "Uses the browser's own CompressionStream. gzip and zlib add a checksum; raw deflate has none.",
     "Utilise le CompressionStream du navigateur. gzip et zlib ajoutent une somme de contrôle ; le deflate brut n'en a pas.",
+    "Nutzt den eingebauten CompressionStream des Browsers. gzip und zlib fügen eine Prüfsumme hinzu, rohes Deflate nicht.",
   ),
 };
 
@@ -94,10 +106,6 @@ interface Done {
   bytes: Uint8Array;
   format: Format;
   header: GzipHeader | null;
-}
-
-function locale(): string {
-  return lang.value === "fr" ? "fr-FR" : "en-US";
 }
 
 function download(bytes: Uint8Array, name: string): void {

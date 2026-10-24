@@ -47,16 +47,22 @@ export function pools(opts: PasswordOptions): string[] {
 function check(opts: PasswordOptions): string[] {
   const p = pools(opts);
   if (!p.length)
-    fail("Choose at least one kind of character.", "Choisis au moins un type de caractère.");
+    fail(
+      "Choose at least one kind of character.",
+      "Choisis au moins un type de caractère.",
+      "Wähle mindestens eine Zeichenart.",
+    );
   if (!Number.isInteger(opts.length) || opts.length < MIN_LENGTH || opts.length > MAX_LENGTH)
     fail(
       `The length must be between ${MIN_LENGTH} and ${MAX_LENGTH}.`,
       `La longueur doit être entre ${MIN_LENGTH} et ${MAX_LENGTH}.`,
+      `Die Länge muss zwischen ${MIN_LENGTH} und ${MAX_LENGTH} liegen.`,
     );
   if (opts.eachClass && opts.length < p.length)
     fail(
       "The password is too short to hold one character of each kind.",
       "Le mot de passe est trop court pour contenir un caractère de chaque type.",
+      "Das Passwort ist zu kurz für ein Zeichen jeder Art.",
     );
   return p;
 }

@@ -37,6 +37,7 @@ export function encodeUrl(text: string, mode: UrlMode, strict = false): string {
     fail(
       "The text contains a broken character (lone surrogate).",
       "Le texte contient un caractère cassé (surrogate isolé).",
+      "Der Text enthält ein kaputtes Zeichen (einzelnes Surrogat).",
     );
   }
 }
@@ -57,6 +58,7 @@ function explainMalformed(text: string): never {
     fail(
       `Incomplete escape at position ${bad.index + 1}: % must be followed by two hex digits.`,
       `Échappement incomplet à la position ${bad.index + 1} : % doit être suivi de deux chiffres hexa.`,
+      `Unvollständige Escape-Sequenz an Position ${bad.index + 1}: Auf % müssen zwei Hex-Ziffern folgen.`,
     );
   // Every escape is well-formed, so a run of escapes is not valid UTF-8.
   const re = /(?:%[0-9a-f]{2})+/gi;
@@ -67,10 +69,15 @@ function explainMalformed(text: string): never {
       fail(
         `The bytes ${m[0]} at position ${m.index + 1} are not valid UTF-8.`,
         `Les octets ${m[0]} à la position ${m.index + 1} ne sont pas de l'UTF-8 valide.`,
+        `Die Bytes ${m[0]} an Position ${m.index + 1} sind kein gültiges UTF-8.`,
       );
     }
   }
-  fail("Malformed percent-encoding.", "Encodage pourcent malformé.");
+  fail(
+    "Malformed percent-encoding.",
+    "Encodage pourcent malformé.",
+    "Fehlerhafte Prozentkodierung.",
+  );
 }
 
 /** True when the text still contains percent escapes (it was probably encoded twice). */

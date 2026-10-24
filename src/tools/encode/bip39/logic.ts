@@ -88,6 +88,7 @@ function checkEntropy(entropy: Uint8Array): void {
     fail(
       "Entropy must be 16, 20, 24, 28 or 32 bytes (32 to 64 hex digits, a multiple of 8).",
       "L'entropie doit faire 16, 20, 24, 28 ou 32 octets (32 à 64 chiffres hexa, multiple de 8).",
+      "Die Entropie muss 16, 20, 24, 28 oder 32 Bytes haben (32 bis 64 Hex-Ziffern, ein Vielfaches von 8).",
     );
 }
 
@@ -150,7 +151,8 @@ export function check(text: string): Check {
 /** The entropy of a valid mnemonic; throws a bilingual error explaining what is wrong. */
 export function mnemonicToEntropy(text: string): Uint8Array {
   const c = check(text);
-  if (!c.words.length) fail("Enter a mnemonic.", "Saisis une phrase mnémonique.");
+  if (!c.words.length)
+    fail("Enter a mnemonic.", "Saisis une phrase mnémonique.", "Gib eine Wortfolge ein.");
   const first = c.unknown[0];
   if (first !== undefined) {
     const w = c.words[first] as string;
@@ -159,17 +161,20 @@ export function mnemonicToEntropy(text: string): Uint8Array {
     fail(
       `Word ${first + 1} "${w}" is not in the BIP39 English list${hint}.`,
       `Le mot ${first + 1} « ${w} » n'est pas dans la liste BIP39 anglaise${hint}.`,
+      `Wort ${first + 1} „${w}“ steht nicht in der englischen BIP39-Liste${hint}.`,
     );
   }
   if (!c.entropy)
     fail(
       `${c.words.length} words: a mnemonic has 12, 15, 18, 21 or 24 words.`,
       `${c.words.length} mots : une phrase mnémonique a 12, 15, 18, 21 ou 24 mots.`,
+      `${c.words.length} Wörter: Eine Wortfolge hat 12, 15, 18, 21 oder 24 Wörter.`,
     );
   if (!c.checksumOk)
     fail(
       "Wrong checksum: a word is mistyped or the order is wrong.",
       "Somme de contrôle fausse : un mot est mal saisi ou l'ordre est faux.",
+      "Prüfsumme falsch: Ein Wort ist falsch geschrieben oder die Reihenfolge stimmt nicht.",
     );
   return c.entropy;
 }

@@ -44,6 +44,7 @@ function bad(): never {
   fail(
     "Invalid DER: the ASN.1 structure is truncated or malformed.",
     "DER invalide : la structure ASN.1 est tronquée ou mal formée.",
+    "Ungültiges DER: Die ASN.1-Struktur ist abgeschnitten oder fehlerhaft.",
   );
 }
 
