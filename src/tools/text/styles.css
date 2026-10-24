@@ -564,3 +564,262 @@
   width: 1%;
   white-space: nowrap;
 }
+
+/* extract */
+.extract-kinds {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 6px 14px;
+}
+.extract-kind .badge {
+  margin-left: 2px;
+}
+
+/* emoji */
+.emoji-top {
+  align-items: flex-end;
+}
+.emoji-top > .emoji-search {
+  flex: 1 1 260px;
+}
+.emoji-tones button {
+  font-size: 18px;
+  line-height: 1;
+  padding: 5px 7px;
+}
+.emoji-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.emoji-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.emoji-tabs button:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.emoji-tabs button.on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--ink);
+}
+.emoji-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 14px;
+  align-items: start;
+}
+.emoji-layout > .panel:only-child {
+  grid-column: 1 / -1;
+}
+@media (max-width: 760px) {
+  .emoji-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .emoji-tab-name {
+    display: none;
+  }
+}
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+  gap: 2px;
+  max-height: 60vh;
+  overflow: auto;
+}
+.emoji-cell {
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", var(--font);
+}
+.emoji-cell:hover {
+  background: var(--surface-2);
+}
+.emoji-cell.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.emoji-detail {
+  position: sticky;
+  top: 12px;
+  align-items: flex-start;
+}
+.emoji-big {
+  font-size: 64px;
+  line-height: 1.1;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", var(--font);
+}
+.emoji-facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 10px;
+  margin: 0;
+  font-size: 13px;
+}
+.emoji-facts dt {
+  color: var(--muted);
+}
+.emoji-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* speech */
+.speech-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px 16px;
+  align-items: end;
+}
+.speech-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+}
+.speech-range input {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--accent);
+}
+.speech-range .mono {
+  min-width: 44px;
+  text-align: right;
+}
+.speech-warn {
+  margin: 0;
+  color: var(--ink-2);
+}
+.speech-text {
+  max-height: 50vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-size: 15px;
+}
+.speech-chunk {
+  background: var(--accent-soft);
+  border-radius: 3px;
+}
+.speech-word {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 3px;
+}
+
+/* ascii-art */
+.ascii-art-opts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.ascii-art-off {
+  opacity: 0.5;
+}
+/* The banner only lines up in a monospaced font (the shared .input rule resets font-family). */
+.ascii-art-result .textarea {
+  font-family: var(--mono);
+  line-height: 1.2;
+}
+
+/* numeronym */
+.numeronym-opts {
+  align-items: flex-end;
+}
+.numeronym-found {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.numeronym-hit td {
+  background: var(--accent-soft);
+}
+
+/* whitespace */
+.whitespace-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+.whitespace-toggles {
+  gap: 6px;
+}
+.whitespace-changes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+/* readability */
+.readability-scores {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.readability-score {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.readability-score header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.readability-score h3 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 640;
+}
+.readability-score p {
+  margin: 0;
+  color: var(--ink-2);
+}
+.readability-value {
+  font-size: 26px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.readability-score p.readability-shaky {
+  color: var(--warn);
+}
+.tx-highlight .readability-long {
+  background: color-mix(in srgb, var(--warn) 18%, transparent);
+  color: inherit;
+  border-radius: 2px;
+}
+.tx-highlight .readability-vlong {
+  background: var(--del);
+  color: inherit;
+  border-radius: 2px;
+  box-shadow: inset 0 -2px 0 var(--danger);
+}
+.readability-text .tx-highlight {
+  font-family: var(--font);
+  font-size: 14px;
+}
