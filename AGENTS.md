@@ -27,11 +27,14 @@ calculators), `life` (timers, chance & devices).
 
 ## Conventions
 
-- **Strings**: every visible string is EN + FR. Declare them at the top of the view:
-  `const T = { label: l("English", "Français") }` and render with `tr(T.label)`. Format numbers
-  with `fmt()` from `src/i18n`. Never hardcode English in JSX.
-- **Language**: the UI follows the browser (French if it prefers French, English otherwise);
-  only the header switch stores a choice.
+- **Strings**: every visible string is in English, French and German. Declare them at the top
+  of the view: `const T = { label: l("English", "Français", "Deutsch") }` and render with
+  `tr(T.label)`. Objects typed `L10n` carry `{ en, fr, de }`. Never hardcode English in JSX.
+- **Formatting**: numbers with `fmt()`, and anything else locale-aware (dates, `Intl.*`,
+  `toLocaleString`) with `locale()` from `src/i18n` — never `lang.value === "fr" ? … : …`.
+  Per-language data (word lists, alphabets, examples) with `pick({ en, fr, de })`.
+- **Language**: the UI follows the browser's first language among en/fr/de (English otherwise);
+  only a choice in the header list is stored.
 - **State**: `useToolState(key, initial, { persist?, share? })` from `src/app/state.ts` instead
   of `useState` for anything the user typed or chose: it survives reloads and goes into share
   links. Use `{ persist: false, share: false }` for secrets (passwords, keys, HMAC secrets).

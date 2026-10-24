@@ -5,7 +5,7 @@ import { route } from "./app/router";
 import { ToolPage } from "./app/ToolPage";
 import { theme, toggleTheme } from "./app/theme";
 import { Icon, IconButton, Toasts } from "./app/ui";
-import { lang, setLang, tr } from "./i18n";
+import { LANGS, type Lang, lang, setLang, tr } from "./i18n";
 import { S } from "./i18n/strings";
 
 function Brand() {
@@ -40,14 +40,23 @@ function App() {
           <kbd>⌘K</kbd>
         </button>
         <div class="topbar-actions">
-          <button
-            type="button"
-            class="lang-btn"
-            title={tr(S.language)}
-            onClick={() => setLang(lang.value === "fr" ? "en" : "fr")}
-          >
-            {lang.value === "fr" ? "EN" : "FR"}
-          </button>
+          <label class="lang-select" title={tr(S.language)}>
+            <Icon name="globe" size={16} />
+            <span class="sr-only">{tr(S.language)}</span>
+            <span class="lang-code" aria-hidden="true">
+              {lang.value.toUpperCase()}
+            </span>
+            <select
+              value={lang.value}
+              onChange={(e) => setLang((e.currentTarget as HTMLSelectElement).value as Lang)}
+            >
+              {LANGS.map((x) => (
+                <option key={x.id} value={x.id}>
+                  {x.name}
+                </option>
+              ))}
+            </select>
+          </label>
           <IconButton
             icon={theme.value === "dark" ? "sun" : "moon"}
             label={tr(S.theme)}
