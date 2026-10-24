@@ -6,6 +6,7 @@ import { fmt, l, lang, tr } from "../../../i18n";
 import { aspectRatio } from "../devices/logic";
 import {
   cycle,
+  defaultLayout,
   estimateRefresh,
   LAYOUTS,
   type Layout,
@@ -17,48 +18,54 @@ import {
 type Tab = "info" | "pixels" | "keyboard";
 
 const T = {
-  info: l("Screen info", "Infos écran"),
-  pixels: l("Dead pixels", "Pixels morts"),
-  keyboard: l("Keyboard", "Clavier"),
-  screen: l("Screen", "Écran"),
-  available: l("Available area", "Zone disponible"),
-  window: l("Browser window", "Fenêtre du navigateur"),
-  dpr: l("Device pixel ratio", "Densité de pixels (DPR)"),
-  physical: l("Physical pixels", "Pixels physiques"),
-  depth: l("Color depth", "Profondeur de couleur"),
-  bits: l("{n} bits", "{n} bits"),
-  refresh: l("Refresh rate (estimate)", "Fréquence (estimation)"),
-  measuring: l("measuring…", "mesure…"),
-  measure: l("Measure again", "Mesurer à nouveau"),
-  orientation: l("Orientation", "Orientation"),
-  touch: l("Touch points", "Points tactiles"),
-  features: l("Display features", "Capacités d'affichage"),
-  gamut: l("Color gamut", "Gamut de couleurs"),
-  hdr: l("HDR (high dynamic range)", "HDR (grande plage dynamique)"),
-  yes: l("yes", "oui"),
-  no: l("no", "non"),
-  dark: l("Prefers dark mode", "Préfère le mode sombre"),
-  motion: l("Prefers reduced motion", "Préfère moins d'animations"),
-  contrast: l("Prefers more contrast", "Préfère plus de contraste"),
-  pointer: l("Main pointer", "Pointeur principal"),
-  fine: l("fine (mouse, trackpad)", "précis (souris, pavé)"),
-  coarse: l("coarse (finger)", "grossier (doigt)"),
-  none: l("none", "aucun"),
+  info: l("Screen info", "Infos écran", "Bildschirminfos"),
+  pixels: l("Dead pixels", "Pixels morts", "Pixelfehler"),
+  keyboard: l("Keyboard", "Clavier", "Tastatur"),
+  screen: l("Screen", "Écran", "Bildschirm"),
+  available: l("Available area", "Zone disponible", "Verfügbarer Bereich"),
+  window: l("Browser window", "Fenêtre du navigateur", "Browserfenster"),
+  dpr: l("Device pixel ratio", "Densité de pixels (DPR)", "Pixeldichte (DPR)"),
+  physical: l("Physical pixels", "Pixels physiques", "Physische Pixel"),
+  depth: l("Color depth", "Profondeur de couleur", "Farbtiefe"),
+  bits: l("{n} bits", "{n} bits", "{n} Bit"),
+  refresh: l("Refresh rate (estimate)", "Fréquence (estimation)", "Bildwiederholrate (geschätzt)"),
+  measuring: l("measuring…", "mesure…", "wird gemessen…"),
+  measure: l("Measure again", "Mesurer à nouveau", "Erneut messen"),
+  orientation: l("Orientation", "Orientation", "Ausrichtung"),
+  touch: l("Touch points", "Points tactiles", "Touchpunkte"),
+  features: l("Display features", "Capacités d'affichage", "Anzeigefunktionen"),
+  gamut: l("Color gamut", "Gamut de couleurs", "Farbraum"),
+  hdr: l("HDR (high dynamic range)", "HDR (grande plage dynamique)", "HDR (hoher Dynamikumfang)"),
+  yes: l("yes", "oui", "ja"),
+  no: l("no", "non", "nein"),
+  dark: l("Prefers dark mode", "Préfère le mode sombre", "Bevorzugt dunkles Design"),
+  motion: l("Prefers reduced motion", "Préfère moins d'animations", "Bevorzugt weniger Bewegung"),
+  contrast: l("Prefers more contrast", "Préfère plus de contraste", "Bevorzugt mehr Kontrast"),
+  pointer: l("Main pointer", "Pointeur principal", "Hauptzeiger"),
+  fine: l("fine (mouse, trackpad)", "précis (souris, pavé)", "fein (Maus, Trackpad)"),
+  coarse: l("coarse (finger)", "grossier (doigt)", "grob (Finger)"),
+  none: l("none", "aucun", "keiner"),
   pixelsHelp: l(
     "Fills the screen with solid colors, one after another. Look closely for dots that stay black (dead) or stay lit in one color (stuck). Click, Space or → for the next color, ← to go back, Esc to leave.",
     "Remplit l'écran de couleurs unies, l'une après l'autre. Cherche de près les points qui restent noirs (morts) ou allumés d'une couleur (bloqués). Clic, Espace ou → pour la couleur suivante, ← pour revenir, Échap pour sortir.",
+    "Füllt den Bildschirm nacheinander mit Vollfarben. Achte genau auf Punkte, die schwarz bleiben (tot) oder in einer Farbe leuchten (hängend). Klick, Leertaste oder → für die nächste Farbe, ← zurück, Esc zum Beenden.",
   ),
-  startTest: l("Start full-screen test", "Lancer le test plein écran"),
-  hint: l("Click or → next · ← back · Esc exit", "Clic ou → suivant · ← retour · Échap sortir"),
+  startTest: l("Start full-screen test", "Lancer le test plein écran", "Vollbildtest starten"),
+  hint: l(
+    "Click or → next · ← back · Esc exit",
+    "Clic ou → suivant · ← retour · Échap sortir",
+    "Klick oder → weiter · ← zurück · Esc beenden",
+  ),
   keysHelp: l(
     "Press keys: each one lights up while held, and stays marked once tested. Shortcuts with Ctrl or ⌘ still go to the browser.",
     "Appuie sur des touches : chacune s'allume pendant l'appui et reste marquée une fois testée. Les raccourcis avec Ctrl ou ⌘ vont toujours au navigateur.",
+    "Drück Tasten: Jede leuchtet, solange sie gedrückt ist, und bleibt markiert, sobald sie getestet wurde. Tastenkürzel mit Strg oder ⌘ gehen weiterhin an den Browser.",
   ),
-  tested: l("{n} of {m} keys tested", "{n} touches testées sur {m}"),
-  last: l("Last key", "Dernière touche"),
-  others: l("Other keys pressed", "Autres touches appuyées"),
-  reset: l("Reset", "Réinitialiser"),
-  colon: l(": ", " : "),
+  tested: l("{n} of {m} keys tested", "{n} touches testées sur {m}", "{n} von {m} Tasten getestet"),
+  last: l("Last key", "Dernière touche", "Letzte Taste"),
+  others: l("Other keys pressed", "Autres touches appuyées", "Andere gedrückte Tasten"),
+  reset: l("Reset", "Réinitialiser", "Zurücksetzen"),
+  colon: l(": ", " : ", ": "),
 };
 
 export default function ScreenTest() {
@@ -319,8 +326,8 @@ function Pixels() {
             type="button"
             class="screen-test-swatch"
             style={{ background: c.css }}
-            title={lang.value === "fr" ? c.fr : c.en}
-            aria-label={lang.value === "fr" ? c.fr : c.en}
+            title={tr(c)}
+            aria-label={tr(c)}
             onClick={() => {
               setIndex(i);
               setHint(true);
@@ -335,7 +342,7 @@ function Pixels() {
           type="button"
           class={`screen-test-full ${hint ? "" : "screen-test-nocursor"}`}
           style={{ background: color.css }}
-          aria-label={lang.value === "fr" ? color.fr : color.en}
+          aria-label={tr(color)}
           onClick={() => setIndex((i) => cycle(i, TEST_COLORS.length, 1))}
           onContextMenu={(e) => {
             e.preventDefault();
@@ -345,8 +352,7 @@ function Pixels() {
         >
           {hint && (
             <span class="screen-test-hint">
-              {lang.value === "fr" ? color.fr : color.en} · {index + 1}/{TEST_COLORS.length} ·{" "}
-              {tr(T.hint)}
+              {tr(color)} · {index + 1}/{TEST_COLORS.length} · {tr(T.hint)}
             </span>
           )}
         </button>
@@ -356,7 +362,7 @@ function Pixels() {
 }
 
 function Keyboard() {
-  const layout = useToolState<Layout>("layout", lang.value === "fr" ? "azerty" : "qwerty");
+  const layout = useToolState<Layout>("layout", defaultLayout(lang.value));
   const [down, setDown] = useState<Set<string>>(new Set());
   const [seen, setSeen] = useState<Set<string>>(new Set());
   const [last, setLast] = useState<{ key: string; code: string } | null>(null);
@@ -405,6 +411,7 @@ function Keyboard() {
           options={[
             { value: "qwerty", label: "QWERTY" },
             { value: "azerty", label: "AZERTY" },
+            { value: "qwertz", label: "QWERTZ" },
           ]}
         />
         <span class="muted small">

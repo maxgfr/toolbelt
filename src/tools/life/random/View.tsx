@@ -22,66 +22,79 @@ import {
 type Tab = "number" | "dice" | "coin" | "pick" | "shuffle" | "teams" | "santa";
 
 const T = {
-  number: l("Number", "Nombre"),
-  dice: l("Dice", "Dés"),
-  coin: l("Coin", "Pile ou face"),
-  pick: l("Draw", "Tirage"),
-  shuffle: l("Shuffle", "Mélanger"),
-  teams: l("Teams", "Équipes"),
-  santa: l("Secret Santa", "Père Noël secret"),
-  min: l("Minimum", "Minimum"),
-  max: l("Maximum", "Maximum"),
-  count: l("How many", "Combien"),
-  decimals: l("Decimals", "Décimales"),
-  unique: l("No repeats", "Sans doublons"),
-  generate: l("Generate", "Générer"),
-  results: l("Results", "Résultats"),
-  sorted: l("Sorted", "Triés"),
-  notation: l("Dice", "Dés"),
+  number: l("Number", "Nombre", "Zahl"),
+  dice: l("Dice", "Dés", "Würfel"),
+  coin: l("Coin", "Pile ou face", "Münzwurf"),
+  pick: l("Draw", "Tirage", "Auslosen"),
+  shuffle: l("Shuffle", "Mélanger", "Mischen"),
+  teams: l("Teams", "Équipes", "Teams"),
+  santa: l("Secret Santa", "Père Noël secret", "Wichteln"),
+  min: l("Minimum", "Minimum", "Minimum"),
+  max: l("Maximum", "Maximum", "Maximum"),
+  count: l("How many", "Combien", "Wie viele"),
+  decimals: l("Decimals", "Décimales", "Nachkommastellen"),
+  unique: l("No repeats", "Sans doublons", "Ohne Wiederholung"),
+  generate: l("Generate", "Générer", "Erzeugen"),
+  results: l("Results", "Résultats", "Ergebnisse"),
+  sorted: l("Sorted", "Triés", "Sortiert"),
+  notation: l("Dice", "Dés", "Würfel"),
   notationHint: l(
     "2d6+3 · d20 · 4d6kh3 (keep the 3 highest) · d% · 1d8-1",
     "2d6+3 · d20 · 4d6kh3 (garder les 3 meilleurs) · d% · 1d8-1",
+    "2d6+3 (oder 2W6+3) · d20 · 4d6kh3 (die 3 höchsten behalten) · d% · 1d8-1",
   ),
-  roll: l("Roll", "Lancer"),
-  history: l("History", "Historique"),
-  clear: l("Clear", "Effacer"),
-  range: l("range {a}–{b}", "de {a} à {b}"),
-  flip: l("Flip", "Lancer"),
-  flip10: l("Flip 10", "Lancer 10 fois"),
-  heads: l("Heads", "Pile"),
-  tails: l("Tails", "Face"),
-  tally: l("Heads {h} · Tails {t}", "Pile {h} · Face {t}"),
-  list: l("List (one per line)", "Liste (une ligne par élément)"),
-  listPh: l("Alice\nBob\nChloé\nDavid", "Alice\nBob\nChloé\nDavid"),
-  winners: l("Winners", "Gagnants"),
-  draw: l("Draw", "Tirer au sort"),
-  items: l("{n} items", "{n} éléments"),
-  shuffled: l("Shuffled list", "Liste mélangée"),
-  teamCount: l("Number of teams", "Nombre d'équipes"),
-  teamSize: l("People per team", "Personnes par équipe"),
-  byCount: l("By number of teams", "Par nombre d'équipes"),
-  bySize: l("By team size", "Par taille d'équipe"),
-  make: l("Make teams", "Former les équipes"),
-  team: l("Team {n}", "Équipe {n}"),
-  people: l("People (one per line)", "Participants (un par ligne)"),
-  exclusions: l("Exclusions (optional)", "Exclusions (facultatif)"),
+  roll: l("Roll", "Lancer", "Würfeln"),
+  history: l("History", "Historique", "Verlauf"),
+  clear: l("Clear", "Effacer", "Leeren"),
+  range: l("range {a}–{b}", "de {a} à {b}", "Bereich {a}–{b}"),
+  flip: l("Flip", "Lancer", "Werfen"),
+  flip10: l("Flip 10", "Lancer 10 fois", "10-mal werfen"),
+  heads: l("Heads", "Pile", "Kopf"),
+  tails: l("Tails", "Face", "Zahl"),
+  tally: l("Heads {h} · Tails {t}", "Pile {h} · Face {t}", "Kopf {h} · Zahl {t}"),
+  list: l("List (one per line)", "Liste (une ligne par élément)", "Liste (eins pro Zeile)"),
+  listPh: l("Alice\nBob\nChloé\nDavid", "Alice\nBob\nChloé\nDavid", "Anna\nBen\nClara\nDavid"),
+  winners: l("Winners", "Gagnants", "Gewinner"),
+  draw: l("Draw", "Tirer au sort", "Auslosen"),
+  items: l("{n} items", "{n} éléments", "{n} Einträge"),
+  shuffled: l("Shuffled list", "Liste mélangée", "Gemischte Liste"),
+  teamCount: l("Number of teams", "Nombre d'équipes", "Anzahl der Teams"),
+  teamSize: l("People per team", "Personnes par équipe", "Personen pro Team"),
+  byCount: l("By number of teams", "Par nombre d'équipes", "Nach Anzahl der Teams"),
+  bySize: l("By team size", "Par taille d'équipe", "Nach Teamgröße"),
+  make: l("Make teams", "Former les équipes", "Teams bilden"),
+  team: l("Team {n}", "Équipe {n}", "Team {n}"),
+  people: l(
+    "People (one per line)",
+    "Participants (un par ligne)",
+    "Teilnehmende (eine Person pro Zeile)",
+  ),
+  exclusions: l("Exclusions (optional)", "Exclusions (facultatif)", "Ausschlüsse (optional)"),
   exclusionsHint: l(
     "One pair per line. “Alice, Bob”: neither gives to the other (a couple). “Alice > Bob”: Alice does not give to Bob.",
     "Une paire par ligne. « Alice, Bob » : aucun n'offre à l'autre (un couple). « Alice > Bob » : Alice n'offre pas à Bob.",
+    "Ein Paar pro Zeile. „Anna, Ben“: Keiner beschenkt den anderen (ein Paar). „Anna > Ben“: Anna beschenkt Ben nicht.",
   ),
-  drawSanta: l("Draw", "Faire le tirage"),
-  revealNext: l("Reveal next", "Révéler le suivant"),
-  revealAll: l("Show all", "Tout afficher"),
-  hideAll: l("Hide all", "Tout masquer"),
-  gives: l("gives to", "offre à"),
-  hidden: l("Click to reveal", "Clique pour révéler"),
+  exclusionsPh: l(
+    "Alice, Bob\nChloé > David",
+    "Alice, Bob\nChloé > David",
+    "Anna, Ben\nClara > David",
+  ),
+  drawSanta: l("Draw", "Faire le tirage", "Auslosen"),
+  revealNext: l("Reveal next", "Révéler le suivant", "Nächsten aufdecken"),
+  revealAll: l("Show all", "Tout afficher", "Alle zeigen"),
+  hideAll: l("Hide all", "Tout masquer", "Alle verbergen"),
+  gives: l("gives to", "offre à", "beschenkt"),
+  hidden: l("Click to reveal", "Clique pour révéler", "Zum Aufdecken klicken"),
   santaNote: l(
     "Pass the screen around: each person reveals only their own line. Nobody gives to themselves.",
     "Fais passer l'écran : chacun révèle seulement sa ligne. Personne ne s'offre de cadeau à soi-même.",
+    "Gib den Bildschirm herum: Jede Person deckt nur ihre eigene Zeile auf. Niemand beschenkt sich selbst.",
   ),
   fair: l(
     "Drawn with the browser's cryptographic randomness (crypto.getRandomValues), without bias.",
     "Tiré avec l'aléa cryptographique du navigateur (crypto.getRandomValues), sans biais.",
+    "Ausgelost mit dem kryptografischen Zufall des Browsers (crypto.getRandomValues), ohne Verzerrung.",
   ),
 };
 
@@ -360,7 +373,8 @@ function Lists({ mode }: { mode: "pick" | "shuffle" | "teams" }) {
   const run = () => {
     setError(null);
     if (mode === "shuffle") {
-      if (!items.length) return setError(l("The list is empty.", "La liste est vide."));
+      if (!items.length)
+        return setError(l("The list is empty.", "La liste est vide.", "Die Liste ist leer."));
       setOut({ mode, items: [shuffle(cryptoInt, items)] });
       return;
     }
@@ -522,7 +536,7 @@ function Santa() {
             ex.value = v;
             setPairs(null);
           }}
-          placeholder={"Alice, Bob\nChloé > David"}
+          placeholder={tr(T.exclusionsPh)}
           rows={4}
           mono={false}
           note={<span class="muted small">{tr(T.exclusionsHint)}</span>}

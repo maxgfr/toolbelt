@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { NumberField } from "../../../app/kit";
 import { useToolState } from "../../../app/state";
 import { Button, ErrorNote, Segmented } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, lang, pick, tr } from "../../../i18n";
 import { makeAudio, playTones } from "../_audio";
 import { useNow } from "../_ui";
 import {
@@ -19,29 +19,36 @@ import {
 type Mode = "chromatic" | "guitar";
 
 const T = {
-  start: l("Start the tuner", "Démarrer l'accordeur"),
-  stop: l("Stop", "Arrêter"),
-  chromatic: l("Chromatic", "Chromatique"),
-  guitar: l("Guitar (standard)", "Guitare (standard)"),
-  a4: l("Reference A4", "La 4 de référence"),
-  listening: l("Play a note…", "Joue une note…"),
+  start: l("Start the tuner", "Démarrer l'accordeur", "Stimmgerät starten"),
+  stop: l("Stop", "Arrêter", "Stopp"),
+  chromatic: l("Chromatic", "Chromatique", "Chromatisch"),
+  guitar: l("Guitar (standard)", "Guitare (standard)", "Gitarre (Standard)"),
+  a4: l("Reference A4", "La 4 de référence", "Kammerton A4"),
+  listening: l("Play a note…", "Joue une note…", "Spiel einen Ton…"),
   idle: l(
     "Start the tuner and allow the microphone. The sound is analyzed in your browser: it is never recorded or sent.",
     "Démarre l'accordeur et autorise le micro. Le son est analysé dans ton navigateur : il n'est jamais enregistré ni envoyé.",
+    "Starte das Stimmgerät und erlaube das Mikrofon. Der Ton wird in deinem Browser analysiert: Er wird nie aufgenommen oder gesendet.",
   ),
-  flat: l("too low", "trop bas"),
-  sharp: l("too high", "trop haut"),
-  ok: l("in tune", "juste"),
-  cents: l("cents", "cents"),
+  flat: l("too low", "trop bas", "zu tief"),
+  sharp: l("too high", "trop haut", "zu hoch"),
+  ok: l("in tune", "juste", "gestimmt"),
+  cents: l("cents", "cents", "Cent"),
   denied: l(
     "The microphone was refused. Allow it in the browser's site settings, then try again.",
     "Le micro a été refusé. Autorise-le dans les réglages du site du navigateur, puis réessaie.",
+    "Das Mikrofon wurde abgelehnt. Erlaube es in den Website-Einstellungen des Browsers und versuch es dann noch mal.",
   ),
   noMic: l(
     "No microphone is available (or this browser cannot use one here).",
     "Aucun micro disponible (ou ce navigateur ne peut pas l'utiliser ici).",
+    "Kein Mikrofon verfügbar (oder dieser Browser kann hier keins verwenden).",
   ),
-  strings: l("Strings — click one to hear it", "Cordes — clique pour l'entendre"),
+  strings: l(
+    "Strings — click one to hear it",
+    "Cordes — clique pour l'entendre",
+    "Saiten – klick eine an, um sie zu hören",
+  ),
 };
 
 interface Reading {
@@ -147,7 +154,9 @@ export default function Tuner() {
   const shown = string ? noteFromFreq(midiToFreq(string.midi, a4.value), a4.value) : note;
   const clamped = Math.max(-50, Math.min(50, cents));
   const good = reading !== null && inTune(cents);
-  const fr = lang.value === "fr";
+  // Letter names as the main name (German ones in German: H for B), solfège under it in French.
+  const letters = pick<"en" | "de">({ en: "en", fr: "en", de: "de" });
+  const solfege = pick({ en: false, fr: true, de: false });
 
   return (
     <div class="stack">
@@ -189,8 +198,8 @@ export default function Tuner() {
         ) : (
           <>
             <div class="tuner-note">
-              <span class="tuner-name">{noteName(shown, "en")}</span>
-              {fr && <span class="tuner-solfege muted">{noteName(shown, "fr")}</span>}
+              <span class="tuner-name">{noteName(shown, letters)}</span>
+              {solfege && <span class="tuner-solfege muted">{noteName(shown, "fr")}</span>}
             </div>
             <svg
               class="tuner-gauge"
@@ -250,7 +259,7 @@ export default function Tuner() {
                   class={`tuner-string ${string?.index === i && fresh ? "on" : ""}`}
                   onClick={() => play(midi)}
                 >
-                  <strong>{n ? noteName(n, fr ? "fr" : "en") : ""}</strong>
+                  <strong>{n ? noteName(n, lang.value) : ""}</strong>
                   <small class="mono">
                     {fmt(midiToFreq(midi, a4.value), { maximumFractionDigits: 1 })} Hz
                   </small>

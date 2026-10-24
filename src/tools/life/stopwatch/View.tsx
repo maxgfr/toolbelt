@@ -16,24 +16,26 @@ import {
 } from "./logic";
 
 const T = {
-  start: l("Start", "Démarrer"),
-  stop: l("Stop", "Arrêter"),
-  resume: l("Resume", "Reprendre"),
-  lap: l("Lap", "Tour"),
-  reset: l("Reset", "Remettre à zéro"),
-  laps: l("Laps", "Tours"),
-  n: l("#", "N°"),
-  split: l("Lap time", "Temps du tour"),
-  total: l("Total", "Total"),
-  best: l("best", "meilleur"),
-  worst: l("slowest", "plus lent"),
+  start: l("Start", "Démarrer", "Start"),
+  stop: l("Stop", "Arrêter", "Stopp"),
+  resume: l("Resume", "Reprendre", "Weiter"),
+  lap: l("Lap", "Tour", "Runde"),
+  reset: l("Reset", "Remettre à zéro", "Zurücksetzen"),
+  laps: l("Laps", "Tours", "Runden"),
+  n: l("#", "N°", "Nr."),
+  split: l("Lap time", "Temps du tour", "Rundenzeit"),
+  total: l("Total", "Total", "Gesamt"),
+  best: l("best", "meilleur", "schnellste"),
+  worst: l("slowest", "plus lent", "langsamste"),
   noLaps: l(
     "No laps yet. Press L (or the Lap button) while it runs.",
     "Aucun tour pour l'instant. Appuie sur L (ou le bouton Tour) pendant qu'il tourne.",
+    "Noch keine Runden. Drück L (oder den Runde-Knopf), während sie läuft.",
   ),
   keys: l(
     "Shortcuts: Space start / stop · L lap · R reset. It keeps counting in the background and after a reload.",
     "Raccourcis : Espace démarrer / arrêter · L tour · R remise à zéro. Il continue en arrière-plan et après un rechargement.",
+    "Tastenkürzel: Leertaste Start / Stopp · L Runde · R zurücksetzen. Sie zählt im Hintergrund und nach dem Neuladen weiter.",
   ),
 };
 

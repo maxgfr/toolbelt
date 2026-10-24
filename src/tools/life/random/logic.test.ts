@@ -98,6 +98,15 @@ describe("dice", () => {
     expect(value(parseDice("2d20kl1"))[0]?.keep).toEqual({ which: "l", n: 1 });
     expect(value(parseDice("4d6k3"))[0]?.keep).toEqual({ which: "h", n: 3 });
   });
+  test("reads the German W (Würfel) like d", () => {
+    const t = value(parseDice("2W6 + w20 - 1"));
+    expect(t.map((x) => [x.sign, x.count, x.sides])).toEqual([
+      [1, 2, 6],
+      [1, 1, 20],
+      [-1, 0, 1],
+    ]);
+    expect(value(parseDice("4W6kh3"))[0]?.keep).toEqual({ which: "h", n: 3 });
+  });
   test.each(["", "abc", "2d", "d1", "0d6", "2d6+", "5", "1001d6", "2d6kh3", "3d6 4"])(
     "rejects %p",
     (s) => {
@@ -183,6 +192,9 @@ describe("secret santa", () => {
       expect([...pairs.map((p) => p.receiver)].sort()).toEqual([...names].sort());
       expect(pairs.every((p) => p.giver !== p.receiver)).toBe(true);
     }
+  });
+  test("exclusions read “und” like “and” and “et”", () => {
+    expect(parseExclusions("Anna und Ben\nAlice and Bob\nChloé et David")).toHaveLength(6);
   });
   test("exclusions are respected", () => {
     const ex = parseExclusions("Alice, Bob\nChloé > David");

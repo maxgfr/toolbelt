@@ -1,4 +1,7 @@
-/** About 200 common words per language, lowercase, for the typing test. */
+/**
+ * About 200 common words per language for the typing test: lowercase, except German nouns,
+ * which keep their capital as they are always written.
+ */
 
 export const EN_WORDS =
   `the be to of and a in that have it for not on with he as you do at this but his by from
@@ -28,5 +31,24 @@ beaucoup vraiment rien personne quelque sans sous entre vers chez depuis pendant
 derrière jardin soleil lune mer ciel arbre fleur chat chien pain lait café sucre musique chanson film
 jeu sport ballon rouge bleu vert blanc noir doux fort facile simple vite lent froid chaud lire écrire
 ouvrir fermer partir arriver courir marcher manger boire dormir jouer chanter`
+    .split(/\s+/)
+    .filter(Boolean);
+
+export const DE_WORDS =
+  `der die das und in zu den von nicht mit sich des auf für ist im dem ein eine als auch es an
+werden aus er hat dass sie nach wird bei einer um am sind noch wie über so zum war haben nur oder aber
+vor zur bis mehr durch man sein wurde können schon wenn ich du wir ihr kann sehr hier alle ganz immer
+gibt viel heute dann jetzt also doch denn weil ohne gegen unter zwischen während seit wieder etwas
+nichts genau nie oft fast bald gern gehen kommen sehen machen sagen wissen geben finden bleiben liegen
+stehen nehmen bringen denken laufen fahren lesen schreiben sprechen spielen hören fühlen lernen
+arbeiten wohnen essen trinken schlafen öffnen schließen kaufen zählen müssen dürfen möchten heißen
+grüßen fließen Zeit Jahr Tag Mensch Kind Frau Mann Hand Haus Welt Leben Stadt Land Wasser Straße
+Schule Arbeit Woche Morgen Abend Nacht Freund Familie Mutter Vater Bruder Schwester Name Wort Frage
+Antwort Buch Tisch Tür Fenster Auto Geld Musik Spiel Hund Katze Baum Blume Sonne Mond Himmel Meer
+Brot Milch Kaffee Zucker Garten Küche Zimmer Bild Farbe Größe Fuß Gruß Mädchen Märchen Brücke Glück
+Übung Schlüssel Löffel Vogel Weg Platz Teil Ende Anfang Idee Geschichte groß klein gut neu alt jung
+lang kurz hoch tief schön schnell langsam leicht schwer warm kalt heiß weiß schwarz rot blau grün gelb
+süß früh spät müde froh fröhlich ruhig laut leise stark weich hart offen richtig falsch wichtig möglich
+einfach gemütlich`
     .split(/\s+/)
     .filter(Boolean);

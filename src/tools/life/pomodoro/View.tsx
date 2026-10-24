@@ -2,7 +2,7 @@ import { useEffect, useRef } from "preact/hooks";
 import { NumberField } from "../../../app/kit";
 import { useToolState } from "../../../app/state";
 import { Button, Panel, Toggle, toast } from "../../../app/ui";
-import { l, tr } from "../../../i18n";
+import { type L10n, l, tr } from "../../../i18n";
 import { askNotify, canNotify, notify } from "../_audio";
 import { chime, formatRemaining, localDateKey } from "../_shared";
 import { useAlarm, useKeys, useNow, useTitle } from "../_ui";
@@ -27,39 +27,61 @@ import {
 } from "./logic";
 
 const T = {
-  work: l("Focus", "Concentration"),
-  short: l("Short break", "Pause courte"),
-  long: l("Long break", "Pause longue"),
-  start: l("Start", "Démarrer"),
-  pause: l("Pause", "Pause"),
-  resume: l("Resume", "Reprendre"),
-  skip: l("Skip", "Passer"),
-  restart: l("Restart phase", "Recommencer la phase"),
-  resetCycle: l("Reset cycle", "Recommencer le cycle"),
-  today: l("Sessions today: {n}", "Sessions aujourd'hui : {n}"),
-  inCycle: l("Session {n} of {m}", "Session {n} sur {m}"),
-  settings: l("Settings", "Réglages"),
-  workLen: l("Focus", "Concentration"),
-  shortLen: l("Short break", "Pause courte"),
-  longLen: l("Long break", "Pause longue"),
-  cycles: l("Sessions before a long break", "Sessions avant une pause longue"),
-  autoBreak: l("Start breaks automatically", "Lancer les pauses automatiquement"),
-  autoWork: l("Start focus sessions automatically", "Lancer les sessions automatiquement"),
-  sound: l("Sound at the end of each phase", "Son à la fin de chaque phase"),
-  notify: l("System notification", "Notification système"),
+  work: l("Focus", "Concentration", "Fokus"),
+  short: l("Short break", "Pause courte", "Kurze Pause"),
+  long: l("Long break", "Pause longue", "Lange Pause"),
+  start: l("Start", "Démarrer", "Start"),
+  pause: l("Pause", "Pause", "Pause"),
+  resume: l("Resume", "Reprendre", "Weiter"),
+  skip: l("Skip", "Passer", "Überspringen"),
+  restart: l("Restart phase", "Recommencer la phase", "Phase neu starten"),
+  resetCycle: l("Reset cycle", "Recommencer le cycle", "Zyklus zurücksetzen"),
+  today: l("Sessions today: {n}", "Sessions aujourd'hui : {n}", "Einheiten heute: {n}"),
+  inCycle: l("Session {n} of {m}", "Session {n} sur {m}", "Einheit {n} von {m}"),
+  settings: l("Settings", "Réglages", "Einstellungen"),
+  workLen: l("Focus", "Concentration", "Fokus"),
+  shortLen: l("Short break", "Pause courte", "Kurze Pause"),
+  longLen: l("Long break", "Pause longue", "Lange Pause"),
+  cycles: l(
+    "Sessions before a long break",
+    "Sessions avant une pause longue",
+    "Einheiten vor einer langen Pause",
+  ),
+  autoBreak: l(
+    "Start breaks automatically",
+    "Lancer les pauses automatiquement",
+    "Pausen automatisch starten",
+  ),
+  autoWork: l(
+    "Start focus sessions automatically",
+    "Lancer les sessions automatiquement",
+    "Fokus-Einheiten automatisch starten",
+  ),
+  sound: l(
+    "Sound at the end of each phase",
+    "Son à la fin de chaque phase",
+    "Ton am Ende jeder Phase",
+  ),
+  notify: l("System notification", "Notification système", "Systembenachrichtigung"),
   denied: l(
     "Notifications are blocked for this site in the browser settings.",
     "Les notifications sont bloquées pour ce site dans les réglages du navigateur.",
+    "Benachrichtigungen sind für diese Seite in den Browsereinstellungen blockiert.",
   ),
-  ended: l("{a} is over — {b} next.", "{a} terminée — ensuite : {b}."),
-  min: l("min", "min"),
+  ended: l(
+    "{a} is over — {b} next.",
+    "{a} terminée — ensuite : {b}.",
+    "{a} ist vorbei – als Nächstes: {b}.",
+  ),
+  min: l("min", "min", "min"),
   keys: l(
     "Space start / pause · S skip. Keeps going in the background and after a reload.",
     "Espace démarrer / pause · S passer. Continue en arrière-plan et après un rechargement.",
+    "Leertaste Start / Pause · S überspringen. Läuft im Hintergrund und nach dem Neuladen weiter.",
   ),
 };
 
-const PHASE: Record<Phase, { en: string; fr: string }> = {
+const PHASE: Record<Phase, L10n> = {
   work: T.work,
   short: T.short,
   long: T.long,

@@ -11,7 +11,10 @@ import type { RandomInt } from "../_shared";
 export type Result<T> = { ok: true; value: T } | { ok: false; error: L10n };
 
 const ok = <T>(value: T): Result<T> => ({ ok: true, value });
-const err = (en: string, fr: string): Result<never> => ({ ok: false, error: l(en, fr) });
+const err = (en: string, fr: string, de: string): Result<never> => ({
+  ok: false,
+  error: l(en, fr, de),
+});
 
 export const MAX_COUNT = 10_000;
 
@@ -48,24 +51,38 @@ export function randomNumbers(rand: RandomInt, o: NumberOptions): Result<number[
   const d = Math.max(0, Math.min(6, Math.round(o.decimals)));
   const scale = 10 ** d;
   if (!Number.isFinite(o.min) || !Number.isFinite(o.max))
-    return err("Enter a minimum and a maximum.", "Entre un minimum et un maximum.");
+    return err(
+      "Enter a minimum and a maximum.",
+      "Entre un minimum et un maximum.",
+      "Gib ein Minimum und ein Maximum ein.",
+    );
   const lo = Math.ceil(Math.min(o.min, o.max) * scale - 1e-9);
   const hi = Math.floor(Math.max(o.min, o.max) * scale + 1e-9);
   const size = hi - lo + 1;
   if (size < 1)
-    return err("No value fits in that range.", "Aucune valeur ne tient dans cet intervalle.");
+    return err(
+      "No value fits in that range.",
+      "Aucune valeur ne tient dans cet intervalle.",
+      "In diesen Bereich passt kein Wert.",
+    );
   if (!Number.isSafeInteger(size) || size > 2 ** 53)
-    return err("The range is too large.", "L'intervalle est trop grand.");
+    return err(
+      "The range is too large.",
+      "L'intervalle est trop grand.",
+      "Der Bereich ist zu groß.",
+    );
   const count = Math.round(o.count);
   if (!(count >= 1 && count <= MAX_COUNT))
     return err(
       `The count must be between 1 and ${MAX_COUNT}.`,
       `Le nombre de tirages doit être entre 1 et ${MAX_COUNT}.`,
+      `Die Anzahl muss zwischen 1 und ${MAX_COUNT} liegen.`,
     );
   if (o.unique && count > size)
     return err(
       `Only ${size} different values fit in that range.`,
       `Seules ${size} valeurs différentes tiennent dans cet intervalle.`,
+      `In diesen Bereich passen nur ${size} verschiedene Werte.`,
     );
   const raw = o.unique
     ? sampleDistinct(rand, size, count)
@@ -92,7 +109,8 @@ export const MAX_SIDES = 1_000_000;
 
 /**
  * Parses dice notation: terms like 3d6, d20, d% (d100), 4d6kh3 / 4d6kl1 (keep highest/lowest)
- * and constants, joined by + or -. "2d6+1d8-1". Case and spaces do not matter.
+ * and constants, joined by + or -. "2d6+1d8-1". Case and spaces do not matter; the German
+ * "W" (Würfel) works like "d": 2W6+3.
  */
 export function parseDice(input: string): Result<DiceTerm[]> {
   const s = input
@@ -100,8 +118,13 @@ export function parseDice(input: string): Result<DiceTerm[]> {
     .replace(/[−–]/g, "-")
     .trim()
     .replace(/\s*([+-])\s*/g, "$1");
-  if (!s) return err("Type dice like 2d6+3.", "Tape des dés comme 2d6+3.");
-  const re = /([+-]?)(?:(\d*)d(\d+|%)(?:k([hl]?)(\d+))?|(\d+))/y;
+  if (!s)
+    return err(
+      "Type dice like 2d6+3.",
+      "Tape des dés comme 2d6+3.",
+      "Gib Würfel wie 2d6+3 oder 2W6+3 ein.",
+    );
+  const re = /([+-]?)(?:(\d*)[dw](\d+|%)(?:k([hl]?)(\d+))?|(\d+))/y;
   const terms: DiceTerm[] = [];
   let i = 0;
   let dice = 0;
@@ -112,6 +135,7 @@ export function parseDice(input: string): Result<DiceTerm[]> {
       return err(
         `Cannot read "${s.slice(i)}". Use terms like 2d6, d20, 4d6kh3 or 5, joined by + or -.`,
         `Impossible de lire « ${s.slice(i)} ». Utilise des termes comme 2d6, d20, 4d6kh3 ou 5, reliés par + ou -.`,
+        `„${s.slice(i)}“ ist nicht lesbar. Nutze Terme wie 2d6, d20, 4d6kh3 oder 5, verbunden mit + oder -.`,
       );
     i = re.lastIndex;
     const sign = m[1] === "-" ? -1 : 1;
@@ -126,15 +150,21 @@ export function parseDice(input: string): Result<DiceTerm[]> {
       return err(
         `Roll between 1 and ${MAX_DICE} dice per term.`,
         `Lance entre 1 et ${MAX_DICE} dés par terme.`,
+        `Wirf zwischen 1 und ${MAX_DICE} Würfel pro Term.`,
       );
     if (sides < 2 || sides > MAX_SIDES)
       return err(
         `A die has between 2 and ${MAX_SIDES} faces.`,
         `Un dé a entre 2 et ${MAX_SIDES} faces.`,
+        `Ein Würfel hat zwischen 2 und ${MAX_SIDES} Seiten.`,
       );
     dice += count;
     if (dice > MAX_DICE)
-      return err(`At most ${MAX_DICE} dice in total.`, `Au plus ${MAX_DICE} dés en tout.`);
+      return err(
+        `At most ${MAX_DICE} dice in total.`,
+        `Au plus ${MAX_DICE} dés en tout.`,
+        `Höchstens ${MAX_DICE} Würfel insgesamt.`,
+      );
     const term: DiceTerm = { sign, count, sides, text };
     if (m[5] !== undefined) {
       const n = Number(m[5]);
@@ -142,13 +172,18 @@ export function parseDice(input: string): Result<DiceTerm[]> {
         return err(
           `Keep between 1 and ${count} dice in ${text}.`,
           `Garde entre 1 et ${count} dés dans ${text}.`,
+          `Behalte zwischen 1 und ${count} Würfel in ${text}.`,
         );
       term.keep = { which: m[4] === "l" ? "l" : "h", n };
     }
     terms.push(term);
   }
   if (!terms.some((t) => t.count > 0))
-    return err("Add at least one die, like d6.", "Ajoute au moins un dé, comme d6.");
+    return err(
+      "Add at least one die, like d6.",
+      "Ajoute au moins un dé, comme d6.",
+      "Füg mindestens einen Würfel hinzu, z. B. d6.",
+    );
   return ok(terms);
 }
 
@@ -231,12 +266,13 @@ export function parseList(text: string): string[] {
 
 /** `n` different items, in draw order (a partial Fisher–Yates). */
 export function pick<T>(rand: RandomInt, items: readonly T[], n: number): Result<T[]> {
-  if (!items.length) return err("The list is empty.", "La liste est vide.");
+  if (!items.length) return err("The list is empty.", "La liste est vide.", "Die Liste ist leer.");
   const k = Math.round(n);
   if (k < 1 || k > items.length)
     return err(
       `Pick between 1 and ${items.length}.`,
       `Choisis entre 1 et ${items.length} gagnants.`,
+      `Wähl zwischen 1 und ${items.length} Gewinner.`,
     );
   const a = [...items];
   for (let i = 0; i < k; i++) {
@@ -256,14 +292,25 @@ export function makeTeams<T>(
   n: number,
   by: "count" | "size" = "count",
 ): Result<T[][]> {
-  if (items.length < 2) return err("Add at least two names.", "Ajoute au moins deux noms.");
+  if (items.length < 2)
+    return err(
+      "Add at least two names.",
+      "Ajoute au moins deux noms.",
+      "Füg mindestens zwei Namen hinzu.",
+    );
   const k = Math.round(n);
-  if (!(k >= 1)) return err("Choose a number of at least 1.", "Choisis un nombre d'au moins 1.");
+  if (!(k >= 1))
+    return err(
+      "Choose a number of at least 1.",
+      "Choisis un nombre d'au moins 1.",
+      "Wähl eine Zahl von mindestens 1.",
+    );
   const teams = by === "count" ? k : Math.max(1, Math.round(items.length / k));
   if (teams > items.length)
     return err(
       `There are not enough names for ${teams} teams.`,
       `Il n'y a pas assez de noms pour ${teams} équipes.`,
+      `Es gibt nicht genug Namen für ${teams} Teams.`,
     );
   const out: T[][] = Array.from({ length: teams }, () => []);
   shuffle(rand, items).forEach((x, i) => {
@@ -291,7 +338,7 @@ export function parseExclusions(text: string): { from: string; to: string }[] {
       out.push({ from: one[0], to: one[1] });
       continue;
     }
-    const both = line.split(/\s*[,;&/]\s*|\s+-\s+|\s+et\s+|\s+and\s+/i).filter(Boolean);
+    const both = line.split(/\s*[,;&/]\s*|\s+-\s+|\s+(?:et|and|und)\s+/i).filter(Boolean);
     if (both.length === 2) {
       out.push({ from: both[0] as string, to: both[1] as string });
       out.push({ from: both[1] as string, to: both[0] as string });
@@ -310,12 +357,22 @@ export function secretSanta(
   names: readonly string[],
   exclusions: { from: string; to: string }[] = [],
 ): Result<Pair[]> {
-  if (names.length < 2) return err("Add at least two people.", "Ajoute au moins deux personnes.");
+  if (names.length < 2)
+    return err(
+      "Add at least two people.",
+      "Ajoute au moins deux personnes.",
+      "Füg mindestens zwei Personen hinzu.",
+    );
   const fold = (s: string) => s.trim().toLocaleLowerCase();
   const seen = new Set<string>();
   for (const n of names) {
     const k = fold(n);
-    if (seen.has(k)) return err(`"${n}" is listed twice.`, `« ${n} » apparaît deux fois.`);
+    if (seen.has(k))
+      return err(
+        `"${n}" is listed twice.`,
+        `« ${n} » apparaît deux fois.`,
+        `„${n}“ steht doppelt in der Liste.`,
+      );
     seen.add(k);
   }
   const index = new Map(names.map((n, i) => [fold(n), i]));
@@ -353,6 +410,7 @@ export function secretSanta(
     return err(
       "No draw is possible with these exclusions.",
       "Aucun tirage n'est possible avec ces exclusions.",
+      "Mit diesen Ausschlüssen ist keine Auslosung möglich.",
     );
   return ok(result.map((r, g) => ({ giver: names[g] as string, receiver: names[r] as string })));
 }

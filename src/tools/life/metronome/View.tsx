@@ -20,28 +20,30 @@ import {
 } from "./logic";
 
 const T = {
-  start: l("Start", "Démarrer"),
-  stop: l("Stop", "Arrêter"),
-  tap: l("Tap tempo", "Taper le tempo"),
-  bpm: l("BPM", "BPM"),
-  signature: l("Time signature", "Mesure"),
-  sub: l("Subdivision", "Subdivision"),
-  none: l("Beats", "Temps"),
-  eighths: l("Eighths", "Croches"),
-  triplets: l("Triplets", "Triolets"),
-  sixteenths: l("Sixteenths", "Doubles"),
-  accent: l("Accent on beat 1", "Accent sur le 1er temps"),
-  volume: l("Volume", "Volume"),
+  start: l("Start", "Démarrer", "Start"),
+  stop: l("Stop", "Arrêter", "Stopp"),
+  tap: l("Tap tempo", "Taper le tempo", "Tempo tippen"),
+  bpm: l("BPM", "BPM", "BPM"),
+  signature: l("Time signature", "Mesure", "Taktart"),
+  sub: l("Subdivision", "Subdivision", "Unterteilung"),
+  none: l("Beats", "Temps", "Schläge"),
+  eighths: l("Eighths", "Croches", "Achtel"),
+  triplets: l("Triplets", "Triolets", "Triolen"),
+  sixteenths: l("Sixteenths", "Doubles", "Sechzehntel"),
+  accent: l("Accent on beat 1", "Accent sur le 1er temps", "Betonung auf Schlag 1"),
+  volume: l("Volume", "Volume", "Lautstärke"),
   noAudio: l(
     "Audio is not available in this browser.",
     "L'audio n'est pas disponible dans ce navigateur.",
+    "Audio ist in diesem Browser nicht verfügbar.",
   ),
   keys: l(
     "Space start / stop · T tap · ← → −1 / +1 BPM (Shift: ±10). Clicks are scheduled on the audio clock, so the beat stays steady.",
     "Espace démarrer / arrêter · T taper · ← → −1 / +1 BPM (Maj : ±10). Les clics sont programmés sur l'horloge audio : le tempo reste stable.",
+    "Leertaste Start / Stopp · T tippen · ← → −1 / +1 BPM (Umschalt: ±10). Die Klicks laufen über die Audio-Uhr, damit der Takt stabil bleibt.",
   ),
-  slower: l("Slower", "Plus lent"),
-  faster: l("Faster", "Plus rapide"),
+  slower: l("Slower", "Plus lent", "Langsamer"),
+  faster: l("Faster", "Plus rapide", "Schneller"),
 };
 
 const FREQ: Record<TickKind, number> = { accent: 1760, medium: 1320, beat: 1000, sub: 660 };

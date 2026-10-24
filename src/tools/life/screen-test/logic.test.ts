@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   cycle,
+  defaultLayout,
   estimateRefresh,
   LAYOUTS,
   layoutCodes,
@@ -44,6 +45,10 @@ describe("dead pixel colors", () => {
     expect(cycle(TEST_COLORS.length - 1, TEST_COLORS.length)).toBe(0);
     expect(cycle(3, 0)).toBe(0);
   });
+  test("every color has a name in each language", () => {
+    for (const c of TEST_COLORS) expect(c.en && c.fr && c.de).toBeTruthy();
+    expect(TEST_COLORS.find((c) => c.css === "#ffffff")?.de).toBe("Weiß");
+  });
   test("pure primaries are included", () => {
     expect(TEST_COLORS.map((c) => c.css)).toEqual(
       expect.arrayContaining(["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff"]),
@@ -53,11 +58,11 @@ describe("dead pixel colors", () => {
 
 describe("keyboard layouts", () => {
   test("main rows are 15 units wide", () => {
-    for (const layout of ["qwerty", "azerty"] as const)
+    for (const layout of ["qwerty", "azerty", "qwertz"] as const)
       for (const row of LAYOUTS[layout].slice(1, 6)) expect(rowWidth(row)).toBeCloseTo(15);
   });
   test("each code appears once (except the tall ISO Enter)", () => {
-    for (const layout of ["qwerty", "azerty"] as const) {
+    for (const layout of ["qwerty", "azerty", "qwertz"] as const) {
       const codes = LAYOUTS[layout]
         .flat()
         .map((x) => x.code)
@@ -76,7 +81,32 @@ describe("keyboard layouts", () => {
     expect(label("Digit2")).toBe("é");
     expect(label("Digit0")).toBe("à");
   });
+  test("QWERTZ labels sit on the right physical keys", () => {
+    const label = (code: string) => LAYOUTS.qwertz.flat().find((x) => x.code === code)?.label;
+    expect(label("KeyY")).toBe("Z");
+    expect(label("KeyZ")).toBe("Y");
+    expect(label("KeyQ")).toBe("Q");
+    expect(label("KeyA")).toBe("A");
+    expect(label("Minus")).toBe("ß");
+    expect(label("BracketLeft")).toBe("Ü");
+    expect(label("Semicolon")).toBe("Ö");
+    expect(label("Quote")).toBe("Ä");
+    expect(label("Slash")).toBe("-");
+    expect(label("ControlLeft")).toBe("Strg");
+    expect(label("Delete")).toBe("Entf");
+    expect(label("Digit7")).toBe("7");
+  });
+  test("the default layout follows the language", () => {
+    expect(defaultLayout("en")).toBe("qwerty");
+    expect(defaultLayout("fr")).toBe("azerty");
+    expect(defaultLayout("de")).toBe("qwertz");
+    expect(defaultLayout("xx")).toBe("qwerty");
+  });
+  test("the three layouts draw the same keys, apart from ISO / ANSI", () => {
+    expect([...layoutCodes("qwertz")].sort()).toEqual([...layoutCodes("azerty")].sort());
+  });
   test("ISO has the extra key next to left Shift", () => {
+    expect(layoutCodes("qwertz").has("IntlBackslash")).toBe(true);
     expect(layoutCodes("azerty").has("IntlBackslash")).toBe(true);
     expect(layoutCodes("qwerty").has("IntlBackslash")).toBe(false);
     expect(layoutCodes("qwerty").has("F12")).toBe(true);

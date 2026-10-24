@@ -108,6 +108,13 @@ export const NOTES_FR = [
   "si",
 ];
 
+/**
+ * German names: H is B natural and B is B♭ (A♯ here, since notes are spelled with sharps).
+ */
+export const NOTES_DE = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "B", "H"];
+
+const NOTE_NAMES = { en: NOTES_EN, fr: NOTES_FR, de: NOTES_DE };
+
 export interface Note {
   /** MIDI number (A4 = 69). */
   midi: number;
@@ -143,9 +150,13 @@ export function noteFromFreq(freq: number, a4 = 440): Note | null {
   };
 }
 
-export function noteName(n: { pc: number; octave: number }, lang: "en" | "fr" = "en"): string {
-  // French octave numbers follow the same scientific convention here (la3 = A4 in some books).
-  return `${(lang === "fr" ? NOTES_FR : NOTES_EN)[n.pc]}${n.octave}`;
+export function noteName(
+  n: { pc: number; octave: number },
+  lang: "en" | "fr" | "de" = "en",
+): string {
+  // French and German octave numbers follow the same scientific convention here (la3 = A4 in
+  // some French books; Helmholtz a′ in German ones).
+  return `${(NOTE_NAMES[lang] ?? NOTES_EN)[n.pc]}${n.octave}`;
 }
 
 /** Standard guitar tuning, low to high (E2 A2 D3 G3 B3 E4), as MIDI numbers. */
