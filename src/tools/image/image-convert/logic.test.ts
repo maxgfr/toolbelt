@@ -1,7 +1,10 @@
 import { describe, expect, it } from "bun:test";
+import { l } from "../../../i18n";
 import {
+  attempt,
   crc32,
   dosDateTime,
+  errorL10n,
   fitWithin,
   formatSize,
   imageDims,
@@ -61,6 +64,7 @@ describe("image-convert", () => {
     expect(formatSize(512)).toBe("512 B");
     expect(formatSize(1536)).toBe("1.5 KB");
     expect(formatSize(3 * 1024 * 1024, "fr-FR")).toBe("3 MB");
+    expect(formatSize(1536, "de-DE")).toBe("1,5 KB");
   });
 });
 
@@ -116,6 +120,16 @@ describe("zip", () => {
     zip[31] = 0x7a; // flip a data byte
     expect(() => readZipStore(zip)).toThrow(/CRC/);
     expect(() => readZipStore(new Uint8Array(10))).toThrow(/ZIP/);
+  });
+
+  it("reports errors in every language", () => {
+    const r = attempt(() => readZipStore(new Uint8Array(10)));
+    expect(r.ok).toBe(false);
+    if (!r.ok)
+      expect(r.error).toEqual(
+        l("Not a ZIP file.", "Ce n'est pas un fichier ZIP.", "Keine ZIP-Datei."),
+      );
+    expect(errorL10n(new Error("boom"))).toEqual({ en: "boom", fr: "boom", de: "boom" });
   });
 });
 

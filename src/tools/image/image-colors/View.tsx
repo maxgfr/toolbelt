@@ -20,22 +20,32 @@ import {
 } from "./logic";
 
 const T = {
-  count: l("Number of colors", "Nombre de couleurs"),
-  palette: l("Dominant colors", "Couleurs dominantes"),
-  average: l("Average color", "Couleur moyenne"),
-  picked: l("Picked color", "Couleur prélevée"),
+  count: l("Number of colors", "Nombre de couleurs", "Anzahl der Farben"),
+  palette: l("Dominant colors", "Couleurs dominantes", "Dominante Farben"),
+  average: l("Average color", "Couleur moyenne", "Durchschnittsfarbe"),
+  picked: l("Picked color", "Couleur prélevée", "Gewählte Farbe"),
   pickHint: l(
     "Click anywhere on the image to pick the color of that pixel.",
     "Clique n'importe où sur l'image pour prélever la couleur de ce pixel.",
+    "Klicke irgendwo ins Bild, um die Farbe dieses Pixels aufzunehmen.",
   ),
-  css: l("CSS variables", "Variables CSS"),
-  copyHex: l("Click to copy", "Clique pour copier"),
-  analyzing: l("Analyzing…", "Analyse…"),
-  image: l("Image: click to pick a color", "Image : clique pour prélever une couleur"),
-  transparent: l("This image has no opaque pixels.", "Cette image n'a aucun pixel opaque."),
+  css: l("CSS variables", "Variables CSS", "CSS-Variablen"),
+  copyHex: l("Click to copy", "Clique pour copier", "Zum Kopieren klicken"),
+  analyzing: l("Analyzing…", "Analyse…", "Wird analysiert…"),
+  image: l(
+    "Image: click to pick a color",
+    "Image : clique pour prélever une couleur",
+    "Bild: klicke, um eine Farbe aufzunehmen",
+  ),
+  transparent: l(
+    "This image has no opaque pixels.",
+    "Cette image n'a aucun pixel opaque.",
+    "Dieses Bild hat keine deckenden Pixel.",
+  ),
   empty: l(
     "Choose an image to extract its palette and pick colors from it.",
     "Choisis une image pour en extraire la palette et y prélever des couleurs.",
+    "Wähle ein Bild, um seine Farbpalette zu extrahieren und Farben daraus aufzunehmen.",
   ),
 };
 

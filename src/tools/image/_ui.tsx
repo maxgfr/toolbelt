@@ -2,23 +2,29 @@
 import { type Signal, useSignal } from "@preact/signals";
 import { useEffect, useMemo } from "preact/hooks";
 import { Select } from "../../app/kit";
-import { l, lang, tr } from "../../i18n";
+import { l, tr } from "../../i18n";
 import { canEncode } from "./_dom";
 import { errorL10n, FORMATS, formatLabel, type OutFormat } from "./_shared";
 
 export const UI = {
-  format: l("Format", "Format"),
-  quality: l("Quality", "Qualité"),
-  unsupported: l("not supported by this browser", "non pris en charge par ce navigateur"),
+  format: l("Format", "Format", "Format"),
+  quality: l("Quality", "Qualité", "Qualität"),
+  unsupported: l(
+    "not supported by this browser",
+    "non pris en charge par ce navigateur",
+    "von diesem Browser nicht unterstützt",
+  ),
   drop: l(
     "Drop an image here, click to choose, or paste one (⌘V / Ctrl+V)",
     "Dépose une image ici, clique pour choisir, ou colle-la (⌘V / Ctrl+V)",
+    "Zieh ein Bild hierher, klicke zum Auswählen oder füge eines ein (⌘V / Strg+V)",
   ),
   local: l(
     "Images are processed on your device and never uploaded.",
     "Les images sont traitées sur ton appareil et ne sont jamais envoyées.",
+    "Bilder werden auf deinem Gerät verarbeitet und nie hochgeladen.",
   ),
-  working: l("Working…", "Traitement…"),
+  working: l("Working…", "Traitement…", "Wird verarbeitet…"),
 };
 
 /** The error message of any thrown value, in the current language. */
@@ -26,9 +32,7 @@ export function errText(err: unknown): string {
   return tr(errorL10n(err));
 }
 
-export function locale(): string {
-  return lang.value === "fr" ? "fr-FR" : "en-US";
-}
+export { locale } from "../../i18n";
 
 /** An object URL for a blob, revoked when the blob changes or the component unmounts. */
 export function useObjectUrl(blob: Blob | null | undefined): string | null {

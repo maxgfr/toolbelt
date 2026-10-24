@@ -49,6 +49,7 @@ export async function decodeImage(
     fail(
       "This file is not an image the browser can open.",
       "Ce fichier n'est pas une image lisible par le navigateur.",
+      "Diese Datei ist kein Bild, das der Browser öffnen kann.",
     );
   }
 }
@@ -64,7 +65,12 @@ export function makeCanvas(w: number, h: number): HTMLCanvasElement {
 
 export function ctx2d(c: HTMLCanvasElement, readback = false): CanvasRenderingContext2D {
   const ctx = c.getContext("2d", readback ? { willReadFrequently: true } : undefined);
-  if (!ctx) fail("Canvas is not available.", "Le canvas n'est pas disponible.");
+  if (!ctx)
+    fail(
+      "Canvas is not available.",
+      "Le canvas n'est pas disponible.",
+      "Canvas ist nicht verfügbar.",
+    );
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
   return ctx;
@@ -114,6 +120,7 @@ export async function encodeCanvas(
     fail(
       `This browser cannot encode ${format.toUpperCase()}.`,
       `Ce navigateur ne sait pas encoder le ${format.toUpperCase()}.`,
+      `Dieser Browser kann kein ${format.toUpperCase()} kodieren.`,
     );
   return blob;
 }

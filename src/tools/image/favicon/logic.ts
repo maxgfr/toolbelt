@@ -32,7 +32,11 @@ export interface IcoImage {
  */
 export function writeIco(images: IcoImage[]): Uint8Array {
   if (!images.length)
-    fail("An ICO needs at least one image.", "Un ICO demande au moins une image.");
+    fail(
+      "An ICO needs at least one image.",
+      "Un ICO demande au moins une image.",
+      "Eine ICO-Datei braucht mindestens ein Bild.",
+    );
   const header = 6 + 16 * images.length;
   const total = header + images.reduce((a, im) => a + im.png.length, 0);
   const out = new Uint8Array(total);
@@ -43,7 +47,11 @@ export function writeIco(images: IcoImage[]): Uint8Array {
   let offset = header;
   for (const [i, im] of images.entries()) {
     if (im.size < 1 || im.size > 256 || !Number.isInteger(im.size))
-      fail("ICO images must be 1 to 256 px.", "Les images ICO doivent faire de 1 à 256 px.");
+      fail(
+        "ICO images must be 1 to 256 px.",
+        "Les images ICO doivent faire de 1 à 256 px.",
+        "ICO-Bilder müssen 1 bis 256 px groß sein.",
+      );
     const e = 6 + i * 16;
     out[e] = im.size === 256 ? 0 : im.size; // width
     out[e + 1] = im.size === 256 ? 0 : im.size; // height
@@ -65,14 +73,15 @@ export function readIco(
 ): { width: number; height: number; bpp: number; data: Uint8Array }[] {
   const dv = new DataView(b.buffer, b.byteOffset, b.byteLength);
   if (b.length < 6 || dv.getUint16(0, true) !== 0 || dv.getUint16(2, true) !== 1)
-    fail("Not an ICO file.", "Ce n'est pas un fichier ICO.");
+    fail("Not an ICO file.", "Ce n'est pas un fichier ICO.", "Keine ICO-Datei.");
   const n = dv.getUint16(4, true);
   const out = [];
   for (let i = 0; i < n; i++) {
     const e = 6 + i * 16;
     const size = dv.getUint32(e + 8, true);
     const off = dv.getUint32(e + 12, true);
-    if (off + size > b.length) fail("Truncated ICO file.", "Fichier ICO tronqué.");
+    if (off + size > b.length)
+      fail("Truncated ICO file.", "Fichier ICO tronqué.", "Unvollständige ICO-Datei.");
     out.push({
       width: (b[e] as number) || 256,
       height: (b[e + 1] as number) || 256,

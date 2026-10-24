@@ -16,9 +16,10 @@ export function base64ToBytes(text: string): Uint8Array {
     fail(
       "This is not valid Base64 (only A–Z, a–z, 0–9, + / and = at the end).",
       "Ce n'est pas du Base64 valide (seulement A–Z, a–z, 0–9, + / et = à la fin).",
+      "Das ist kein gültiges Base64 (nur A–Z, a–z, 0–9, + / und = am Ende).",
     );
   s = s.replace(/=+$/, "");
-  if (s.length % 4 === 1) fail("Truncated Base64.", "Base64 tronqué.");
+  if (s.length % 4 === 1) fail("Truncated Base64.", "Base64 tronqué.", "Unvollständiges Base64.");
   s += "=".repeat((4 - (s.length % 4)) % 4);
   const bin = atob(s);
   const out = new Uint8Array(bin.length);
@@ -41,7 +42,12 @@ export interface DecodedImage {
  */
 export function parseImageInput(input: string): DecodedImage {
   const text = input.trim();
-  if (!text) fail("Paste a data URI or Base64 text.", "Colle une data URI ou du texte Base64.");
+  if (!text)
+    fail(
+      "Paste a data URI or Base64 text.",
+      "Colle une data URI ou du texte Base64.",
+      "Füge eine Data-URI oder Base64-Text ein.",
+    );
   let declared = "";
   let bytes: Uint8Array;
   const m = /^data:([^,]*?),([\s\S]*)$/i.exec(text);
@@ -58,13 +64,14 @@ export function parseImageInput(input: string): DecodedImage {
     if (css) return parseImageInput(css[1] as string);
     bytes = base64ToBytes(text);
   }
-  if (!bytes.length) fail("The data is empty.", "Les données sont vides.");
+  if (!bytes.length) fail("The data is empty.", "Les données sont vides.", "Die Daten sind leer.");
   const sniffed = sniffImage(bytes);
   const mime = sniffed || (declared.startsWith("image/") ? declared : "");
   if (!mime)
     fail(
       "These bytes are not a recognized image (PNG, JPEG, GIF, WebP, AVIF, SVG, BMP, ICO).",
       "Ces octets ne sont pas une image reconnue (PNG, JPEG, GIF, WebP, AVIF, SVG, BMP, ICO).",
+      "Diese Bytes sind kein erkanntes Bild (PNG, JPEG, GIF, WebP, AVIF, SVG, BMP, ICO).",
     );
   return { mime, bytes };
 }
@@ -76,6 +83,7 @@ function decodeURIComponentSafe(s: string): string {
     fail(
       "Malformed percent-encoding in the data URI.",
       "Encodage pourcent invalide dans la data URI.",
+      "Fehlerhafte Prozentkodierung in der Data-URI.",
     );
   }
 }

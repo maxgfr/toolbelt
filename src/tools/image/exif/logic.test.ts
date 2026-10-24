@@ -246,7 +246,11 @@ describe("values", () => {
     expect(text("FocalLength")).toBe("50 mm");
     expect(text("Orientation")).toBe("Rotated 90° clockwise");
     expect(formatTag(findTag(tags, "Orientation") as never).fr).toBe("Pivotée de 90° horaire");
+    expect(formatTag(findTag(tags, "Orientation") as never).de).toBe(
+      "Um 90° im Uhrzeigersinn gedreht",
+    );
     expect(text("Flash")).toBe("Fired (auto)");
+    expect(formatTag(findTag(tags, "Flash") as never).de).toBe("Ausgelöst (Auto)");
     expect(text("ExifVersion")).toBe("2.32");
   });
 
