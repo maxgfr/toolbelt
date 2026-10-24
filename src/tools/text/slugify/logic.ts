@@ -1,5 +1,6 @@
 /**
- * URL slugs: accents stripped (é → e, ß → ss, œ → oe…), anything that is not
+ * URL slugs: accents stripped (é → e, ß → ss, œ → oe…, and optionally the German
+ * ä → ae, ö → oe, ü → ue), anything that is not
  * a letter or digit becomes the separator, no separator at either end, and an
  * optional maximum length cut at a word boundary.
  */
@@ -12,6 +13,8 @@ export interface SlugOptions {
   maxLength: number;
   /** Drop letters that have no ASCII form (Cyrillic, CJK…); otherwise keep them. */
   asciiOnly: boolean;
+  /** German umlauts as two letters (ä → ae) instead of dropping the dots (ä → a). */
+  umlauts: boolean;
 }
 
 export const DEFAULTS: SlugOptions = {
@@ -19,7 +22,10 @@ export const DEFAULTS: SlugOptions = {
   lowercase: true,
   maxLength: 0,
   asciiOnly: true,
+  umlauts: false,
 };
+
+const UMLAUTS: Record<string, string> = { ä: "ae", ö: "oe", ü: "ue", Ä: "Ae", Ö: "Oe", Ü: "Ue" };
 
 /** Letters that NFKD does not decompose into a base letter. */
 const SPECIAL: Record<string, string> = {
@@ -43,7 +49,9 @@ const SPECIAL: Record<string, string> = {
 };
 
 export function slugify(text: string, o: SlugOptions): string {
-  const base = text
+  const base = (
+    o.umlauts ? text.normalize("NFC").replace(/[äöüÄÖÜ]/g, (c) => UMLAUTS[c] ?? c) : text
+  )
     .replace(/[ßẞæÆœŒøØđĐðÐłŁþÞı]/g, (c) => SPECIAL[c] ?? c)
     .normalize("NFKD")
     .replace(/\p{M}/gu, "")

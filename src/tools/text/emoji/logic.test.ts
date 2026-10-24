@@ -33,6 +33,13 @@ describe("emoji catalogue", () => {
     expect(grin?.e).toBe("😀");
     expect(grin?.fr).toBe("visage rieur");
   });
+
+  it("has German names, falling back to English", () => {
+    const all = groups.flatMap((g) => g.items);
+    expect(all.find((e) => e.e === "😀")?.de).toBe("grinsendes Gesicht");
+    expect(all.every((e) => e.de)).toBe(true);
+    expect(all.filter((e) => e.de !== e.en).length).toBeGreaterThan(1800);
+  });
 });
 
 describe("skin tones", () => {
@@ -81,6 +88,14 @@ describe("search", () => {
     expect(search(index, "cat face")[0]?.e).toBe("🐱");
     expect(search(index, "chat")[0]?.e).toBe("🐈");
     expect(search(index, "drapeau france")[0]?.e).toBe("🇫🇷");
+  });
+
+  it("finds emojis by German names and keywords, umlauts optional", () => {
+    expect(search(index, "Flagge: Deutschland")[0]?.e).toBe("🇩🇪");
+    expect(search(index, "rotes herz").map((e) => e.e)).toContain("❤️");
+    expect(search(index, "Katzengesicht")[0]?.e).toBe("🐱");
+    expect(search(index, "grosse")[0]).toBeDefined();
+    expect(search(index, "frohlich").length).toBeGreaterThan(0);
   });
 
   it("needs every word, as word prefixes, accents optional", () => {

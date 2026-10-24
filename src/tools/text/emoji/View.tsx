@@ -1,7 +1,8 @@
 import { useComputed } from "@preact/signals";
+import { Fragment } from "preact";
 import { useToolState } from "../../../app/state";
 import { Button, CopyButton, copyText, Field, IconButton, Panel, toast } from "../../../app/ui";
-import { fmt, type L10n, l, lang, tr } from "../../../i18n";
+import { fmt, type L10n, type Lang, l, lang, tr } from "../../../i18n";
 import { EMOJI_DATA } from "./data";
 import {
   buildIndex,
@@ -22,49 +23,61 @@ const INDEX = buildIndex(GROUPS);
 const BY_EMOJI = new Map<string, Emoji>(GROUPS.flatMap((g) => g.items.map((e) => [e.e, e])));
 
 const T = {
-  search: l("Search", "Rechercher"),
+  search: l("Search", "Rechercher", "Suchen"),
   placeholder: l(
-    "Name or keyword, in English or French: heart, chat, rocket…",
-    "Nom ou mot-clé, en français ou en anglais : cœur, cat, fusée…",
+    "Name or keyword, in English, French or German: heart, chat, Rakete…",
+    "Nom ou mot-clé, en français, anglais ou allemand : cœur, cat, Rakete…",
+    "Name oder Stichwort, auf Deutsch, Englisch oder Französisch: Herz, cat, fusée…",
   ),
-  tone: l("Skin tone", "Teinte de peau"),
+  tone: l("Skin tone", "Teinte de peau", "Hautfarbe"),
   tones: [
-    l("Default", "Par défaut"),
-    l("Light", "Claire"),
-    l("Medium-light", "Moyennement claire"),
-    l("Medium", "Légèrement mate"),
-    l("Medium-dark", "Mate"),
-    l("Dark", "Foncée"),
+    l("Default", "Par défaut", "Standard"),
+    l("Light", "Claire", "Hell"),
+    l("Medium-light", "Moyennement claire", "Mittelhell"),
+    l("Medium", "Légèrement mate", "Mittel"),
+    l("Medium-dark", "Mate", "Mitteldunkel"),
+    l("Dark", "Foncée", "Dunkel"),
   ],
-  recent: l("Recently copied", "Copiés récemment"),
-  clearRecent: l("Clear the recent list", "Vider la liste des récents"),
-  categories: l("Categories", "Catégories"),
-  results: l("results", "résultats"),
-  noResult: l("No emoji matches.", "Aucun emoji ne correspond."),
-  copied: l("Copied", "Copié"),
-  copyFailed: l("Could not copy.", "Copie impossible."),
+  recent: l("Recently copied", "Copiés récemment", "Zuletzt kopiert"),
+  clearRecent: l("Clear the recent list", "Vider la liste des récents", "Verlauf leeren"),
+  categories: l("Categories", "Catégories", "Kategorien"),
+  results: l("results", "résultats", "Ergebnisse"),
+  noResult: l("No emoji matches.", "Aucun emoji ne correspond.", "Kein passendes Emoji."),
+  copied: l("Copied", "Copié", "Kopiert"),
+  copyFailed: l("Could not copy.", "Copie impossible.", "Kopieren nicht möglich."),
   hint: l(
     "Click an emoji to copy it. Some recent emojis may show as boxes if your system's font does not have them yet.",
     "Clique sur un emoji pour le copier. Certains emojis récents peuvent s'afficher comme des carrés si la police du système ne les a pas encore.",
+    "Klicke auf ein Emoji, um es zu kopieren. Neuere Emojis erscheinen eventuell als Kästchen, wenn die Schrift deines Systems sie noch nicht kennt.",
   ),
-  name: l("Name", "Nom"),
-  otherName: l("In French", "En anglais"),
-  codePoints: l("Code points", "Points de code"),
-  shortcode: l("Shortcode-like name", "Nom façon shortcode"),
-  keywords: l("Keywords", "Mots-clés"),
-  copyEmoji: l("Copy emoji", "Copier l'emoji"),
+  name: l("Name", "Nom", "Name"),
+  codePoints: l("Code points", "Points de code", "Codepoints"),
+  shortcode: l("Shortcode-like name", "Nom façon shortcode", "Name im Shortcode-Stil"),
+  keywords: l("Keywords", "Mots-clés", "Stichwörter"),
+  copyEmoji: l("Copy emoji", "Copier l'emoji", "Emoji kopieren"),
 };
 
+/** "In English", … for the names in the other languages. */
+const IN_LANG: Record<Lang, L10n> = {
+  en: l("In English", "En anglais", "Auf Englisch"),
+  fr: l("In French", "En français", "Auf Französisch"),
+  de: l("In German", "En allemand", "Auf Deutsch"),
+};
+const LANG_IDS: Lang[] = ["en", "fr", "de"];
+
 const GROUP_NAMES: Record<GroupId, { icon: string; name: L10n }> = {
-  smileys: { icon: "😀", name: l("Smileys & emotion", "Smileys et émotions") },
-  people: { icon: "👋", name: l("People & body", "Personnes et corps") },
-  animals: { icon: "🐻", name: l("Animals & nature", "Animaux et nature") },
-  food: { icon: "🍔", name: l("Food & drink", "Nourriture et boissons") },
-  travel: { icon: "✈️", name: l("Travel & places", "Voyages et lieux") },
-  activities: { icon: "⚽", name: l("Activities", "Activités") },
-  objects: { icon: "💡", name: l("Objects", "Objets") },
-  symbols: { icon: "❤️", name: l("Symbols", "Symboles") },
-  flags: { icon: "🏁", name: l("Flags", "Drapeaux") },
+  smileys: {
+    icon: "😀",
+    name: l("Smileys & emotion", "Smileys et émotions", "Smileys & Emotionen"),
+  },
+  people: { icon: "👋", name: l("People & body", "Personnes et corps", "Menschen & Körper") },
+  animals: { icon: "🐻", name: l("Animals & nature", "Animaux et nature", "Tiere & Natur") },
+  food: { icon: "🍔", name: l("Food & drink", "Nourriture et boissons", "Essen & Trinken") },
+  travel: { icon: "✈️", name: l("Travel & places", "Voyages et lieux", "Reisen & Orte") },
+  activities: { icon: "⚽", name: l("Activities", "Activités", "Aktivitäten") },
+  objects: { icon: "💡", name: l("Objects", "Objets", "Objekte") },
+  symbols: { icon: "❤️", name: l("Symbols", "Symboles", "Symbole") },
+  flags: { icon: "🏁", name: l("Flags", "Drapeaux", "Flaggen") },
 };
 
 export default function EmojiPicker() {
@@ -85,7 +98,7 @@ export default function EmojiPicker() {
   );
   const current = useComputed(() => BY_EMOJI.get(selected.value) ?? null);
   const t = Math.min(5, Math.max(0, Math.round(tone.value)));
-  const name = (e: Emoji) => (lang.value === "fr" ? e.fr : e.en);
+  const name = (e: Emoji) => e[lang.value];
   const variant = (e: Emoji) => (e.tones ? withTone(e.e, t) : e.e);
 
   async function copy(text: string, base?: Emoji) {
@@ -232,12 +245,12 @@ export default function EmojiPicker() {
             <dl class="emoji-facts">
               <dt>{tr(T.name)}</dt>
               <dd>{name(cur)}</dd>
-              {cur.fr !== cur.en && (
-                <>
-                  <dt>{tr(T.otherName)}</dt>
-                  <dd>{lang.value === "fr" ? cur.en : cur.fr}</dd>
-                </>
-              )}
+              {LANG_IDS.filter((id) => id !== lang.value && cur[id] !== name(cur)).map((id) => (
+                <Fragment key={id}>
+                  <dt>{tr(IN_LANG[id])}</dt>
+                  <dd>{cur[id]}</dd>
+                </Fragment>
+              ))}
               <dt>{tr(T.codePoints)}</dt>
               <dd class="mono">
                 {codePoints(curText)} <CopyButton text={codePoints(curText)} />

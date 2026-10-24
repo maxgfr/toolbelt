@@ -6,43 +6,50 @@ import { fmt, type L10n, l, tr } from "../../../i18n";
 import { extractAll, KINDS, type Kind, toCsv } from "./logic";
 
 const T = {
-  text: l("Text", "Texte"),
+  text: l("Text", "Texte", "Text"),
   placeholder: l(
     "Paste any text: an email thread, a log, a web page, a CSV…",
     "Colle n'importe quel texte : un fil d'e-mails, un journal, une page web, un CSV…",
+    "Füge beliebigen Text ein: einen E-Mail-Verlauf, ein Log, eine Webseite, eine CSV…",
   ),
-  find: l("What to extract", "Quoi extraire"),
-  all: l("All", "Tout"),
-  none: l("None", "Aucun"),
-  dedupe: l("Remove duplicates", "Supprimer les doublons"),
-  sort: l("Sort", "Trier"),
-  copyAll: l("Copy all", "Tout copier"),
-  csv: l("Export CSV", "Exporter en CSV"),
-  results: l("Results", "Résultats"),
+  find: l("What to extract", "Quoi extraire", "Was extrahieren"),
+  all: l("All", "Tout", "Alle"),
+  none: l("None", "Aucun", "Keine"),
+  dedupe: l("Remove duplicates", "Supprimer les doublons", "Duplikate entfernen"),
+  sort: l("Sort", "Trier", "Sortieren"),
+  copyAll: l("Copy all", "Tout copier", "Alle kopieren"),
+  csv: l("Export CSV", "Exporter en CSV", "Als CSV exportieren"),
+  results: l("Results", "Résultats", "Ergebnisse"),
   nothing: l(
     "Nothing found for the selected kinds.",
     "Rien de trouvé pour les types sélectionnés.",
+    "Für die gewählten Typen nichts gefunden.",
   ),
-  empty: l("Paste a text above to extract from it.", "Colle un texte ci-dessus pour en extraire."),
+  empty: l(
+    "Paste a text above to extract from it.",
+    "Colle un texte ci-dessus pour en extraire.",
+    "Füge oben einen Text ein, um daraus zu extrahieren.",
+  ),
   cardNote: l(
     "Card-like numbers are only checked with the Luhn checksum: this says nothing about a real card.",
     "Les numéros de type carte sont seulement vérifiés par la clé de Luhn : cela ne dit rien d'une vraie carte.",
+    "Kartenähnliche Nummern werden nur per Luhn-Prüfsumme geprüft: Das sagt nichts über eine echte Karte aus.",
   ),
 };
 
 const NAMES: Record<Kind, L10n> = {
-  email: l("Emails", "E-mails"),
-  url: l("URLs", "URL"),
-  domain: l("Domains", "Domaines"),
-  ipv4: l("IPv4 addresses", "Adresses IPv4"),
-  ipv6: l("IPv6 addresses", "Adresses IPv6"),
-  phone: l("Phone numbers", "Numéros de téléphone"),
-  hashtag: l("Hashtags", "Hashtags"),
-  mention: l("@mentions", "@mentions"),
-  number: l("Numbers", "Nombres"),
-  date: l("Dates", "Dates"),
-  color: l("Colors", "Couleurs"),
-  card: l("Card-like numbers", "Numéros de type carte"),
+  email: l("Emails", "E-mails", "E-Mails"),
+  url: l("URLs", "URL", "URLs"),
+  domain: l("Domains", "Domaines", "Domains"),
+  ipv4: l("IPv4 addresses", "Adresses IPv4", "IPv4-Adressen"),
+  ipv6: l("IPv6 addresses", "Adresses IPv6", "IPv6-Adressen"),
+  phone: l("Phone numbers", "Numéros de téléphone", "Telefonnummern"),
+  hashtag: l("Hashtags", "Hashtags", "Hashtags"),
+  mention: l("@mentions", "@mentions", "@Erwähnungen"),
+  number: l("Numbers", "Nombres", "Zahlen"),
+  date: l("Dates", "Dates", "Datumsangaben"),
+  color: l("Colors", "Couleurs", "Farben"),
+  card: l("Card-like numbers", "Numéros de type carte", "Kartenähnliche Nummern"),
 };
 
 export default function Extract() {

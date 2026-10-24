@@ -1,24 +1,24 @@
 import { useComputed } from "@preact/signals";
 import { useToolState } from "../../../app/state";
 import { Button, TextBox, Toggle } from "../../../app/ui";
-import { fmt, l, lang, tr } from "../../../i18n";
+import { fmt, l, locale, tr } from "../../../i18n";
 import { compareLists } from "./logic";
 
 const T = {
-  a: l("List A", "Liste A"),
-  b: l("List B", "Liste B"),
-  phA: l("One item per line…", "Un élément par ligne…"),
-  phB: l("One item per line…", "Un élément par ligne…"),
-  trim: l("Trim spaces", "Retirer les espaces autour"),
-  ignoreCase: l("Ignore case", "Ignorer la casse"),
-  commas: l("Also split on , and ;", "Séparer aussi sur , et ;"),
-  sort: l("Sort results", "Trier les résultats"),
-  swap: l("Swap A and B", "Inverser A et B"),
-  onlyA: l("Only in A", "Seulement dans A"),
-  onlyB: l("Only in B", "Seulement dans B"),
-  both: l("In both", "Dans les deux"),
-  union: l("Union (A ∪ B)", "Union (A ∪ B)"),
-  unique: l("{n} unique", "{n} uniques"),
+  a: l("List A", "Liste A", "Liste A"),
+  b: l("List B", "Liste B", "Liste B"),
+  phA: l("One item per line…", "Un élément par ligne…", "Ein Eintrag pro Zeile…"),
+  phB: l("One item per line…", "Un élément par ligne…", "Ein Eintrag pro Zeile…"),
+  trim: l("Trim spaces", "Retirer les espaces autour", "Leerzeichen am Rand entfernen"),
+  ignoreCase: l("Ignore case", "Ignorer la casse", "Groß-/Kleinschreibung ignorieren"),
+  commas: l("Also split on , and ;", "Séparer aussi sur , et ;", "Auch bei , und ; trennen"),
+  sort: l("Sort results", "Trier les résultats", "Ergebnisse sortieren"),
+  swap: l("Swap A and B", "Inverser A et B", "A und B tauschen"),
+  onlyA: l("Only in A", "Seulement dans A", "Nur in A"),
+  onlyB: l("Only in B", "Seulement dans B", "Nur in B"),
+  both: l("In both", "Dans les deux", "In beiden"),
+  union: l("Union (A ∪ B)", "Union (A ∪ B)", "Vereinigung (A ∪ B)"),
+  unique: l("{n} unique", "{n} uniques", "{n} eindeutig"),
 };
 
 export default function ListCompare() {
@@ -38,7 +38,7 @@ export default function ListCompare() {
         splitCommas: commas.value,
         sort: sort.value,
       },
-      lang.value,
+      locale(),
     ),
   ).value;
 

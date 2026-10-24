@@ -30,5 +30,7 @@ describe("cipher", () => {
     const secret = caesar("meet me at the station when it is dark", 11);
     expect(bruteForce(secret)[0]?.shift).toBe(11);
     expect(bruteForce("")).toHaveLength(25);
+    const geheim = caesar("wir treffen uns morgen am bahnhof, wenn es dunkel ist", 7);
+    expect(bruteForce(geheim)[0]?.shift).toBe(7);
   });
 });

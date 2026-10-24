@@ -8,26 +8,32 @@ import { DEFAULTS, type HtmlToMdOptions, htmlToMarkdown } from "./logic";
 type Code = "backticks" | "tildes" | "indented";
 
 const T = {
-  input: l("HTML", "HTML"),
+  input: l("HTML", "HTML", "HTML"),
   placeholder: l(
     "<h1>Title</h1>\n<p>Paste HTML here, or paste a copied web page in the box above.</p>",
     "<h1>Titre</h1>\n<p>Colle du HTML ici, ou colle une page web copiée dans la zone au-dessus.</p>",
+    "<h1>Titel</h1>\n<p>Füge hier HTML ein oder füge oben eine kopierte Webseite ein.</p>",
   ),
   paste: l(
     "Paste rich text here (copied from a web page, a document or an email) to get its HTML",
     "Colle ici du texte mis en forme (copié d'une page web, d'un document ou d'un e-mail) pour récupérer son HTML",
+    "Füge hier formatierten Text ein (aus einer Webseite, einem Dokument oder einer E-Mail kopiert), um sein HTML zu erhalten",
   ),
-  output: l("Markdown", "Markdown"),
-  headings: l("Headings", "Titres"),
-  setext: l("Underlined", "Soulignés"),
-  bullets: l("Bullets", "Puces"),
-  code: l("Code blocks", "Blocs de code"),
-  indented: l("Indented", "Indentés"),
-  emphasis: l("Emphasis", "Italique"),
-  links: l("Links", "Liens"),
-  inline: l("Inline", "En ligne"),
-  reference: l("References", "Références"),
-  gfm: l("Tables, ~~strike~~ and task lists (GitHub)", "Tableaux, ~~barré~~ et cases (GitHub)"),
+  output: l("Markdown", "Markdown", "Markdown"),
+  headings: l("Headings", "Titres", "Überschriften"),
+  setext: l("Underlined", "Soulignés", "Unterstrichen"),
+  bullets: l("Bullets", "Puces", "Aufzählungszeichen"),
+  code: l("Code blocks", "Blocs de code", "Codeblöcke"),
+  indented: l("Indented", "Indentés", "Eingerückt"),
+  emphasis: l("Emphasis", "Italique", "Betonung"),
+  links: l("Links", "Liens", "Links"),
+  inline: l("Inline", "En ligne", "Inline"),
+  reference: l("References", "Références", "Referenzen"),
+  gfm: l(
+    "Tables, ~~strike~~ and task lists (GitHub)",
+    "Tableaux, ~~barré~~ et cases (GitHub)",
+    "Tabellen, ~~durchgestrichen~~ und Aufgabenlisten (GitHub)",
+  ),
 };
 
 export default function HtmlToMarkdown() {

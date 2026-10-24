@@ -20,38 +20,45 @@ type Out = "same" | "comma" | "tab" | "semicolon" | "pipe" | "space" | "custom";
 const PREVIEW_ROWS = 8;
 
 const T = {
-  input: l("Delimited text", "Texte délimité"),
+  input: l("Delimited text", "Texte délimité", "Text mit Trennzeichen"),
   placeholder: l(
     "Paste CSV, TSV, a log or a command output…",
     "Colle du CSV, du TSV, un journal ou une sortie de commande…",
+    "Füge CSV, TSV, ein Log oder eine Befehlsausgabe ein…",
   ),
-  delimiter: l("Delimiter", "Délimiteur"),
-  auto: l("Auto", "Auto"),
-  spaces: l("Spaces", "Espaces"),
-  space: l("Space", "Espace"),
-  tab: l("Tab", "Tab"),
-  custom: l("Other", "Autre"),
-  same: l("Same", "Identique"),
-  detected: l("detected: {d}", "détecté : {d}"),
-  quotes: l('Respect "quotes"', 'Respecter les "guillemets"'),
-  trim: l("Trim fields", "Retirer les espaces des champs"),
-  columns: l("Columns", "Colonnes"),
-  columnsPh: l("e.g. 1,3-4 or 2- (empty = all)", "par ex. 1,3-4 ou 2- (vide = toutes)"),
+  delimiter: l("Delimiter", "Délimiteur", "Trennzeichen"),
+  auto: l("Auto", "Auto", "Auto"),
+  spaces: l("Spaces", "Espaces", "Leerzeichen"),
+  space: l("Space", "Espace", "Leerzeichen"),
+  tab: l("Tab", "Tab", "Tab"),
+  custom: l("Other", "Autre", "Andere"),
+  same: l("Same", "Identique", "Gleich"),
+  detected: l("detected: {d}", "détecté : {d}", "erkannt: {d}"),
+  quotes: l('Respect "quotes"', 'Respecter les "guillemets"', '"Anführungszeichen" beachten'),
+  trim: l("Trim fields", "Retirer les espaces des champs", "Felder trimmen"),
+  columns: l("Columns", "Colonnes", "Spalten"),
+  columnsPh: l(
+    "e.g. 1,3-4 or 2- (empty = all)",
+    "par ex. 1,3-4 ou 2- (vide = toutes)",
+    "z. B. 1,3-4 oder 2- (leer = alle)",
+  ),
   columnsHint: l(
     "Or click the column headers below.",
     "Ou clique sur les en-têtes de colonnes ci-dessous.",
+    "Oder klicke unten auf die Spaltenköpfe.",
   ),
   badSpec: l(
     "“{t}” is not a column or range (use 2, 1-3, 4-).",
     "« {t} » n'est ni une colonne ni un intervalle (utilise 2, 1-3, 4-).",
+    "„{t}“ ist weder Spalte noch Bereich (nutze 2, 1-3, 4-).",
   ),
-  output: l("Output delimiter", "Délimiteur de sortie"),
-  result: l("Extracted columns", "Colonnes extraites"),
-  rows: l("Rows", "Lignes"),
-  width: l("Columns", "Colonnes"),
-  picked: l("Picked", "Choisies"),
-  preview: l("Preview (first rows)", "Aperçu (premières lignes)"),
-  toggleCol: l("Toggle column {n}", "Basculer la colonne {n}"),
+  output: l("Output delimiter", "Délimiteur de sortie", "Trennzeichen der Ausgabe"),
+  result: l("Extracted columns", "Colonnes extraites", "Extrahierte Spalten"),
+  rows: l("Rows", "Lignes", "Zeilen"),
+  width: l("Columns", "Colonnes", "Spalten"),
+  picked: l("Picked", "Choisies", "Ausgewählt"),
+  preview: l("Preview (first rows)", "Aperçu (premières lignes)", "Vorschau (erste Zeilen)"),
+  toggleCol: l("Toggle column {n}", "Basculer la colonne {n}", "Spalte {n} umschalten"),
 };
 
 const IN_LABELS: Record<Exclude<In, "auto" | "custom" | "spaces" | "tab">, string> = {
@@ -61,11 +68,11 @@ const IN_LABELS: Record<Exclude<In, "auto" | "custom" | "spaces" | "tab">, strin
 };
 
 const DETECTED: Record<Exclude<Delimiter, "custom">, L10n> = {
-  comma: l("comma", "virgule"),
-  tab: l("tab", "tabulation"),
-  semicolon: l("semicolon", "point-virgule"),
-  pipe: l("pipe", "barre verticale"),
-  spaces: l("spaces", "espaces"),
+  comma: l("comma", "virgule", "Komma"),
+  tab: l("tab", "tabulation", "Tabulator"),
+  semicolon: l("semicolon", "point-virgule", "Semikolon"),
+  pipe: l("pipe", "barre verticale", "senkrechter Strich"),
+  spaces: l("spaces", "espaces", "Leerzeichen"),
 };
 
 export default function Columns() {

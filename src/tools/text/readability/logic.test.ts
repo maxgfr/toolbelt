@@ -1,5 +1,13 @@
 import { describe, expect, it } from "bun:test";
-import { analyze, detectLang, sentences, syllablesEn, syllablesFr, words } from "./logic";
+import {
+  analyze,
+  detectLang,
+  sentences,
+  syllablesDe,
+  syllablesEn,
+  syllablesFr,
+  words,
+} from "./logic";
 
 describe("syllables", () => {
   it("counts English syllables with silent endings and vowel pairs", () => {
@@ -47,6 +55,32 @@ describe("syllables", () => {
     };
     for (const [w, n] of Object.entries(cases)) expect([w, syllablesFr(w)]).toEqual([w, n]);
   });
+
+  it("counts German syllables with diphthongs, long vowels and hiatus", () => {
+    const cases: Record<string, number> = {
+      Haus: 1,
+      ein: 1,
+      Boot: 1,
+      See: 1,
+      Aal: 1,
+      Straße: 2,
+      Häuser: 2,
+      Feuer: 2,
+      Quelle: 2,
+      Biene: 2,
+      Kaffee: 2,
+      Mädchen: 2,
+      Schifffahrt: 2,
+      Theater: 3,
+      Nation: 3,
+      Eisenbahn: 3,
+      Lesbarkeit: 3,
+      beobachten: 4,
+      Universität: 5,
+    };
+    for (const [w, n] of Object.entries(cases)) expect([w, syllablesDe(w)]).toEqual([w, n]);
+    expect(syllablesDe("")).toBe(0);
+  });
 });
 
 describe("words and sentences", () => {
@@ -66,6 +100,20 @@ describe("words and sentences", () => {
     ]);
     expect(sentences(t, "en").map((s) => s.words)).toEqual([5, 7, 1, 2]);
     expect(sentences("...", "en")).toEqual([]);
+  });
+
+  it("keeps German abbreviations and dates inside the sentence", () => {
+    const t =
+      "Das ist z. B. ein Test. Am 3. Oktober ist Feiertag. Er kam um 3. Dann ging er. Siehe Nr. 5 bzw. Abb. 3 unten.";
+    expect(sentences(t, "de").map((s) => t.slice(s.start, s.end))).toEqual([
+      "Das ist z. B. ein Test.",
+      "Am 3. Oktober ist Feiertag.",
+      "Er kam um 3.",
+      "Dann ging er.",
+      "Siehe Nr. 5 bzw. Abb. 3 unten.",
+    ]);
+    const u = "Das gilt z.B. für Äpfel.";
+    expect(sentences(u, "de")).toHaveLength(1);
   });
 });
 
@@ -113,11 +161,37 @@ describe("analyze", () => {
     expect(a.scores.map((s) => s.id)).toEqual(["kandel", "lix"]);
     expect(a.scores[0]?.value).toBeGreaterThan(80);
   });
+
+  it("uses Flesch–Amstad, the Wiener Sachtextformel and LIX for German", () => {
+    // 3 sentences, 13 words; syllables: Der Hund schläft (3), Die Kat-ze spielt im Gar-ten (7),
+    // Es ist ein schö-ner Tag (6) = 16; 1-syllable words: 10; 3+ syllables: 0; > 6 letters: 2.
+    const a = analyze(
+      "Der Hund schläft. Die Katze spielt im Garten. Es ist ein schöner Tag.",
+      "de",
+    );
+    expect([a.sentences.length, a.words, a.syllables, a.mono, a.complex, a.long]).toEqual([
+      3, 13, 16, 10, 0, 2,
+    ]);
+    expect(a.scores.map((s) => s.id)).toEqual(["amstad", "wstf", "lix"]);
+    expect(a.scores[0]?.value).toBeCloseTo(180 - 13 / 3 - 58.5 * (16 / 13), 0);
+    expect(a.scores[0]?.level).toBe(0);
+    const wstf = 0.1672 * (13 / 3) + 0.1297 * (200 / 13) - 0.0327 * ((100 * 10) / 13) - 0.875;
+    expect(a.scores[1]?.value).toBe(Math.max(0, Math.round(wstf * 10) / 10));
+
+    const hard = analyze(
+      "Die Bundesregierung beabsichtigt, die verfassungsrechtlichen Rahmenbedingungen der grenzüberschreitenden Zusammenarbeit im Gesundheitswesen grundlegend weiterzuentwickeln.",
+      "de",
+    );
+    expect(hard.scores[0]?.value).toBeLessThan(30);
+    expect(hard.scores[1]?.value).toBeGreaterThan(12);
+    expect(hard.scores[1]?.level).toBe(4);
+  });
 });
 
 describe("detectLang", () => {
-  it("tells English from French", () => {
+  it("tells English from French and German", () => {
     expect(detectLang("Le chat dort et il est content.")).toBe("fr");
+    expect(detectLang("Der Hund schläft und die Katze ist müde.")).toBe("de");
     expect(detectLang("The cat is asleep and it is happy.")).toBe("en");
     expect(detectLang("")).toBe("en");
   });

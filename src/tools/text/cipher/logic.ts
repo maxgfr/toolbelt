@@ -49,11 +49,12 @@ export function applyCipher(text: string, cipher: Cipher, shift: number, decode:
   }
 }
 
-/** Frequent English and French words, to rank Caesar shifts by how readable they make a text. */
+/** Frequent English, French and German words, to rank Caesar shifts by how readable they make a text. */
 const COMMON = new Set(
   (
     "the be to of and a in that have i it for not on with he as you do at this but his by from they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take people into year your good some could them see other than then now look only come its over think also back after use two how our work first well way even new want because any these give day most us is are was " +
-    "le la les de des du un une et en est que qui dans pour pas sur au avec il elle ne se ce son sa ses plus par je tu nous vous ils on mais ou si leur bien tout fait comme été être avoir aux cette mon ma mes"
+    "le la les de des du un une et en est que qui dans pour pas sur au avec il elle ne se ce son sa ses plus par je tu nous vous ils on mais ou si leur bien tout fait comme été être avoir aux cette mon ma mes " +
+    "der die das und ist nicht ein eine einen zu den von mit sich des auf für im dem auch es als nach wie aus bei sind wird ich sie er wir ihr oder aber noch über dass hat haben war wenn nur kann schon"
   ).split(" "),
 );
 

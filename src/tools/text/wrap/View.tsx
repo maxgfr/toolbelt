@@ -10,22 +10,35 @@ type Mode = "wrap" | "unwrap";
 const PREFIXES = ["> ", "# ", "// ", "    "];
 
 const T = {
-  wrap: l("Wrap", "Couper"),
-  unwrap: l("Unwrap", "Recoller"),
-  width: l("Width (columns)", "Largeur (colonnes)"),
-  prefix: l("Prefix on each line", "Préfixe de chaque ligne"),
-  strip: l("Prefix to remove", "Préfixe à retirer"),
-  indent: l("Indent", "Retrait"),
-  none: l("None", "Aucun"),
-  reflow: l("Join the lines of a paragraph first", "Recoller d'abord les lignes d'un paragraphe"),
-  breakLong: l("Cut words longer than the width", "Couper les mots plus longs que la largeur"),
-  input: l("Text", "Texte"),
+  wrap: l("Wrap", "Couper", "Umbrechen"),
+  unwrap: l("Unwrap", "Recoller", "Zusammenfügen"),
+  width: l("Width (columns)", "Largeur (colonnes)", "Breite (Spalten)"),
+  prefix: l("Prefix on each line", "Préfixe de chaque ligne", "Präfix für jede Zeile"),
+  strip: l("Prefix to remove", "Préfixe à retirer", "Zu entfernendes Präfix"),
+  indent: l("Indent", "Retrait", "Einzug"),
+  none: l("None", "Aucun", "Keines"),
+  reflow: l(
+    "Join the lines of a paragraph first",
+    "Recoller d'abord les lignes d'un paragraphe",
+    "Zuerst die Zeilen eines Absatzes zusammenfügen",
+  ),
+  breakLong: l(
+    "Cut words longer than the width",
+    "Couper les mots plus longs que la largeur",
+    "Wörter trennen, die länger als die Breite sind",
+  ),
+  input: l("Text", "Texte", "Text"),
   placeholder: l(
     "Paste text: paragraphs are separated by blank lines…",
     "Colle du texte : les paragraphes sont séparés par des lignes vides…",
+    "Füge Text ein: Absätze werden durch Leerzeilen getrennt…",
   ),
-  output: l("Result", "Résultat"),
-  longest: l("Longest line: {n} characters", "Ligne la plus longue : {n} caractères"),
+  output: l("Result", "Résultat", "Ergebnis"),
+  longest: l(
+    "Longest line: {n} characters",
+    "Ligne la plus longue : {n} caractères",
+    "Längste Zeile: {n} Zeichen",
+  ),
 };
 
 export default function Wrap() {

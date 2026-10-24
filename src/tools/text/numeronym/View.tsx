@@ -2,30 +2,32 @@ import { useComputed } from "@preact/signals";
 import { NumberField } from "../../../app/kit";
 import { useToolState } from "../../../app/state";
 import { Field, Panel, TextBox, Toggle } from "../../../app/ui";
-import { l, lang, tr } from "../../../i18n";
+import { l, pick, tr } from "../../../i18n";
 import { KNOWN, lookupAll, numeronym, numeronymize } from "./logic";
 
 const T = {
-  input: l("Words", "Mots"),
+  input: l("Words", "Mots", "Wörter"),
   placeholder: l(
     "internationalization, accessibility, Kubernetes…",
     "internationalization, accessibilité, Kubernetes…",
+    "internationalization, Barrierefreiheit, Kubernetes…",
   ),
-  output: l("Numeronyms", "Numéronymes"),
-  minLength: l("Shorten words from", "Abréger les mots à partir de"),
-  letters: l("letters", "lettres"),
-  lowercase: l("Lowercase", "Minuscules"),
-  lookup: l("What does it stand for?", "Que veut dire ce numéronyme ?"),
-  lookupLabel: l("Numeronyms to look up", "Numéronymes à rechercher"),
-  lookupPlaceholder: l("i18n, a11y, k8s…", "i18n, a11y, k8s…"),
-  unknown: l("not in the list", "absent de la liste"),
-  known: l("Well-known numeronyms", "Numéronymes connus"),
-  numeronym: l("Numeronym", "Numéronyme"),
-  word: l("Word", "Mot"),
-  meaning: l("In French", "En français"),
+  output: l("Numeronyms", "Numéronymes", "Numeronyme"),
+  minLength: l("Shorten words from", "Abréger les mots à partir de", "Wörter kürzen ab"),
+  letters: l("letters", "lettres", "Buchstaben"),
+  lowercase: l("Lowercase", "Minuscules", "Kleinbuchstaben"),
+  lookup: l("What does it stand for?", "Que veut dire ce numéronyme ?", "Wofür steht das?"),
+  lookupLabel: l("Numeronyms to look up", "Numéronymes à rechercher", "Gesuchte Numeronyme"),
+  lookupPlaceholder: l("i18n, a11y, k8s…", "i18n, a11y, k8s…", "i18n, a11y, k8s…"),
+  unknown: l("not in the list", "absent de la liste", "nicht in der Liste"),
+  known: l("Well-known numeronyms", "Numéronymes connus", "Bekannte Numeronyme"),
+  numeronym: l("Numeronym", "Numéronyme", "Numeronym"),
+  word: l("Word", "Mot", "Wort"),
+  meaning: l("In French", "En français", "Auf Deutsch"),
   explain: l(
     "A numeronym keeps the first and last letters of a word and replaces the letters in between with their count: internationalization → i + 18 letters + n → i18n.",
     "Un numéronyme garde la première et la dernière lettre d'un mot et remplace les lettres du milieu par leur nombre : internationalization → i + 18 lettres + n → i18n.",
+    "Ein Numeronym behält den ersten und letzten Buchstaben eines Wortes und ersetzt die Buchstaben dazwischen durch ihre Anzahl: internationalization → i + 18 Buchstaben + n → i18n.",
   ),
 };
 
@@ -95,7 +97,9 @@ export default function Numeronym() {
                 <code class="mono">{f.token}</code> →{" "}
                 {f.matches.length ? (
                   f.matches
-                    .map((m) => (lang.value === "fr" ? `${m.word} (${m.fr})` : m.word))
+                    .map((m) =>
+                      pick({ en: m.word, fr: `${m.word} (${m.fr})`, de: `${m.word} (${m.de})` }),
+                    )
                     .join(" · ")
                 ) : (
                   <span class="muted">{tr(T.unknown)}</span>
@@ -122,7 +126,7 @@ export default function Numeronym() {
                   <tr key={k.word} class={hits.value.has(k.word) ? "numeronym-hit" : ""}>
                     <td class="mono">{numeronym(k.word)}</td>
                     <td>{k.word}</td>
-                    <td>{k.fr}</td>
+                    <td>{pick({ en: k.fr, fr: k.fr, de: k.de })}</td>
                   </tr>
                 ))}
             </tbody>

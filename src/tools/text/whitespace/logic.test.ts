@@ -60,6 +60,13 @@ describe("clean", () => {
     );
   });
 
+  it("makes German quotes, with apostrophes inside words", () => {
+    expect(clean(`Er sagte "geht's (gut)" und 'ok'.`, only({ quotes: "german" })).text).toBe(
+      "Er sagte „geht’s (gut)“ und ‚ok‘.",
+    );
+    expect(inspect("„a“ ‚b‘").smartQuotes).toBe(4);
+  });
+
   it("converts dashes and ellipses both ways", () => {
     expect(clean("a—b – c−1 …", only({ dashes: "ascii", ellipsis: "ascii" })).text).toBe(
       "a-b - c-1 ...",
