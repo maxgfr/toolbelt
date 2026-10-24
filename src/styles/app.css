@@ -242,6 +242,11 @@ kbd,
   color: var(--ink);
   font: inherit;
 }
+/* .input resets the font; monospace boxes need it back. */
+.input.mono {
+  font-family: var(--mono);
+  font-size: 13.5px;
+}
 .input:focus {
   outline: none;
   border-color: var(--accent);
