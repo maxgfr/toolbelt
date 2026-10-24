@@ -1,6 +1,6 @@
 # toolbelt
 
-139 small everyday utilities in one page: count characters, diff two files, format JSON, decode a
+100+ small everyday utilities in one page: count characters, diff two files, format JSON, decode a
 JWT, hash a file, explain a cron expression, but also VAT, gross to net salary, a loan, a timer, a
 dice roll, a tuner or a favicon… Everything runs in your browser. There is no server and no
 tracking, nothing you type leaves the tab, and once loaded it works offline. English and French
