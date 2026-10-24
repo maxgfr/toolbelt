@@ -190,11 +190,16 @@ export const PLUS_PROVIDERS: ReadonlySet<string> = new Set([
   "googlemail.com",
   "outlook.com",
   "outlook.fr",
+  "outlook.de",
+  "outlook.at",
   "hotmail.com",
   "hotmail.fr",
+  "hotmail.de",
   "hotmail.co.uk",
   "live.com",
   "live.fr",
+  "live.de",
+  "live.at",
   "msn.com",
   "fastmail.com",
   "fastmail.fm",
@@ -209,6 +214,9 @@ export const PLUS_PROVIDERS: ReadonlySet<string> = new Set([
   "yandex.ru",
   "zoho.com",
   "hey.com",
+  "posteo.de",
+  "posteo.net",
+  "mailbox.org",
 ]);
 
 export interface NormalizeOptions {

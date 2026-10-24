@@ -88,6 +88,9 @@ describe("email-normalize — normalization", () => {
     expect(normalizeEmail("jane.doe+x@outlook.com").address).toBe("jane.doe@outlook.com");
     expect(normalizeEmail("jane+x@proton.me").address).toBe("jane@proton.me");
     expect(normalizeEmail("jane+x@fastmail.com").address).toBe("jane@fastmail.com");
+    expect(normalizeEmail("max+x@posteo.de").address).toBe("max@posteo.de");
+    expect(normalizeEmail("max+x@hotmail.de").address).toBe("max@hotmail.de");
+    expect(normalizeEmail("max+x@gmx.de").address).toBe("max+x@gmx.de");
     expect(normalizeEmail("jane+x@example.com").address).toBe("jane+x@example.com");
     expect(
       normalizeEmail("jane+x@example.com", { ...DEFAULT_OPTIONS, plusEverywhere: true }).address,

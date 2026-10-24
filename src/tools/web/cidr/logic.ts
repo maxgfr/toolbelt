@@ -346,7 +346,7 @@ export function subnet6(ip: bigint, prefix: number): Subnet6 {
 }
 
 /** 2^n written with thousands separators when exact and short, else as a power of two. */
-export function powerLabel(total: bigint): string {
+export function powerLabel(total: bigint, locale = "en-US"): string {
   const bits = total.toString(2).length - 1;
-  return bits <= 64 ? total.toLocaleString("en-US") : `2^${bits}`;
+  return bits <= 64 ? total.toLocaleString(locale) : `2^${bits}`;
 }

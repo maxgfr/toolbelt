@@ -10,31 +10,37 @@ const T = {
   search: l(
     "Filter templates: node, python, intellij…",
     "Filtrer les modèles : node, python, intellij…",
+    "Vorlagen filtern: node, python, intellij…",
   ),
-  templates: l("Templates", "Modèles"),
-  clear: l("Clear selection", "Tout désélectionner"),
-  selected: l("{n} selected", "{n} sélectionné(s)"),
-  none: l("No template matches.", "Aucun modèle ne correspond."),
-  custom: l("Your own patterns", "Tes propres motifs"),
-  customTitle: l("Custom", "Personnalisé"),
+  templates: l("Templates", "Modèles", "Vorlagen"),
+  clear: l("Clear selection", "Tout désélectionner", "Auswahl aufheben"),
+  selected: l("{n} selected", "{n} sélectionné(s)", "{n} ausgewählt"),
+  none: l("No template matches.", "Aucun modèle ne correspond.", "Keine Vorlage gefunden."),
+  custom: l("Your own patterns", "Tes propres motifs", "Deine eigenen Muster"),
+  customTitle: l("Custom", "Personnalisé", "Eigene"),
   customPh: l(
     "One pattern per line, e.g. secrets/ or *.local",
     "Un motif par ligne, par ex. secrets/ ou *.local",
+    "Ein Muster pro Zeile, z. B. secrets/ oder *.local",
   ),
-  output: l(".gitignore", ".gitignore"),
+  output: l(".gitignore", ".gitignore", ".gitignore"),
   empty: l(
     "Pick one or more templates: they are merged, with duplicates removed.",
     "Choisis un ou plusieurs modèles : ils sont fusionnés, sans doublons.",
+    "Wähle eine oder mehrere Vorlagen: Sie werden zusammengeführt, ohne Duplikate.",
   ),
-  patterns: l("{n} patterns", "{n} motifs"),
+  patterns: l("{n} patterns", "{n} motifs", "{n} Muster"),
 };
 
 const GROUPS: { id: TemplateGroup; label: L10n }[] = [
-  { id: "language", label: l("Languages", "Langages") },
-  { id: "framework", label: l("Frameworks & platforms", "Frameworks et plateformes") },
-  { id: "tool", label: l("Tools", "Outils") },
-  { id: "os", label: l("Operating systems", "Systèmes d'exploitation") },
-  { id: "editor", label: l("Editors & IDEs", "Éditeurs et IDE") },
+  { id: "language", label: l("Languages", "Langages", "Sprachen") },
+  {
+    id: "framework",
+    label: l("Frameworks & platforms", "Frameworks et plateformes", "Frameworks und Plattformen"),
+  },
+  { id: "tool", label: l("Tools", "Outils", "Werkzeuge") },
+  { id: "os", label: l("Operating systems", "Systèmes d'exploitation", "Betriebssysteme") },
+  { id: "editor", label: l("Editors & IDEs", "Éditeurs et IDE", "Editoren und IDEs") },
 ];
 
 export default function Gitignore() {

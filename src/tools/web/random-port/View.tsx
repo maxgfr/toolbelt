@@ -2,50 +2,73 @@ import { useComputed, useSignal } from "@preact/signals";
 import { Badge, NumberField, Select } from "../../../app/kit";
 import { useToolState } from "../../../app/state";
 import { Button, Panel, Segmented, TextBox, Toggle } from "../../../app/ui";
-import { fmt, type L10n, l, lang, tr } from "../../../i18n";
+import { fmt, type L10n, l, pick, tr } from "../../../i18n";
 import { Empty, SearchBox } from "../_ui";
 import type { Proto } from "./data";
 import { candidates, cryptoInt, RANGES, type RangeId, randomPorts, searchPorts } from "./logic";
 
 const T = {
-  generator: l("Random port", "Port aléatoire"),
-  range: l("Range", "Plage"),
-  min: l("From", "De"),
-  max: l("To", "À"),
-  count: l("How many", "Combien"),
-  skipWellKnown: l("Skip well-known ports (0–1023)", "Éviter les ports système (0–1023)"),
+  generator: l("Random port", "Port aléatoire", "Zufälliger Port"),
+  range: l("Range", "Plage", "Bereich"),
+  min: l("From", "De", "Von"),
+  max: l("To", "À", "Bis"),
+  count: l("How many", "Combien", "Anzahl"),
+  skipWellKnown: l(
+    "Skip well-known ports (0–1023)",
+    "Éviter les ports système (0–1023)",
+    "Well-known Ports auslassen (0–1023)",
+  ),
   skipCommon: l(
     "Skip the commonly used ports listed below",
     "Éviter les ports courants listés ci-dessous",
+    "Die unten aufgeführten gängigen Ports auslassen",
   ),
   skipEphemeral: l(
     "Skip the Linux ephemeral range (32768–60999)",
     "Éviter la plage éphémère de Linux (32768–60999)",
+    "Den ephemeren Bereich von Linux auslassen (32768–60999)",
   ),
-  again: l("Pick again", "Tirer à nouveau"),
-  ports: l("Ports", "Ports"),
-  pool: l("{n} ports available", "{n} ports disponibles"),
-  none: l("No port left with these settings.", "Aucun port possible avec ces réglages."),
-  reference: l("Common ports", "Ports courants"),
-  search: l("Search a port, a service or a word…", "Chercher un port, un service ou un mot…"),
-  all: l("All", "Tous"),
-  noMatch: l("No port matches.", "Aucun port ne correspond."),
-  port: l("Port", "Port"),
-  proto: l("Protocol", "Protocole"),
-  service: l("Service", "Service"),
-  desc: l("Use", "Usage"),
-  count2: l("{n} ports", "{n} ports"),
+  again: l("Pick again", "Tirer à nouveau", "Neu auslosen"),
+  ports: l("Ports", "Ports", "Ports"),
+  pool: l("{n} ports available", "{n} ports disponibles", "{n} Ports verfügbar"),
+  none: l(
+    "No port left with these settings.",
+    "Aucun port possible avec ces réglages.",
+    "Mit diesen Einstellungen bleibt kein Port übrig.",
+  ),
+  reference: l("Common ports", "Ports courants", "Gängige Ports"),
+  search: l(
+    "Search a port, a service or a word…",
+    "Chercher un port, un service ou un mot…",
+    "Port, Dienst oder Begriff suchen…",
+  ),
+  all: l("All", "Tous", "Alle"),
+  noMatch: l("No port matches.", "Aucun port ne correspond.", "Kein Port gefunden."),
+  port: l("Port", "Port", "Port"),
+  proto: l("Protocol", "Protocole", "Protokoll"),
+  service: l("Service", "Service", "Dienst"),
+  desc: l("Use", "Usage", "Verwendung"),
+  count2: l("{n} ports", "{n} ports", "{n} Ports"),
   random: l(
     "Ports come from your browser's cryptographic random generator. A port that is free here may still be in use on your machine.",
     "Les ports viennent du générateur aléatoire cryptographique de ton navigateur. Un port libre ici peut quand même être pris sur ta machine.",
+    "Die Ports stammen aus dem kryptografischen Zufallsgenerator deines Browsers. Ein Port, der hier frei ist, kann auf deinem Rechner trotzdem belegt sein.",
   ),
 };
 
 const RANGE_L: Record<RangeId, L10n> = {
-  registered: l("Registered (1024–49151)", "Enregistrés (1024–49151)"),
-  dynamic: l("Dynamic / private (49152–65535)", "Dynamiques / privés (49152–65535)"),
-  unprivileged: l("Any unprivileged (1024–65535)", "Tout non privilégié (1024–65535)"),
-  custom: l("Custom", "Personnalisée"),
+  registered: l("Registered (1024–49151)", "Enregistrés (1024–49151)", "Registriert (1024–49151)"),
+  dynamic: l(
+    "Dynamic / private (49152–65535)",
+    "Dynamiques / privés (49152–65535)",
+    "Dynamisch / privat (49152–65535)",
+  ),
+  unprivileged: l(
+    "Any unprivileged (1024–65535)",
+    "Tout non privilégié (1024–65535)",
+    "Alle unprivilegierten (1024–65535)",
+  ),
+  custom: l("Custom", "Personnalisée", "Benutzerdefiniert"),
 };
 
 const PROTO_L: Record<Proto, string> = { tcp: "TCP", udp: "UDP", both: "TCP/UDP" };
@@ -78,7 +101,6 @@ export default function RandomPort() {
     return randomPorts(count.value, opts.value, cryptoInt);
   });
   const matches = useComputed(() => searchPorts(query.value, proto.value));
-  const fr = lang.value === "fr";
 
   return (
     <>
@@ -228,7 +250,7 @@ export default function RandomPort() {
                     <td>
                       <strong>{p.name}</strong>
                     </td>
-                    <td class="small">{fr ? p.fr : p.en}</td>
+                    <td class="small">{pick(p)}</td>
                   </tr>
                 ))}
               </tbody>

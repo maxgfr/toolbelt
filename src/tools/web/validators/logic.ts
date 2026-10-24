@@ -272,6 +272,24 @@ export function checkIban(text: string): IbanResult {
   };
 }
 
+/**
+ * Length of the bank code at the start of the BBAN, for the countries whose BBAN is just
+ * "bank code + account number": Germany (Bankleitzahl), Austria (BLZ), Switzerland and
+ * Liechtenstein (bank clearing number / IID).
+ */
+const BANK_CODE_LENGTH: Record<string, number> = { DE: 8, AT: 5, CH: 5, LI: 5 };
+
+/** The bank code and account number inside a DE/AT/CH/LI BBAN, or null elsewhere. */
+export function ibanBankParts(
+  country: string,
+  bban: string,
+): { bank: string; account: string } | null {
+  const n = BANK_CODE_LENGTH[country];
+  const len = IBAN_LENGTHS[country];
+  if (!n || !len || bban.length !== len - 4) return null;
+  return { bank: bban.slice(0, n), account: bban.slice(n) };
+}
+
 /* --- GTIN (EAN / UPC) & ISBN --------------------------------------------------- */
 
 /** GTIN check digit of the digits before it (weights 3, 1, 3… from the right). */

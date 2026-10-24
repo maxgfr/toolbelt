@@ -172,5 +172,6 @@ describe("cidr — IPv6", () => {
   it("labels huge counts", () => {
     expect(powerLabel(256n)).toBe("256");
     expect(powerLabel(1n << 80n)).toBe("2^80");
+    expect(powerLabel(1n << 20n, "de-DE")).toBe("1.048.576");
   });
 });

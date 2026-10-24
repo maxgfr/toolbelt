@@ -15,7 +15,7 @@ export function searchHeaders(
     (h) =>
       (kind === "all" || h.kind === kind || h.kind === "both") &&
       (cat === "all" || h.cat === cat) &&
-      matchesQuery(query, h.name, h.en, h.fr, h.example, h.cat),
+      matchesQuery(query, h.name, h.en, h.fr, h.de, h.example, h.cat),
   );
 }
 

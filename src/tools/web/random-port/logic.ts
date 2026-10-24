@@ -89,12 +89,12 @@ export function portClass(port: number): "system" | "registered" | "dynamic" | "
 
 /**
  * Entries matching `query`: a number gives the ports starting with it, words are searched in
- * names and both languages' descriptions.
+ * names and every language's descriptions.
  */
 export function searchPorts(query: string, proto: Proto | "all" = "all"): PortEntry[] {
   const q = query.trim();
   const list = PORTS.filter((p) => proto === "all" || p.proto === proto || p.proto === "both");
   if (!q) return list;
   if (/^\d{1,5}$/.test(q)) return list.filter((p) => String(p.port).startsWith(q));
-  return list.filter((p) => matchesQuery(q, p.port, p.name, p.en, p.fr, p.proto));
+  return list.filter((p) => matchesQuery(q, p.port, p.name, p.en, p.fr, p.de, p.proto));
 }

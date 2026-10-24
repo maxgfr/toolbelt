@@ -2,7 +2,7 @@ import { useComputed } from "@preact/signals";
 import { useEffect, useState } from "preact/hooks";
 import { useToolState } from "../../../app/state";
 import { Button, Field, FileDrop, Panel, TextBox } from "../../../app/ui";
-import { type L10n, l, tr } from "../../../i18n";
+import { type L10n, l, pick, tr } from "../../../i18n";
 import { Badge } from "../_ui";
 import {
   buildTags,
@@ -16,64 +16,84 @@ import {
 } from "./logic";
 
 const T = {
-  page: l("Page", "Page"),
-  title: l("Title", "Titre"),
-  description: l("Description", "Description"),
-  url: l("Canonical URL", "URL canonique"),
-  image: l("Image URL (1200 × 630)", "URL de l'image (1200 × 630)"),
-  imageAlt: l("Image description (alt)", "Description de l'image (alt)"),
-  siteName: l("Site name", "Nom du site"),
-  type: l("Type", "Type"),
-  locale: l("Locale", "Langue (locale)"),
-  twitter: l("X / Twitter account", "Compte X / Twitter"),
-  themeColor: l("Theme color", "Couleur du thème"),
-  preview: l("Preview", "Aperçu"),
+  page: l("Page", "Page", "Seite"),
+  title: l("Title", "Titre", "Titel"),
+  description: l("Description", "Description", "Beschreibung"),
+  url: l("Canonical URL", "URL canonique", "Kanonische URL"),
+  image: l("Image URL (1200 × 630)", "URL de l'image (1200 × 630)", "Bild-URL (1200 × 630)"),
+  imageAlt: l("Image description (alt)", "Description de l'image (alt)", "Bildbeschreibung (alt)"),
+  siteName: l("Site name", "Nom du site", "Name der Website"),
+  type: l("Type", "Type", "Typ"),
+  locale: l("Locale", "Langue (locale)", "Gebietsschema (locale)"),
+  twitter: l("X / Twitter account", "Compte X / Twitter", "X-/Twitter-Konto"),
+  themeColor: l("Theme color", "Couleur du thème", "Designfarbe"),
+  preview: l("Preview", "Aperçu", "Vorschau"),
   previewNote: l(
     "Remote images cannot load in this offline tool. Drop a local copy to see it in the card.",
     "Les images distantes ne se chargent pas dans cet outil hors ligne. Dépose une copie locale pour la voir dans la carte.",
+    "Externe Bilder können in diesem Offline-Werkzeug nicht geladen werden. Zieh eine lokale Kopie hierher, um sie in der Karte zu sehen.",
   ),
-  dropImage: l("Drop an image to preview it", "Dépose une image pour l'aperçu"),
-  removeImage: l("Remove the preview image", "Retirer l'image d'aperçu"),
-  noImage: l("No image", "Pas d'image"),
-  tags: l("HTML for the <head>", "HTML pour le <head>"),
+  dropImage: l(
+    "Drop an image to preview it",
+    "Dépose une image pour l'aperçu",
+    "Bild hierher ziehen für die Vorschau",
+  ),
+  removeImage: l("Remove the preview image", "Retirer l'image d'aperçu", "Vorschaubild entfernen"),
+  noImage: l("No image", "Pas d'image", "Kein Bild"),
+  tags: l("HTML for the <head>", "HTML pour le <head>", "HTML für den <head>"),
   allGood: l(
     "Ready for search engines and link previews",
     "Prêt pour les moteurs et les aperçus de liens",
+    "Bereit für Suchmaschinen und Link-Vorschauen",
   ),
-  chars: l("{n}/{max} characters", "{n}/{max} caractères"),
+  chars: l("{n}/{max} characters", "{n}/{max} caractères", "{n}/{max} Zeichen"),
 };
 
 const TYPES = ["website", "article", "product", "profile", "book", "video.movie", "music.song"];
 
 const WARN: Record<Warning, L10n> = {
-  noTitle: l("Add a title.", "Ajoute un titre."),
+  noTitle: l("Add a title.", "Ajoute un titre.", "Füge einen Titel hinzu."),
   titleLong: l(
     "The title is over 60 characters: search results will cut it.",
     "Le titre dépasse 60 caractères : les résultats de recherche le couperont.",
+    "Der Titel ist länger als 60 Zeichen: Suchergebnisse schneiden ihn ab.",
   ),
-  noDescription: l("Add a description.", "Ajoute une description."),
+  noDescription: l(
+    "Add a description.",
+    "Ajoute une description.",
+    "Füge eine Beschreibung hinzu.",
+  ),
   descriptionLong: l(
     "The description is over 160 characters: it will be cut.",
     "La description dépasse 160 caractères : elle sera coupée.",
+    "Die Beschreibung ist länger als 160 Zeichen: Sie wird abgeschnitten.",
   ),
   descriptionShort: l(
     "The description is short: aim for 50 to 160 characters.",
     "La description est courte : vise 50 à 160 caractères.",
+    "Die Beschreibung ist kurz: Ziel sind 50 bis 160 Zeichen.",
   ),
-  urlRelative: l("The URL must be absolute (https://…).", "L'URL doit être absolue (https://…)."),
+  urlRelative: l(
+    "The URL must be absolute (https://…).",
+    "L'URL doit être absolue (https://…).",
+    "Die URL muss absolut sein (https://…).",
+  ),
   imageRelative: l(
     "The image URL must be absolute (https://…), or previews will not show it.",
     "L'URL de l'image doit être absolue (https://…), sinon les aperçus ne l'afficheront pas.",
+    "Die Bild-URL muss absolut sein (https://…), sonst zeigen Vorschauen sie nicht an.",
   ),
   noImage: l(
     "No image: links will show a small card without picture.",
     "Pas d'image : les liens s'afficheront en petite carte sans visuel.",
+    "Kein Bild: Links erscheinen als kleine Karte ohne Bild.",
   ),
   badHandle: l(
     "Not an X / Twitter handle (letters, digits, _; 15 max).",
     "Ce n'est pas un compte X / Twitter (lettres, chiffres, _ ; 15 max).",
+    "Kein gültiges X-/Twitter-Konto (Buchstaben, Ziffern, _; höchstens 15).",
   ),
-  badColor: l("Not a CSS color.", "Ce n'est pas une couleur CSS."),
+  badColor: l("Not a CSS color.", "Ce n'est pas une couleur CSS.", "Keine CSS-Farbe."),
 };
 
 const isColor = (s: string) =>
@@ -179,7 +199,7 @@ export default function MetaTags() {
               <input
                 class="input mono"
                 value={locale.value}
-                placeholder="fr_FR"
+                placeholder={pick({ en: "en_US", fr: "fr_FR", de: "de_DE" })}
                 onInput={bind(locale)}
               />
             </Field>

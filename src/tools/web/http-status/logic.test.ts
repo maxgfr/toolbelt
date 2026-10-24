@@ -3,12 +3,12 @@ import { STATUSES } from "./data";
 import { classOf, findStatus, groupByClass, searchStatuses } from "./logic";
 
 describe("http-status", () => {
-  it("has unique, sorted codes with both languages", () => {
+  it("has unique, sorted codes in every language", () => {
     const codes = STATUSES.map((s) => s.code);
     expect(new Set(codes).size).toBe(codes.length);
     expect([...codes].sort((a, b) => a - b)).toEqual(codes);
     for (const s of STATUSES) {
-      expect(s.name && s.nameFr && s.en && s.fr && s.ref).toBeTruthy();
+      expect(s.name && s.nameFr && s.nameDe && s.en && s.fr && s.de && s.ref).toBeTruthy();
       expect(s.code).toBeGreaterThanOrEqual(100);
       expect(s.code).toBeLessThan(600);
     }
@@ -39,11 +39,14 @@ describe("http-status", () => {
     expect(searchStatuses("999")).toEqual([]);
   });
 
-  it("searches words in English and French, ignoring accents", () => {
+  it("searches words in English, French and German, ignoring accents", () => {
     expect(searchStatuses("teapot").map((s) => s.code)).toEqual([418]);
     expect(searchStatuses("theiere").map((s) => s.code)).toEqual([418]);
     expect(searchStatuses("introuvable").map((s) => s.code)).toContain(404);
     expect(searchStatuses("rate limit").map((s) => s.code)).toEqual([429]);
+    expect(searchStatuses("Teekanne").map((s) => s.code)).toEqual([418]);
+    expect(searchStatuses("nicht gefunden").map((s) => s.code)).toContain(404);
+    expect(searchStatuses("interner serverfehler").map((s) => s.code)).toEqual([500]);
   });
 
   it("filters by class and hides rare codes on request", () => {

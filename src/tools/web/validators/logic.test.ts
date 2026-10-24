@@ -6,6 +6,7 @@ import {
   checkIsbn,
   gtinCheckDigit,
   IBAN_LENGTHS,
+  ibanBankParts,
   ibanCheckDigits,
   luhnCheckDigit,
   luhnValid,
@@ -90,6 +91,30 @@ describe("validators — IBAN", () => {
     expect(checkIban("")).toEqual({ ok: false, error: "empty" });
     expect(checkIban("DE89 3704 ✓")).toEqual({ ok: false, error: "chars" });
     expect(checkIban("1234567890")).toEqual({ ok: false, error: "country" });
+  });
+
+  it("checks and splits German, Austrian and Swiss IBANs", () => {
+    for (const s of [
+      "DE89 3704 0044 0532 0130 00",
+      "AT61 1904 3002 3457 3201",
+      "CH93 0076 2011 6238 5295 7",
+    ])
+      expect(iban(s).valid).toBe(true);
+    expect(iban("at611904300234573201").formatted).toBe("AT61 1904 3002 3457 3201");
+    expect(ibanBankParts("DE", "370400440532013000")).toEqual({
+      bank: "37040044",
+      account: "0532013000",
+    });
+    expect(ibanBankParts("AT", "1904300234573201")).toEqual({
+      bank: "19043",
+      account: "00234573201",
+    });
+    expect(ibanBankParts("CH", "00762011623852957")).toEqual({
+      bank: "00762",
+      account: "011623852957",
+    });
+    expect(ibanBankParts("DE", "3704004405320130")).toBeNull();
+    expect(ibanBankParts("FR", "20041010050500013M02606")).toBeNull();
   });
 
   it("has a sane country table", () => {

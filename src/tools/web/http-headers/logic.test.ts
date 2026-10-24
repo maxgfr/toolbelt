@@ -18,12 +18,13 @@ describe("http-headers — reference", () => {
     expect(HEADERS.length).toBeGreaterThanOrEqual(95);
     const names = HEADERS.map((h) => h.name.toLowerCase());
     expect(new Set(names).size).toBe(names.length);
-    for (const h of HEADERS) expect(h.en && h.fr && h.example).toBeTruthy();
+    for (const h of HEADERS) expect(h.en && h.fr && h.de && h.example).toBeTruthy();
   });
 
-  it("searches names and both languages, and filters", () => {
+  it("searches names and all three languages, and filters", () => {
     expect(searchHeaders("hsts").map((h) => h.name)).toContain("Strict-Transport-Security");
     expect(searchHeaders("cadre clickjacking").map((h) => h.name)).toContain("X-Frame-Options");
+    expect(searchHeaders("Weiterleitung").map((h) => h.name)).toContain("Location");
     expect(searchHeaders("", "request").every((h) => h.kind !== "response")).toBe(true);
     expect(searchHeaders("", "all", "cors").every((h) => h.cat === "cors")).toBe(true);
     expect(searchHeaders("qwertyuiop")).toEqual([]);
