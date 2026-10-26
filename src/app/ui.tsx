@@ -4,7 +4,7 @@
  */
 import { signal } from "@preact/signals";
 import type { ComponentChildren, JSX } from "preact";
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { tr } from "../i18n";
 import { S } from "../i18n/strings";
 
@@ -15,6 +15,7 @@ const PATHS = {
   link: "M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1",
   copy: "M9 9h11v11H9zM5 15H4V4h11v1",
   download: "M12 3v12M7 10l5 5 5-5M4 19h16",
+  print: "M7 9V3h10v6M7 17H4v-7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v7h-3M7 14h10v7H7z",
   upload: "M12 21V9M7 14l5-5 5 5M4 5h16",
   file: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5",
   close: "M6 6l12 12M18 6L6 18",
@@ -111,6 +112,42 @@ export function IconButton({
       <Icon name={icon} class={cls ?? ""} />
     </button>
   );
+}
+
+/* --- Printing ---------------------------------------------------------- */
+
+let printSource: (() => Node | null) | null = null;
+
+/**
+ * While the calling view is mounted, printing (the header button or Ctrl+P) prints the node
+ * `source` returns instead of the whole page; returning null prints the page.
+ */
+export function usePrintSource(source: () => Node | null) {
+  const latest = useRef(source);
+  latest.current = source;
+  useEffect(() => {
+    const get = () => latest.current();
+    printSource = get;
+    return () => {
+      if (printSource === get) printSource = null;
+    };
+  }, []);
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("beforeprint", () => {
+    const node = printSource?.();
+    if (!node) return;
+    const root = document.createElement("div");
+    root.id = "print-root";
+    root.append(node);
+    document.body.append(root);
+    document.body.classList.add("print-custom");
+  });
+  window.addEventListener("afterprint", () => {
+    document.getElementById("print-root")?.remove();
+    document.body.classList.remove("print-custom");
+  });
 }
 
 /* --- Toasts ------------------------------------------------------------ */

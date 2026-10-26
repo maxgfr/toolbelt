@@ -2,7 +2,7 @@ import { useComputed } from "@preact/signals";
 import DOMPurify from "dompurify";
 import { useEffect, useRef } from "preact/hooks";
 import { useToolState } from "../../../app/state";
-import { Segmented, TextBox, Toggle } from "../../../app/ui";
+import { IconButton, Segmented, TextBox, Toggle, usePrintSource } from "../../../app/ui";
 import { l, tr } from "../../../i18n";
 import { renderMarkdown, tableOfContents } from "./logic";
 
@@ -30,6 +30,7 @@ const T = {
     "Aucun titre dans ce document.",
     "Keine Überschriften in diesem Dokument.",
   ),
+  print: l("Print the document", "Imprimer le document", "Dokument drucken"),
   sanitized: l(
     "Scripts, event handlers and inline styles are removed (DOMPurify). External images are not loaded.",
     "Les scripts, gestionnaires d'événements et styles en ligne sont retirés (DOMPurify). Les images externes ne sont pas chargées.",
@@ -61,6 +62,14 @@ export default function Markdown() {
     }
   });
   const ref = useRef<HTMLDivElement>(null);
+  // Printing on this tool prints the rendered document alone, whichever tab is open.
+  usePrintSource(() => {
+    if (!html.value) return null;
+    const doc = document.createElement("div");
+    doc.className = "markdown-preview";
+    doc.innerHTML = html.value;
+    return doc;
+  });
 
   useEffect(() => {
     if (ref.current) ref.current.innerHTML = html.value;
@@ -111,6 +120,14 @@ export default function Markdown() {
           <div class="textbox">
             <div class="textbox-head">
               <span class="textbox-label">{tr(T.preview)}</span>
+              <div class="textbox-actions">
+                <IconButton
+                  icon="print"
+                  label={tr(T.print)}
+                  disabled={!html.value}
+                  onClick={() => window.print()}
+                />
+              </div>
             </div>
             {html.value ? (
               // biome-ignore lint/a11y/useKeyWithClickEvents: only intercepts clicks on links, which keep their own keyboard behavior

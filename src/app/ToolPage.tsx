@@ -101,6 +101,7 @@ function ToolHeader({ tool, onReset }: { tool: ToolMeta; onReset: () => void }) 
           aria-pressed={fav}
           onClick={() => toggleFavorite(tool.id)}
         />
+        <IconButton icon="print" label={tr(S.print)} onClick={() => window.print()} />
         <IconButton icon="reset" label={tr(S.reset)} onClick={onReset} />
         <IconButton
           icon="link"

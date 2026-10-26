@@ -34,6 +34,7 @@ export const S = {
     "La saisie est trop grande pour tenir dans un lien.",
     "Die Eingabe ist zu groß für einen Link.",
   ),
+  print: l("Print", "Imprimer", "Drucken"),
   reset: l("Reset this tool", "Réinitialiser l'outil", "Werkzeug zurücksetzen"),
   notFound: l(
     "This tool does not exist.",

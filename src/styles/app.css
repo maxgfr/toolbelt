@@ -1063,3 +1063,87 @@ fieldset.segmented {
   color: var(--ink);
   text-decoration: underline;
 }
+
+/* --- Print ----------------------------------------------------------------- */
+
+#print-root {
+  display: none;
+}
+@page {
+  margin: 16mm;
+}
+@media print {
+  :root,
+  :root[data-theme="dark"] {
+    --accent: #0f766e;
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f3f3f1;
+    --ink: #000000;
+    --ink-2: #27272a;
+    --muted: #52525b;
+    --line: #d4d4d0;
+    --line-strong: #a1a19b;
+    color-scheme: light;
+  }
+  html,
+  body {
+    background: #fff;
+  }
+  .topbar,
+  .crumbs,
+  .tool-actions,
+  .textbox-actions,
+  .icon-btn,
+  .toasts,
+  .palette {
+    display: none !important;
+  }
+  .tool-page {
+    max-width: none;
+    padding: 0;
+  }
+  .textarea {
+    field-sizing: content;
+    max-height: none;
+    resize: none;
+  }
+  .markdown-preview {
+    max-height: none;
+    overflow: visible;
+  }
+  .markdown-preview pre {
+    white-space: pre-wrap;
+  }
+  .markdown-preview h1,
+  .markdown-preview h2,
+  .markdown-preview h3,
+  .markdown-preview h4 {
+    break-after: avoid;
+  }
+  .markdown-preview pre,
+  .markdown-preview blockquote,
+  .markdown-preview tr,
+  .markdown-preview img {
+    break-inside: avoid;
+  }
+
+  /* A view that registered a print source (usePrintSource) prints that alone. */
+  body.print-custom > :not(#print-root) {
+    display: none !important;
+  }
+  #print-root {
+    display: block;
+  }
+  #print-root .markdown-preview {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    font-size: 11pt;
+  }
+  #print-root a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    color: var(--muted);
+    font-size: 0.85em;
+  }
+}

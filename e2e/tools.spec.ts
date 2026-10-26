@@ -93,6 +93,30 @@ test("the diff compares two files", async ({ page }) => {
   expect((await download).suggestedFilename()).toBe("modified.patch");
 });
 
+test("printing a Markdown file prints the rendered document alone", async ({ page }) => {
+  await page.goto("./#/markdown");
+  const chooser = page.waitForEvent("filechooser");
+  await page.getByRole("button", { name: "Open a file" }).first().click();
+  await (await chooser).setFiles({
+    name: "notes.md",
+    mimeType: "text/markdown",
+    buffer: Buffer.from("# Notes\n\n- **one**\n- two\n"),
+  });
+  await expect(page.getByRole("button", { name: "Print the document" })).toBeEnabled();
+  await page.emulateMedia({ media: "print" });
+  await page.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
+  await expect(page.locator("#print-root h1")).toHaveText("Notes");
+  await expect(page.locator("#print-root strong")).toHaveText("one");
+  await expect(page.locator(".tool-page")).toBeHidden();
+  await page.evaluate(() => window.dispatchEvent(new Event("afterprint")));
+  await expect(page.locator("#print-root")).toHaveCount(0);
+  await expect(page.locator(".tool-page")).toBeVisible();
+  // Elsewhere the page itself prints, without the top bar.
+  await page.goto("./#/counter");
+  await expect(page.locator(".tool-head h1")).toBeVisible();
+  await expect(page.locator(".topbar")).toBeHidden();
+});
+
 test("a share link carries the input", async ({ page, context, baseURL }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"], {
     origin: new URL(baseURL ?? "").origin,
