@@ -74,6 +74,18 @@ test("the counter counts", async ({ page }) => {
   await expect(stat("Paragraphs").locator("dd")).toHaveText("2");
 });
 
+test("an input too large for the shared storage is not remembered, and the page says so", async ({
+  page,
+}) => {
+  await openTool(page, "counter", "en");
+  await page.locator("textarea").fill("x".repeat(60_000));
+  await expect(page.locator(".tool-body .error-note")).toContainText("too large to be remembered");
+  await page.waitForTimeout(400);
+  expect(await page.evaluate(() => localStorage.getItem("toolbelt:counter:text"))).toBeNull();
+  await page.locator("textarea").fill("short");
+  await expect(page.locator(".tool-body .error-note")).toHaveCount(0);
+});
+
 test("the diff compares two files", async ({ page }) => {
   await page.goto("./#/diff");
   const [a, b] = [page.locator("textarea").nth(0), page.locator("textarea").nth(1)];

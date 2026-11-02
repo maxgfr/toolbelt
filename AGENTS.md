@@ -50,6 +50,8 @@ calculators), `life` (timers, chance & devices).
 - **State**: `useToolState(key, initial, { persist?, share? })` from `src/app/state.ts` instead
   of `useState` for anything the user typed or chose: it survives reloads and goes into share
   links. Use `{ persist: false, share: false }` for secrets (passwords, keys, HMAC secrets).
+  Values over `MAX_PERSISTED` (50 000 JSON chars) are not remembered — the origin's localStorage
+  is shared with other maxgfr.github.io sites — and the tool page says so.
   Derive outputs with `useComputed`.
 - **Shared UI** (`src/app/ui.tsx`): `TextBox` (label, open/drop file, copy, download, clear),
   `Output` (one value + copy), `Stats`, `Segmented`, `Toggle`, `Field`, `Panel`, `FileDrop`,
