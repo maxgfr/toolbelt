@@ -5,7 +5,7 @@ import { S } from "../i18n/strings";
 import { CATEGORIES, findTool, searchTools, TOOLS } from "../tools/registry";
 import type { ToolMeta } from "../tools/types";
 import { clearRecents, favorites, recents, removeRecent, toggleFavorite } from "./state";
-import { Icon } from "./ui";
+import { Icon, toast } from "./ui";
 
 export function ToolCard({ tool, onRemove }: { tool: ToolMeta; onRemove?: () => void }) {
   const fav = favorites.value.includes(tool.id);
@@ -26,7 +26,9 @@ export function ToolCard({ tool, onRemove }: { tool: ToolMeta; onRemove?: () => 
         aria-pressed={fav}
         aria-label={tr(fav ? S.removeFavorite : S.addFavorite)}
         title={tr(fav ? S.removeFavorite : S.addFavorite)}
-        onClick={() => toggleFavorite(tool.id)}
+        onClick={() => {
+          if (!toggleFavorite(tool.id)) toast(tr(S.notStored), "error");
+        }}
       >
         <Icon name="star" size={16} class={fav ? "filled" : ""} />
       </button>

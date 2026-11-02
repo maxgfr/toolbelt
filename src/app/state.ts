@@ -3,6 +3,11 @@
  *  - is remembered in localStorage per tool (unless `persist: false`, for secrets),
  *  - goes into the share link (unless `share: false`),
  *  - starts from a shared link's value when the tool is opened from one.
+ *
+ * toolbelt shares its origin (maxgfr.github.io) with other sites, and with them one
+ * localStorage quota of a few MB: a value larger than `MAX_PERSISTED` is not remembered
+ * (a pasted log must not crowd out every other site), and the tool page says so, as it
+ * does when the browser refuses a write.
  */
 import { type Signal, signal } from "@preact/signals";
 import { useMemo } from "preact/hooks";
@@ -13,6 +18,33 @@ interface Entry {
   sig: Signal<Json>;
   initial: Json;
   share: boolean;
+}
+
+/** Longest JSON value remembered per input, in characters (about 100 KB of UTF-16). */
+export const MAX_PERSISTED = 50_000;
+
+/** Why some input of the open tool will not survive a reload, or null when all of it will. */
+export const notRemembered = signal<"large" | "refused" | null>(null);
+const failing = new Map<string, "large" | "refused">();
+
+function setFailing(key: string, why: "large" | "refused" | null): void {
+  if (why) failing.set(key, why);
+  else failing.delete(key);
+  notRemembered.value = failing.size
+    ? [...failing.values()].includes("refused")
+      ? "refused"
+      : "large"
+    : null;
+}
+
+/** What to do with a changed value: drop the stored copy, store `json`, or skip a too-large one. */
+export function persistPlan(
+  v: Json,
+  initial: Json,
+): { kind: "remove" } | { kind: "set"; json: string } | { kind: "large" } {
+  const json = JSON.stringify(v);
+  if (json === JSON.stringify(initial)) return { kind: "remove" };
+  return json.length > MAX_PERSISTED ? { kind: "large" } : { kind: "set", json };
 }
 
 let current = "";
@@ -36,6 +68,8 @@ export function beginTool(id: string, shared: Record<string, Json> | null): void
   current = id;
   live.clear();
   pending = shared;
+  failing.clear();
+  notRemembered.value = null;
 }
 
 function storageKey(tool: string, key: string): string {
@@ -84,12 +118,16 @@ export function useToolState<T extends Json>(
       const write = () => {
         timer = undefined;
         unsaved.delete(write);
+        const plan = persistPlan(sig.peek(), initial);
+        const mine = tool === current;
         try {
-          const v = sig.peek();
-          if (JSON.stringify(v) === JSON.stringify(initial))
-            localStorage.removeItem(storageKey(tool, key));
-          else localStorage.setItem(storageKey(tool, key), JSON.stringify(v));
-        } catch {}
+          // A too-large value also drops the stored one: a reload must not bring back an older input.
+          if (plan.kind === "set") localStorage.setItem(storageKey(tool, key), plan.json);
+          else localStorage.removeItem(storageKey(tool, key));
+          if (mine) setFailing(key, plan.kind === "large" ? "large" : null);
+        } catch {
+          if (mine) setFailing(key, plan.kind === "set" ? "refused" : null);
+        }
       };
       sig.subscribe(() => {
         clearTimeout(timer);
@@ -127,16 +165,21 @@ function readList(k: string): string[] {
   }
 }
 
-function writeList(k: string, v: string[]): void {
+/** False when the browser refused the write (storage full or blocked). */
+function writeList(k: string, v: string[]): boolean {
   try {
     localStorage.setItem(k, JSON.stringify(v));
-  } catch {}
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-export function toggleFavorite(id: string): void {
+/** False when the change could not be stored: it holds until the page reloads. */
+export function toggleFavorite(id: string): boolean {
   const f = favorites.value;
   favorites.value = f.includes(id) ? f.filter((x) => x !== id) : [...f, id];
-  writeList("toolbelt:favorites", favorites.value);
+  return writeList("toolbelt:favorites", favorites.value);
 }
 
 export function removeRecent(id: string): void {

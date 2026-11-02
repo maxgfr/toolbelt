@@ -19,6 +19,21 @@ export const S = {
   clearRecents: l("Clear", "Effacer", "Leeren"),
   addFavorite: l("Add to favorites", "Ajouter aux favoris", "Zu Favoriten hinzufügen"),
   removeFavorite: l("Remove from favorites", "Retirer des favoris", "Aus Favoriten entfernen"),
+  notStored: l(
+    "Storage for this site is full or blocked: this change will be lost on reload.",
+    "Le stockage de ce site est plein ou bloqué : ce changement sera perdu au rechargement.",
+    "Der Speicher dieser Seite ist voll oder gesperrt: Diese Änderung geht beim Neuladen verloren.",
+  ),
+  inputTooLarge: l(
+    "This input is too large to be remembered: it will be gone after a reload.",
+    "Cette saisie est trop grande pour être mémorisée : elle disparaîtra au rechargement.",
+    "Diese Eingabe ist zu groß zum Merken: Nach dem Neuladen ist sie weg.",
+  ),
+  inputNotStored: l(
+    "Storage for this site is full or blocked: this input will be lost on reload.",
+    "Le stockage de ce site est plein ou bloqué : cette saisie sera perdue au rechargement.",
+    "Der Speicher dieser Seite ist voll oder gesperrt: Diese Eingabe geht beim Neuladen verloren.",
+  ),
   share: l(
     "Copy a link with this input",
     "Copier un lien avec cette saisie",

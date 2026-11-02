@@ -7,7 +7,15 @@ import { CATEGORIES, findTool } from "../tools/registry";
 import type { ToolMeta } from "../tools/types";
 import { clearShared } from "./router";
 import { decodeShare, encodeShare, MAX_LINK } from "./share";
-import { beginTool, favorites, markRecent, resetTool, snapshot, toggleFavorite } from "./state";
+import {
+  beginTool,
+  favorites,
+  markRecent,
+  notRemembered,
+  resetTool,
+  snapshot,
+  toggleFavorite,
+} from "./state";
 import { copyText, Icon, IconButton, toast } from "./ui";
 
 type Loaded = { id: string; View: ComponentType } | { id: string; error: true };
@@ -60,6 +68,11 @@ export function ToolPage({ id, shared }: { id: string; shared: string | null }) 
         }}
       />
       <div class="tool-body">
+        {notRemembered.value && (
+          <p class="error-note" role="status">
+            {tr(notRemembered.value === "large" ? S.inputTooLarge : S.inputNotStored)}
+          </p>
+        )}
         {!loaded || loaded.id !== tool.id ? (
           <p class="muted">{tr(S.loading)}</p>
         ) : "error" in loaded ? (
@@ -99,7 +112,9 @@ function ToolHeader({ tool, onReset }: { tool: ToolMeta; onReset: () => void }) 
           class={fav ? "filled fav-on" : ""}
           label={tr(fav ? S.removeFavorite : S.addFavorite)}
           aria-pressed={fav}
-          onClick={() => toggleFavorite(tool.id)}
+          onClick={() => {
+            if (!toggleFavorite(tool.id)) toast(tr(S.notStored), "error");
+          }}
         />
         <IconButton icon="print" label={tr(S.print)} onClick={() => window.print()} />
         <IconButton icon="reset" label={tr(S.reset)} onClick={onReset} />
