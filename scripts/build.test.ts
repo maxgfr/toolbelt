@@ -28,6 +28,12 @@ describe("build audit", () => {
     expect(sw).toContain('"./"');
   });
 
+  it("only deletes toolbelt's own caches (the origin is shared with other sites)", () => {
+    const sw = serviceWorker([], "abc");
+    expect(sw).toContain('k.startsWith("toolbelt-")');
+    expect(sw).not.toMatch(/caches\.match\(/);
+  });
+
   it("lists every tool in llms.txt", () => {
     const txt = llmsTxt();
     for (const t of TOOLS) expect(txt).toContain(`#/${t.id})`);
